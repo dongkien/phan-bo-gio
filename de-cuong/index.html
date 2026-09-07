@@ -82,6 +82,12 @@ table.grid{width:100%;border-collapse:collapse;font-size:14px;min-width:760px}
 .grid tfoot .target{display:block;font-weight:400;color:var(--muted);font-size:12px}
 .grid tfoot td.bad{color:var(--red)}
 .grid tfoot td.good{color:var(--ok)}
+table.g52 td.act{white-space:nowrap;color:var(--ink);font-weight:500;width:230px}
+table.g52 td.h{width:70px;text-align:right;font-weight:600}
+table.g52 td.h input{text-align:right}
+table.g52 td.rs{vertical-align:top;font-weight:600;text-align:center;background:var(--bg)}
+table.g52 td textarea{font:inherit;font-size:13.5px;width:100%;min-height:34px;padding:5px 7px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);resize:vertical}
+table.g52 tr.first td{border-top:2px solid var(--line)}
 .drop{display:block;margin-top:14px;border:2px dashed var(--line);border-radius:6px;padding:26px 20px;text-align:center;color:var(--muted);cursor:pointer;background:var(--bg)}
 .drop.on{border-color:var(--navy);color:var(--ink)}
 .drop input{display:none}
@@ -126,7 +132,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
 
 <nav class="tabs" role="tablist">
   <button role="tab" data-tab="huong-dan" aria-selected="true">1. Hướng dẫn và checklist</button>
-  <button role="tab" data-tab="bang-51" aria-selected="false">2. Dựng bảng 5.1</button>
+  <button role="tab" data-tab="bang-51" aria-selected="false">2. Dựng bảng 5.1 và 5.2</button>
   <button role="tab" data-tab="nghiem-thu" aria-selected="false">3. Nghiệm thu file docx</button>
 </nav>
 
@@ -230,11 +236,27 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
     </div>
     <div class="actions">
       <button type="button" class="btn" id="b-copy51">Sao chép bảng 5.1</button>
-      <button type="button" class="btn ghost" id="b-copy52">Sao chép khung bảng 5.2</button>
       <button type="button" class="btn ghost" id="b-reset">Xóa bảng</button>
       <span class="toast" id="b-toast"></span>
     </div>
-    <p class="note">Sao chép rồi dán vào Word: bảng dán thành bảng Word, chỉnh lại ô gộp theo mẫu. Khung 5.2 tạo sẵn năm dòng hoạt động mỗi buổi với số giờ lấy từ 5.1, dòng Kiểm tra đánh giá để 0 giờ. Số liệu được lưu trên trình duyệt này.</p>
+    <p class="note">Sao chép rồi dán vào Word: bảng dán thành bảng Word, giữ ô gộp. Số liệu được lưu trên trình duyệt này.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Bảng 5.2 Phương pháp và kế hoạch giảng dạy</h2>
+    <p class="note" style="margin:0 0 6px">Mỗi buổi năm dòng hoạt động. Số giờ bốn dòng đầu và CLO lấy từ bảng 5.1; dòng Kiểm tra, đánh giá tự ghi giờ (thường 0, buổi thi giữa kỳ thì ghi giờ thi). Mỗi dòng ghi nội dung riêng: dòng Lý thuyết là nội dung giảng, dòng Thảo luận là chủ đề thảo luận, dòng Tiểu luận là bài tập, dòng Tự học là tài liệu đọc.</p>
+    <div class="tablewrap">
+      <table class="grid g52" id="t52">
+        <thead><tr><th>Buổi</th><th>Hoạt động dạy và học</th><th>Số giờ</th><th>Nội dung chính</th><th>CLO</th></tr></thead>
+        <tbody id="b52"></tbody>
+      </table>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn" id="b-copy52">Sao chép bảng 5.2</button>
+      <button type="button" class="btn ghost" id="b-fill52">Điền nội dung lý thuyết từ 5.1</button>
+      <span class="toast" id="b-toast2"></span>
+    </div>
+    <p class="note">Sau bảng 5.2 trong đề cương nhớ thêm dòng in nghiêng: "Lưu ý: Các hoạt động kết nối thực tiễn và phương pháp kiểm tra đánh giá có thể linh hoạt theo điều kiện thực tế và quyết định của Bộ môn."</p>
   </div>
 </section>
 
@@ -295,7 +317,9 @@ const h=location.hash.slice(1); show(['huong-dan','bang-51','nghiem-thu'].includ
 const B={rows:[]};
 function alloc(){ const tc=Math.max(1,num($('b-tc').value)||3), x=Math.max(0,num($('b-x').value)||0), y=Math.max(0,num($('b-y').value)||0);
   const z=50*(tc-x/15-y/30), e=50*tc-(x+y+z); $('b-z').value=fmt(z).replace(',','.'); $('b-e').value=fmt(e).replace(',','.'); return {tc,x,y,z,e}; }
-function newRow(i){ return {nd:'',ht:'Trực tiếp',x:0,y:0,z:0,e:0,clo:''}; }
+function newRow(i){ return {nd:'',ht:'Trực tiếp',x:0,y:0,z:0,e:0,clo:'',c52:{lt:'',th:'',tl:'',tu:'',kt:''},kth:0}; }
+function norm(r){ if(!r.c52) r.c52={lt:'',th:'',tl:'',tu:'',kt:''}; if(r.kth==null) r.kth=0; return r; }
+const ACTS=[['lt','Lý thuyết','x'],['th','Thực hành, thảo luận','y'],['tl','Tiểu luận, bài tập lớn, thực tế','z'],['tu','Tự học, chuẩn bị có hướng dẫn','e'],['kt','Kiểm tra, đánh giá',null]];
 function spread(total,n){ // chia total cho n buổi, ưu tiên số nguyên, dư dồn về buổi đầu
   const base=Math.floor(total/n), rem=Math.round(total-base*n); const out=[];
   for(let i=0;i<n;i++) out.push(base+(i<rem?1:0));
@@ -315,7 +339,23 @@ function renderB(){
   [['x',a.x],['y',a.y],['z',a.z],['e',a.e]].forEach(([k,t])=>{ const td=$('s-'+k); const ok=Math.abs(s[k]-t)<1e-9; td.className=ok?'good':'bad'; td.innerHTML=`${fmt(s[k])}<span class="target">/ ${fmt(t)}${ok?'':' (lệch '+fmt(s[k]-t)+')'}</span>`; });
   const tot=s.x+s.y+s.z+s.e, T=50*a.tc; const all=$('s-all'); all.className=Math.abs(tot-T)<1e-9?'good':'bad'; all.innerHTML=`${fmt(tot)}<span class="target">/ ${fmt(T)} giờ = 50 × ${fmt(a.tc)} TC</span>`;
   $('b-n').value=B.rows.length;
+  render52();
   try{ localStorage.setItem('dc51',JSON.stringify({tc:a.tc,x:a.x,y:a.y,rows:B.rows})); }catch(_){}
+}
+function render52(){
+  const tb=$('b52'); tb.innerHTML='';
+  B.rows.forEach((r,i)=>{ norm(r);
+    ACTS.forEach(([k,name,src],j)=>{
+      const tr=document.createElement('tr'); if(j===0) tr.className='first';
+      let html='';
+      if(j===0) html+=`<td class="rs" rowspan="5">${i+1}</td>`;
+      html+=`<td class="act">${name}</td>`;
+      html+=src?`<td class="h">${fmt(num(r[src])||0)}</td>`:`<td class="h"><input type="number" min="0" step="0.5" data-i="${i}" data-k="kth" value="${r.kth}"></td>`;
+      html+=`<td><textarea data-i="${i}" data-k="${k}" placeholder="${({lt:'Nội dung giảng',th:'Chủ đề thảo luận, bài thực hành',tl:'Bài tập lớn, tiểu luận, thực tế',tu:'Tài liệu đọc, việc chuẩn bị',kt:'Hình thức kiểm tra (nếu có)'})[k]}">${esc(r.c52[k])}</textarea></td>`;
+      if(j===0) html+=`<td class="rs" rowspan="5">${esc(r.clo)}</td>`;
+      tr.innerHTML=html; tb.appendChild(tr);
+    });
+  });
 }
 function even(){
   const a=alloc(); const n=B.rows.length; if(!n) return;
@@ -325,6 +365,8 @@ function even(){
 function setN(){ const n=Math.max(1,Math.min(30,parseInt($('b-n').value,10)||1)); while(B.rows.length<n) B.rows.push(newRow()); B.rows.length=n; renderB(); }
 $('b-body').addEventListener('input',e=>{ const tr=e.target.closest('tr'); const i=[...$('b-body').children].indexOf(tr); const k=e.target.dataset.k; if(i<0||!k) return; B.rows[i][k]=e.target.type==='number'?(num(e.target.value)||0):e.target.value; renderB(); e.target.focus&&null; });
 $('b-body').addEventListener('click',e=>{ const d=e.target.dataset.del; if(d!=null){ B.rows.splice(+d,1); renderB(); } });
+$('b52').addEventListener('input',e=>{ const i=+e.target.dataset.i, k=e.target.dataset.k; if(isNaN(i)||!k) return; const r=norm(B.rows[i]); if(k==='kth') r.kth=num(e.target.value)||0; else r.c52[k]=e.target.value; try{ const a=alloc(); localStorage.setItem('dc51',JSON.stringify({tc:a.tc,x:a.x,y:a.y,rows:B.rows})); }catch(_){} });
+$('b-fill52').addEventListener('click',()=>{ B.rows.forEach(r=>{ norm(r); if(!r.c52.lt&&r.nd) r.c52.lt=r.nd; }); render52(); toast('b-toast2','Đã điền nội dung lý thuyết từ cột Nội dung của 5.1'); });
 ['b-tc','b-x','b-y'].forEach(id=>$(id).addEventListener('input',renderB));
 $('b-n').addEventListener('change',setN);
 $('b-add').addEventListener('click',()=>{ B.rows.push(newRow()); renderB(); });
@@ -339,15 +381,16 @@ function table51(){
 }
 function table52(){
   const head=['Buổi','Hoạt động dạy và học','Số giờ','Nội dung chính','Đóng góp vào CLOs'];
-  const acts=[['Lý thuyết','x'],['Thực hành, thảo luận','y'],['Tiểu luận, bài tập lớn, thực tế','z'],['Tự học, chuẩn bị có hướng dẫn','e'],['Kiểm tra, đánh giá',null]];
-  const rows=[];
-  B.rows.forEach((r,i)=>acts.forEach(([n,k],j)=>rows.push([j===0?String(i+1):'',n,k?fmt(r[k]):'0',j===0?r.nd:'',j===0?r.clo:''])));
-  return {head,rows};
+  const rows=[]; const spans=[];
+  B.rows.forEach((r,i)=>{ norm(r); ACTS.forEach(([k,name,src],j)=>{ rows.push([j===0?String(i+1):'',name,src?fmt(num(r[src])||0):fmt(r.kth||0),r.c52[k]||'',j===0?r.clo:'']); spans.push(j===0?5:0); }); });
+  return {head,rows,spans};
 }
-function toHtml(t){ return '<table border="1" style="border-collapse:collapse"><tr>'+t.head.map(c=>`<th>${esc(c)}</th>`).join('')+'</tr>'+t.rows.map(r=>'<tr>'+r.map(c=>`<td>${esc(c)}</td>`).join('')+'</tr>').join('')+'</table>'; }
-function toTsv(t){ return [t.head,...t.rows].map(r=>r.join('\t')).join('\n'); }
+function toHtml(t){ const cell=c=>esc(c).replace(/\n/g,'<br>');
+  return '<table border="1" style="border-collapse:collapse"><tr>'+t.head.map(c=>`<th>${esc(c)}</th>`).join('')+'</tr>'+t.rows.map((r,i)=>{ const sp=t.spans?t.spans[i]:0; if(!t.spans) return '<tr>'+r.map(c=>`<td>${cell(c)}</td>`).join('')+'</tr>';
+    const last=r.length-1; let h='<tr>'; if(sp) h+=`<td rowspan="${sp}">${cell(r[0])}</td>`; for(let c=1;c<last;c++) h+=`<td>${cell(r[c])}</td>`; if(sp) h+=`<td rowspan="${sp}">${cell(r[last])}</td>`; return h+'</tr>'; }).join('')+'</table>'; }
+function toTsv(t){ return [t.head,...t.rows].map(r=>r.map(c=>String(c).replace(/\n/g,' ')).join('\t')).join('\n'); }
 $('b-copy51').addEventListener('click',()=>{ const t=table51(); copyRich(toHtml(t),toTsv(t),'b-toast','Đã sao chép bảng 5.1, dán vào Word'); });
-$('b-copy52').addEventListener('click',()=>{ const t=table52(); copyRich(toHtml(t),toTsv(t),'b-toast','Đã sao chép khung 5.2 ('+t.rows.length+' dòng), dán vào Word'); });
+$('b-copy52').addEventListener('click',()=>{ const t=table52(); copyRich(toHtml(t),toTsv(t),'b-toast2','Đã sao chép bảng 5.2 ('+t.rows.length+' dòng), dán vào Word'); });
 (function initB(){
   let saved=null; try{ saved=JSON.parse(localStorage.getItem('dc51')||'null'); }catch(_){}
   if(saved&&Array.isArray(saved.rows)&&saved.rows.length){ $('b-tc').value=saved.tc; $('b-x').value=saved.x; $('b-y').value=saved.y; B.rows=saved.rows; renderB(); }

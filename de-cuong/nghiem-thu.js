@@ -5,10 +5,12 @@
    Finding: {g: nhóm, status: fail|warn|pass, t: tiêu đề, d: chi tiết, src: 'truong'|'bomon'} */
 (function(global){
 'use strict';
-const VERSION='2.9 (8/9/2026)';
+const VERSION='3.0 (8/9/2026)';
 function maTheoNgonNgu(code,lang){ const info=maHocPhan(code); if(!info) return null; const m=String(code).trim().toUpperCase().match(/^([A-Z]{3})E?(\d{3})E?$/); if(!m) return null; return lang==='en'?(info.dang==='dddE'?m[1]+m[2]+'E':m[1]+'E'+m[2]):m[1]+m[2]; }
 /* Mã học phần: 3 chữ cái lĩnh vực + (ddd | Hddd | Eddd | dddE) */
-function maHocPhan(code){ const m=String(code||'').trim().toUpperCase().match(/^([A-Z]{3})(\d{3}E|E\d{3}|H\d{3}|\d{3})$/); if(!m) return null; const t=m[2];
+function bacHocPhan(t){ const d=parseInt(t.replace(/\D/g,'').charAt(0),10); return d<6?{bac:'ĐH',ten:'cử nhân',maxPLO:12}:d===6?{bac:'ThS',ten:'thạc sĩ',maxPLO:10}:{bac:'TS',ten:'tiến sĩ',maxPLO:8}; }
+function maHocPhan(code){ const m=String(code||'').trim().toUpperCase().match(/^([A-Z]{3})(\d{3}E|E\d{3}|H\d{3}|\d{3})$/); if(!m) return null; const t=m[2]; const r=_maHocPhan(m,t); Object.assign(r,bacHocPhan(t)); r.mota=`bậc ${r.ten}, `+r.mota; return r; }
+function _maHocPhan(m,t){
   if(/^\d{3}$/.test(t)) return {linhvuc:m[1],dang:'ddd',ct:'Chương trình tiêu chuẩn',lang:'vn',mota:'chương trình tiêu chuẩn, giảng dạy bằng tiếng Việt'};
   if(/^H\d{3}$/.test(t)) return {linhvuc:m[1],dang:'Hddd',ct:'CLC / định hướng nghề nghiệp quốc tế / định hướng phát triển quốc tế',lang:'vn',mota:'chương trình CLC hoặc định hướng nghề nghiệp quốc tế hoặc định hướng phát triển quốc tế (phần lớn dạy tiếng Anh) nhưng học phần này giảng dạy bằng tiếng Việt'};
   if(/^E\d{3}$/.test(t)) return {linhvuc:m[1],dang:'Eddd',ct:'CLC / định hướng nghề nghiệp quốc tế / định hướng phát triển quốc tế',lang:'en',mota:'chương trình CLC hoặc định hướng nghề nghiệp quốc tế hoặc định hướng phát triển quốc tế, học phần giảng dạy bằng tiếng Anh'};
@@ -144,6 +146,7 @@ function check(blocks,opts){
   const tq=field([C.prereq[0]]); if(tq&&C.prereq[1].source!=='^$'&&C.prereq[1].test(tq)) add(G2,'fail','"Điều kiện tiên quyết" còn nguyên chữ mẫu','Ghi tên và mã học phần tiên quyết, hoặc "Không".');
   const tc=meta.tc; const special=C.special.test(meta.title||''); meta.special=special;
   if(meta.code){ const info=maHocPhan(meta.code); meta.codeInfo=info; if(!info) add(G2,'fail',`Mã học phần "${meta.code}" sai định dạng`,'Mã gồm 3 chữ cái lĩnh vực rồi 3 chữ số (tiêu chuẩn, tiếng Việt), H + 3 chữ số (CLC/ĐHNNQT/ĐHPTQT, học phần dạy tiếng Việt), E + 3 chữ số (CLC/ĐHNNQT/ĐHPTQT dạy tiếng Anh) hoặc 3 chữ số + E (chương trình tiên tiến, tiếng Anh).'); else { const want=info.lang; if(want!==lang) add(G2,'fail',`Mã ${meta.code.toUpperCase()} là ${info.mota}, nhưng đề cương này là bản ${C.name}`,lang==='en'?`Bản tiếng Anh dùng mã 3 chữ cái + E + 3 chữ số: đổi thành ${maTheoNgonNgu(meta.code,'en')}.`:`Bản tiếng Việt dùng mã 3 chữ cái + 3 chữ số (hoặc H + 3 chữ số): đổi thành ${maTheoNgonNgu(meta.code,'vn')}.`); else add(G2,'pass',`Mã ${meta.code.toUpperCase()}: ${info.mota}; khớp ngôn ngữ đề cương`); } }
+  // chữ số đầu sau 3 chữ cái: <6 cử nhân, 6 thạc sĩ, 7 tiến sĩ; số PLO tối đa theo Hướng dẫn CĐR: ĐH 12, ThS 10, TS 8
   if(special) add(G1,'pass','Đề cương đặc thù (khóa luận, đề án tốt nghiệp, luận văn): được phép không có bảng giảng viên, bảng đánh giá, dòng lưu ý cuối 5.2; không kiểm công thức quy đổi giờ; chỉ một chữ ký '+C.sig.vkName);
 
   // mục
@@ -179,6 +182,7 @@ function check(blocks,opts){
     const cloRows=g.filter(r=>/^CLO\s*\d/i.test((r[cloCol]||'').trim())); const hp=g.find(r=>r.slice(0,2).some(c=>C.tbl.matRow.test((c||'').trim()))); const hpOld=!hp&&g.find(r=>r.slice(0,2).some(c=>C.tbl.matRowOld.test((c||'').trim())));
     meta.mat={nPLO,cloRows:cloRows.length,course:hp?hp.slice(cloCol+1).map(c=>c.trim()):null,ploHeader:g.slice(0,2).flat().filter(c=>/PLO\s*\d/i.test(c)).map(c=>c.trim())};
     add(G2,'pass',`Ma trận 3.2: ${nPLO} PLO, ${cloRows.length} dòng CLO`);
+    if(meta.codeInfo&&nPLO>meta.codeInfo.maxPLO) add(G2,'warn',`Ma trận có ${nPLO} PLO, vượt mức tối đa ${meta.codeInfo.maxPLO} PLO cho bậc ${meta.codeInfo.ten} theo Hướng dẫn xây dựng CĐR`,'Kiểm lại số PLO của CTĐT hoặc mã học phần.');
     if(nCLO&&cloRows.length!==nCLO) add(G2,'fail',`Số CLO trong ma trận (${cloRows.length}) khác mục 3.1 (${nCLO})`);
     if(!hp){ if(hpOld) add(G2,'fail','Dòng tổng của ma trận 3.2 phải tên "'+(vn?'Học phần':'Course')+'"',`Đang ghi "${(hpOld.find(c=>c.trim())||'').trim()}". Quy định chung của Trường: dòng cuối ma trận là "${vn?'Học phần':'Course'}", giá trị lấy từ ma trận đóng góp học phần vào PLO trong CTĐT.`); else add(G2,'fail','Ma trận 3.2 thiếu dòng "'+(vn?'Học phần':'Course')+'"','Quy định chung của Trường: dòng cuối ma trận là mức đóng góp của cả học phần vào từng PLO, lấy từ CTĐT.'); } else if(!hp.slice(cloCol+1).some(c=>c.trim())) add(G2,'fail','Dòng "Học phần" trong ma trận 3.2 để trống');
     const emptyClo=cloRows.filter(r=>!r.slice(cloCol+1).some(c=>c.trim())); if(emptyClo.length) add(G2,'warn',`${emptyClo.length} dòng CLO trong ma trận không đánh dấu PLO nào`);
@@ -368,5 +372,5 @@ async function readDocx(file){ if(!global.JSZip) throw new Error('Không tải �
 async function checkFile(file,opts){ const blocks=await readDocx(file); const r=check(blocks,opts); return {name:file.name,lang:r.meta.lang,findings:r.findings,meta:r.meta}; }
 async function loadCtdt(file){ return parseCtdt(await readDocx(file)); }
 
-global.NghiemThu={VERSION,parseDocx,check,checkFile,readDocx,parseCtdt,loadCtdt,extractTables,maHocPhan,maTheoNgonNgu,num,fmt,CFG};
+global.NghiemThu={VERSION,parseDocx,check,checkFile,readDocx,parseCtdt,loadCtdt,extractTables,maHocPhan,maTheoNgonNgu,bacHocPhan,num,fmt,CFG};
 })(window);

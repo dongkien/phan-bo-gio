@@ -39,6 +39,7 @@ h3{font-size:15px;font-weight:600;margin:18px 0 8px}
 .eyebrow{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
 .crumb{font-size:13.5px;color:var(--muted)}
 nav.tabs{display:flex;gap:4px;margin:18px 0 20px;border-bottom:1px solid var(--line);overflow-x:auto}
+@media (max-width:640px){nav.tabs{flex-wrap:wrap;overflow:visible} nav.tabs button{padding:8px 10px;font-size:13.5px} .wrap{padding:18px 12px 40px} h1{font-size:24px} .panel{padding:14px 12px} .line{font-size:34px} .tablewrap{position:relative} .tablewrap::before{content:"Bảng rộng, vuốt ngang để xem";display:block;font-size:11.5px;color:var(--muted);padding:4px 8px}}
 nav.tabs button{border:0;background:transparent;color:var(--muted);font:inherit;font-weight:600;font-size:14.5px;padding:10px 14px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
 nav.tabs button[aria-selected="true"]{color:var(--navy);border-bottom-color:var(--navy)}
 nav.tabs button:hover{color:var(--ink)}
@@ -551,7 +552,7 @@ function renderMatrix(){ const n=Math.max(1,Math.min(20,parseInt($('g-nplo').val
   clos.forEach((c,i)=>{ h+=`<tr><td title="${esc(c)}">CLO${i+1}</td>`+Array.from({length:n},(_,j)=>`<td>${matSel(`data-r="${i}" data-c="${j}"`,(cur[i]||[])[j]||'')}</td>`).join('')+'</tr>'; });
   if(!clos.length) h+=`<tr><td colspan="${n+1}" style="text-align:left;color:var(--muted)">Nhập CLO ở ô trên để dựng bảng.</td></tr>`;
   h+=`<tr class="hp"><td>Học phần${gCtdt?'<small style="display:block;font-weight:400;color:var(--muted)">theo CTĐT</small>':''}</td>`+Array.from({length:n},(_,j)=>`<td>${matSel(`data-hp="${j}"`,hp[j]||'',HP_OPTS)}</td>`).join('')+'</tr></tbody>';
-  t.innerHTML=h; let note=$('g-matrix-note'); if(!note){ note=document.createElement('p'); note.id='g-matrix-note'; note.className='g52note'; t.parentNode.after(note); } const msgs=[...iss.bad.map(x=>'Lỗi: '+x),...iss.warn.map(x=>'Xem lại: '+x)]; note.textContent=msgs.join(' · '); note.hidden=!msgs.length; }
+  t.style.minWidth=(130+n*74)+'px'; t.innerHTML=h; let note=$('g-matrix-note'); if(!note){ note=document.createElement('p'); note.id='g-matrix-note'; note.className='g52note'; t.parentNode.after(note); } const msgs=[...iss.bad.map(x=>'Lỗi: '+x),...iss.warn.map(x=>'Xem lại: '+x)]; note.textContent=msgs.join(' · '); note.hidden=!msgs.length; }
 function syncMatrix(){ const n=Math.max(1,Math.min(20,parseInt($('g-nplo').value,10)||7)); const clos=lines($('g-clo').value); const rows=clos.map((c,i)=>Array.from({length:n},(_,j)=>{ const e=$('g-matrix').querySelector(`select[data-r="${i}"][data-c="${j}"]`); return e?e.value:''; })); $('g-cloplo').value=JSON.stringify(rows); $('g-hocphan').value=JSON.stringify(Array.from({length:n},(_,j)=>{ const e=$('g-matrix').querySelector(`select[data-hp="${j}"]`); return e?e.value:''; })); save(); }
 $('g-matrix').addEventListener('change',()=>{ syncMatrix(); renderMatrix(); });
 $('g-nplo').addEventListener('input',()=>{ renderMatrix(); syncMatrix(); }); $('g-clo').addEventListener('input',()=>{ renderMatrix(); syncMatrix(); });

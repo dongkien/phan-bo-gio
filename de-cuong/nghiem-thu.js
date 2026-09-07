@@ -5,7 +5,13 @@
    Finding: {g: nhóm, status: fail|warn|pass, t: tiêu đề, d: chi tiết, src: 'truong'|'bomon'} */
 (function(global){
 'use strict';
-const VERSION='2.0 (8/9/2026)';
+const VERSION='2.1 (8/9/2026)';
+/* Mã học phần: 3 chữ cái lĩnh vực + (ddd | Hddd | Eddd | dddE) */
+function maHocPhan(code){ const m=String(code||'').trim().toUpperCase().match(/^([A-Z]{3})(\d{3}E|E\d{3}|H\d{3}|\d{3})$/); if(!m) return null; const t=m[2];
+  if(/^\d{3}$/.test(t)) return {linhvuc:m[1],dang:'ddd',ct:'Chương trình tiêu chuẩn',lang:'vn',mota:'chương trình tiêu chuẩn, giảng dạy bằng tiếng Việt'};
+  if(/^H\d{3}$/.test(t)) return {linhvuc:m[1],dang:'Hddd',ct:'CLC / định hướng nghề nghiệp quốc tế / định hướng phát triển quốc tế',lang:'vn',mota:'chương trình CLC hoặc định hướng nghề nghiệp quốc tế hoặc định hướng phát triển quốc tế (phần lớn dạy tiếng Anh) nhưng học phần này giảng dạy bằng tiếng Việt'};
+  if(/^E\d{3}$/.test(t)) return {linhvuc:m[1],dang:'Eddd',ct:'CLC / định hướng nghề nghiệp quốc tế / định hướng phát triển quốc tế',lang:'en',mota:'chương trình CLC hoặc định hướng nghề nghiệp quốc tế hoặc định hướng phát triển quốc tế, học phần giảng dạy bằng tiếng Anh'};
+  return {linhvuc:m[1],dang:'dddE',ct:'Chương trình tiên tiến',lang:'en',mota:'chương trình tiên tiến, học phần giảng dạy bằng tiếng Anh'}; }
 function cloRefs(t){ const out=new Set(); String(t||'').replace(/CLO/gi,' ').replace(/(\d+)\s*[-–]\s*(\d+)/g,(m,a,b)=>{ for(let k=+a;k<=+b&&k<100;k++) out.add(k); return ' '; }).split(/[^\d]+/).forEach(x=>{ if(x) out.add(parseInt(x,10)); }); return [...out].filter(n=>n>0); }
 const W='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const lower=s=>String(s||'').normalize('NFC').toLowerCase();
@@ -136,6 +142,7 @@ function check(blocks,opts){
   C.fields.forEach(([name,labels,ph])=>{ const v=field(labels); if(v==null){ const isVK=/^(Trường\/Khoa|Faculty\/College)$/.test(name), isBM=/^(Khoa phụ trách|Department)$/.test(name); if((isVK&&field(['viện/khoa','viện','faculty/school','school']))||(isBM&&field(['bộ môn phụ trách','bộ môn']))) return; add(G1,'fail',isVK?C.vkMissing:isBM?C.bmMissing:`Thiếu dòng "${name}:"`); return; } else if(!v||lower(v)===ph) add(G2,'fail',`"${name}:" chưa điền`); else { add(G2,'pass',`${name}: ${v.length>90?v.slice(0,90)+'…':v}`); if(name==='Tên học phần'||name==='Course title') meta.title=v; if(/^(Khoa phụ trách)$/.test(name)&&C.oldUnit.test(v)) add(G2,'fail','Tên đơn vị phụ trách còn "Bộ môn"',`"${v}". Ghi tên Khoa.`); if(name==='Mã học phần'||name==='Course code') meta.code=v; if(name==='Số tín chỉ'||name==='Credit hours'){ meta.tc=num((v.match(/\d+([.,]\d+)?/)||[''])[0]); if(/\(/.test(v)) add(G2,'fail','Số tín chỉ ghi kèm ngoặc phân bổ giờ',`"${v}". Chỉ ghi số tín chỉ, ví dụ "03"; phân bổ giờ đã có ở bảng 5.1.`); } } });
   const tq=field([C.prereq[0]]); if(tq&&C.prereq[1].source!=='^$'&&C.prereq[1].test(tq)) add(G2,'fail','"Điều kiện tiên quyết" còn nguyên chữ mẫu','Ghi tên và mã học phần tiên quyết, hoặc "Không".');
   const tc=meta.tc; const special=C.special.test(meta.title||''); meta.special=special;
+  if(meta.code){ const info=maHocPhan(meta.code); meta.codeInfo=info; if(!info) add(G2,'fail',`Mã học phần "${meta.code}" sai định dạng`,'Mã gồm 3 chữ cái lĩnh vực rồi 3 chữ số (tiêu chuẩn, tiếng Việt), H + 3 chữ số (CLC/ĐHNNQT/ĐHPTQT, học phần dạy tiếng Việt), E + 3 chữ số (CLC/ĐHNNQT/ĐHPTQT dạy tiếng Anh) hoặc 3 chữ số + E (chương trình tiên tiến, tiếng Anh).'); else { const want=info.lang; if(want!==lang) add(G2,'fail',`Mã ${meta.code.toUpperCase()} là ${info.mota}, nhưng đề cương này là bản ${C.name}`,'Mã học phần phải nhất quán với chương trình đào tạo và ngôn ngữ giảng dạy.'); else add(G2,'pass',`Mã ${meta.code.toUpperCase()}: ${info.mota}; khớp ngôn ngữ đề cương`); } }
   if(special) add(G1,'pass','Đề cương đặc thù (khóa luận, đề án tốt nghiệp, luận văn): được phép không có bảng giảng viên, bảng đánh giá, dòng lưu ý cuối 5.2; không kiểm công thức quy đổi giờ; chỉ một chữ ký '+C.sig.vkName);
 
   // mục
@@ -356,5 +363,5 @@ async function readDocx(file){ if(!global.JSZip) throw new Error('Không tải �
 async function checkFile(file,opts){ const blocks=await readDocx(file); const r=check(blocks,opts); return {name:file.name,lang:r.meta.lang,findings:r.findings,meta:r.meta}; }
 async function loadCtdt(file){ return parseCtdt(await readDocx(file)); }
 
-global.NghiemThu={VERSION,parseDocx,check,checkFile,readDocx,parseCtdt,loadCtdt,extractTables,num,fmt,CFG};
+global.NghiemThu={VERSION,parseDocx,check,checkFile,readDocx,parseCtdt,loadCtdt,extractTables,maHocPhan,num,fmt,CFG};
 })(window);

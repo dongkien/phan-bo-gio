@@ -35,6 +35,9 @@ Mục tiêu: ra đề cương **đúng format chuẩn 2025** + **đúng nội du
 
 16. **Phân loại quy định (sếp chốt 8/9/2026):** quy định CHUNG của FTU gồm: cột Hình thức ở 5.1; số tín chỉ chỉ ghi số; tiêu đề 3.2/4.1/4.2 không giữ câu hướng dẫn của mẫu; nhãn "* Sách…" trống thì xóa; không ngắt trang thủ công/chuỗi đoạn trống; ma trận 3.2 dòng cuối tên đúng "Học phần"; chuyên cần đúng 10%; khối ký không "Giảng viên biên soạn". Quy ước RIÊNG của Khoa Kinh tế liên ngành chỉ còn dòng lưu ý linh hoạt cuối 5.2. Không có quy tắc về dòng "(Bao gồm mục tiêu…)" hay ảnh tiêu đề thư.
 
+17. **Mã học phần và ngôn ngữ (sếp chốt 8/9/2026):** mã = 3 chữ cái lĩnh vực + (3 chữ số: chương trình tiêu chuẩn, tiếng Việt | H+3 số: CLC/ĐHNNQT/ĐHPTQT nhưng học phần này dạy tiếng Việt | E+3 số: CLC/ĐHNNQT/ĐHPTQT dạy tiếng Anh | 3 số+E: chương trình tiên tiến, tiếng Anh). Mã PHẢI nhất quán với CTĐT và ngôn ngữ đề cương (mã dạng E/…E → đề cương tiếng Anh; ddd/Hddd → tiếng Việt).
+18. **Mặc định Khoa Kinh tế liên ngành** (đề cương thông thường): Trường/College = Trường Kinh tế và Quản lý công / College of Economics and Public Management; Khoa/Department = Khoa Kinh tế liên ngành / Department of Economics and Interdisciplinary Management; ký trái TRƯỞNG KHOA / HEAD OF DEPARTMENT = TS. Đỗ Ngọc Kiên / Dr. Do Ngoc Kien; ký phải HIỆU TRƯỞNG / DEAN OF COLLEGE = PGS. TS. Bùi Thị Lý / Assoc. Prof. Dr. Bui Thi Ly (tên ghi dưới chức danh trong khối ký).
+
 ## Quy trình (các bước)
 - **B0. Khảo sát:** tìm file mẫu chuẩn (mục 2 trên) + 1 bản đã điền làm ví dụ. Xác định đề cương thuộc CTĐT nào.
 - **B1. Giải phẫu template:** python-docx liệt kê paragraph + bảng; xác định ranh giới song ngữ (đoạn "SYLLABUS"), ô nhãn cần điền, cấu trúc từng bảng, footnote/chữ đỏ.

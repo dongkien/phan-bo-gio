@@ -206,6 +206,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
           <li><b>Bản tiếng Anh:</b> "Department:" là Khoa chuyên môn; "Faculty/College:" ghi "College:" cho trường thuộc hoặc "Faculty:" cho khoa độc lập. Khối ký HEAD OF DEPARTMENT bên trái, DEAN bên phải; Hiệu trưởng trường thuộc và Trưởng khoa độc lập đều là Dean.</li>
           <li><b>Cơ cấu FTU hiện nay:</b> bốn trường thuộc (Trường Kinh tế và Quản lý công, Trường Kinh doanh, Trường Kinh doanh và Sáng tạo Việt Nhật, Trường Luật và Khoa học Chính trị) gồm các Khoa chuyên môn, không có Bộ môn; ngoài ra còn các Khoa chưa thuộc trường (Kế toán - Kiểm toán, Tài chính Ngân hàng, Tiếng Anh thương mại, Tiếng Anh chuyên ngành, Tiếng Nhật, Tiếng Trung, Tiếng Pháp), dự kiến gom thành trường thuộc từ năm sau.</li>
           <li><b>Mẫu là mẫu chung.</b> Tên mục 4 giữ đủ chữ "Tài liệu tham khảo bắt buộc", "Tài liệu tham khảo tự chọn", không rút thành "Tài liệu".</li>
+          <li><b>Mã học phần</b> gồm 3 chữ cái lĩnh vực rồi: 3 chữ số là chương trình tiêu chuẩn dạy tiếng Việt; H và 3 chữ số là chương trình CLC, định hướng nghề nghiệp quốc tế hoặc định hướng phát triển quốc tế nhưng học phần này dạy tiếng Việt; E và 3 chữ số là các chương trình đó dạy tiếng Anh; 3 chữ số và E là chương trình tiên tiến dạy tiếng Anh. Mã phải nhất quán với chương trình đào tạo và ngôn ngữ của đề cương.</li>
         </ul>
       </div>
     </div>
@@ -293,7 +294,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
     <h2>Nghiệm thu file đề cương</h2>
     <div class="prose"><p>Chọn file .docx đã điền theo mẫu 2025 (bản tiếng Việt). Trang đọc file ngay trên máy của bạn, không gửi đi đâu, và đối chiếu với các nguyên tắc ở phần 1.</p></div>
     <label class="drop" id="drop"><input type="file" id="file" accept=".docx" multiple><b>Chọn một hoặc nhiều file .docx</b> hoặc kéo thả vào đây</label>
-    <div class="opts-row"><label class="chk"><input type="checkbox" id="c-bomon" checked> Áp dụng quy ước riêng của Khoa Kinh tế liên ngành (dòng lưu ý linh hoạt cuối mục 5.2)</label></div>
+    <div class="opts-row"><label class="chk"><input type="checkbox" id="c-bomon" checked> Quy ước riêng của Khoa Kinh tế liên ngành (dòng lưu ý linh hoạt cuối mục 5.2; ở phần 4 tự điền đơn vị và người ký)</label></div>
     <div class="ctdt-row"><label class="btn ghost small" for="ctdt">Nạp Bản mô tả CTĐT (.docx) để đối chiếu</label><input type="file" id="ctdt" accept=".docx" hidden><button type="button" class="btn ghost small" id="ctdt-clear">Bỏ CTĐT</button><span class="toast" id="ctdt-name"></span></div>
     <div class="fields" style="margin-top:14px">
       <div class="field"><label for="c-x">Phân bổ CTĐT: lý thuyết</label><input id="c-x" type="number" min="0" placeholder="vd 24"></div>
@@ -326,7 +327,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
       <div><label for="g-lang">Ngôn ngữ đề cương</label><select id="g-lang"><option value="vn">Tiếng Việt</option><option value="en">Tiếng Anh</option></select></div>
       <div><label for="g-ten">Tên học phần (tiếng Việt)</label><input type="text" id="g-ten"></div>
       <div><label for="g-tenEn">Tên tiếng Anh</label><input type="text" id="g-tenEn"></div>
-      <div><label for="g-ma">Mã học phần</label><input type="text" id="g-ma"></div>
+      <div><label for="g-ma">Mã học phần</label><input type="text" id="g-ma"><small id="g-ma-hint">3 chữ cái lĩnh vực + 3 chữ số (tiêu chuẩn), H+3 số (CLC dạy tiếng Việt), E+3 số (CLC dạy tiếng Anh), 3 số+E (tiên tiến)</small></div>
       <div><label for="g-tc">Số tín chỉ</label><input type="number" id="g-tc" min="1" step="1"><small>Lấy theo phần 2; đổi ở đây sẽ đổi cả phần 2.</small></div>
       <div><label for="g-bomon">Khoa phụ trách</label><input type="text" id="g-bomon"><small>Trường đã bỏ Bộ môn; ghi tên Khoa.</small></div>
       <div><label for="g-vkLabel">Đơn vị quản lý học phần</label><select id="g-vkLabel"><option value="Trường">Trường</option><option value="Khoa">Khoa</option></select></div>
@@ -346,8 +347,11 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
       <div><label for="g-q61">Yêu cầu riêng với sinh viên (6.1), mỗi dòng một ý</label><textarea id="g-q61"></textarea></div>
       <div><label for="g-q62">Quy định thi cử riêng (6.2), mỗi dòng một ý</label><textarea id="g-q62"></textarea></div>
       <div class="wide"><label for="g-dg">Đánh giá, mỗi dòng: Nhóm | Hình thức | Nội dung | Công cụ và tiêu chí | CLO | Trọng số</label><textarea id="g-dg" class="tall"></textarea><small>Chuyên cần 10%, cuối kỳ ít nhất 50%, tổng 100%. Nhóm giống nhau ở các dòng liền nhau sẽ được gộp ô.</small></div>
-      <div><label for="g-kytrai">Khối ký, ô trái</label><input type="text" id="g-kytrai"><small>Tiếng Việt: TRƯỞNG KHOA. Tiếng Anh: HEAD OF DEPARTMENT.</small></div>
-      <div><label for="g-kyphai">Khối ký, ô phải</label><input type="text" id="g-kyphai"><small>Tiếng Việt: HIỆU TRƯỞNG (trường thuộc). Tiếng Anh: DEAN.</small></div>
+      <div class="wide"><label class="chk"><input type="checkbox" id="g-khoa"> Quy ước riêng của Khoa Kinh tế liên ngành: tự điền Trường Kinh tế và Quản lý công, tên Khoa theo ngôn ngữ đề cương, người ký TS. Đỗ Ngọc Kiên (Trưởng Khoa) và PGS. TS. Bùi Thị Lý (Hiệu trưởng)</label></div>
+      <div><label for="g-kytrai">Khối ký, ô trái (chức danh)</label><input type="text" id="g-kytrai"><small>Tiếng Việt: TRƯỞNG KHOA. Tiếng Anh: HEAD OF DEPARTMENT.</small></div>
+      <div><label for="g-kytraiten">Người ký ô trái</label><input type="text" id="g-kytraiten" placeholder="TS. Nguyễn Văn A"></div>
+      <div><label for="g-kyphai">Khối ký, ô phải (chức danh)</label><input type="text" id="g-kyphai"><small>Tiếng Việt: HIỆU TRƯỞNG (trường thuộc). Tiếng Anh: DEAN OF COLLEGE.</small></div>
+      <div><label for="g-kyphaiten">Người ký ô phải</label><input type="text" id="g-kyphaiten" placeholder="PGS. TS. Nguyễn Thị B"></div>
       <div class="wide"><label class="chk"><input type="checkbox" id="g-dacthu"> Đề cương đặc thù (khóa luận tốt nghiệp, đề án tốt nghiệp, luận văn thạc sĩ): chỉ một chữ ký Hiệu trưởng, bỏ ô Trưởng Khoa</label></div>
     </div>
     <div class="actions">
@@ -529,9 +533,15 @@ $('b-import').addEventListener('change',async e=>{ const f=e.target.files[0]; if
 
 /* ---------- TAB 4: sinh file docx ---------- */
 (function(){
-const F=['lang','ten','tenEn','ma','tc','bomon','vkLabel','vk','tq','gv','mota','muctieu','clo','nplo','cloplo','hocphan','gt','bb','tuchon','web','q61','q62','dg','kytrai','kyphai'];
+const F=['lang','ten','tenEn','ma','tc','bomon','vkLabel','vk','tq','gv','mota','muctieu','clo','nplo','cloplo','hocphan','gt','bb','tuchon','web','q61','q62','dg','kytrai','kyphai','kytraiten','kyphaiten'];
+const KHOA={vn:{bomon:'Khoa Kinh tế liên ngành',vk:'Trường Kinh tế và Quản lý công',kytrai:'TRƯỞNG KHOA',kyphai:'HIỆU TRƯỞNG',kytraiten:'TS. Đỗ Ngọc Kiên',kyphaiten:'PGS. TS. Bùi Thị Lý'},en:{bomon:'Department of Economics and Interdisciplinary Management',vk:'College of Economics and Public Management',kytrai:'HEAD OF DEPARTMENT',kyphai:'DEAN OF COLLEGE',kytraiten:'Dr. Do Ngoc Kien',kyphaiten:'Assoc. Prof. Dr. Bui Thi Ly'}};
+function applyKhoa(){ if(!$('g-khoa').checked) return; const k=KHOA[$('g-lang').value==='en'?'en':'vn']; $('g-vkLabel').value='Trường'; ['bomon','vk','kytrai','kyphai','kytraiten','kyphaiten'].forEach(f=>$('g-'+f).value=k[f]); save(); }
+$('g-khoa').addEventListener('change',()=>{ try{ localStorage.setItem('dc_bomon',$('g-khoa').checked?'1':'0'); }catch(_){} $('c-bomon').checked=$('g-khoa').checked; applyKhoa(); });
+$('c-bomon').addEventListener('change',()=>{ $('g-khoa').checked=$('c-bomon').checked; });
+function maHint(){ const info=NT.maHocPhan?NT.maHocPhan($('g-ma').value):null; const h=$('g-ma-hint'); const v=$('g-ma').value.trim(); if(!v){ h.textContent='3 chữ cái lĩnh vực + 3 chữ số (tiêu chuẩn), H+3 số (CLC dạy tiếng Việt), E+3 số (CLC dạy tiếng Anh), 3 số+E (tiên tiến)'; h.style.color=''; return; } if(!info){ h.textContent='Mã sai định dạng: cần 3 chữ cái rồi 3 chữ số, H+3 số, E+3 số hoặc 3 số+E.'; h.style.color='var(--red)'; return; } const mis=info.lang!==($('g-lang').value==='en'?'en':'vn'); h.textContent=(info.mota.charAt(0).toUpperCase()+info.mota.slice(1))+(mis?'. Không khớp ngôn ngữ đề cương đang chọn!':''); h.style.color=mis?'var(--red)':'var(--ok)'; }
+$('g-ma').addEventListener('input',maHint);
 $('g-dacthu').addEventListener('change',()=>{ try{ localStorage.setItem('dc_gen_dacthu',$('g-dacthu').checked?'1':'0'); }catch(_){} }); try{ $('g-dacthu').checked=localStorage.getItem('dc_gen_dacthu')==='1'; }catch(_){}
-$('g-lang').addEventListener('change',()=>{ const en=$('g-lang').value==='en'; const kt=$('g-kytrai'), kp=$('g-kyphai'); if(en){ if(/TRƯỞNG KHOA/i.test(kt.value)) kt.value='HEAD OF DEPARTMENT'; if(/HIỆU TRƯỞNG/i.test(kp.value)) kp.value='DEAN'; } else { if(/HEAD OF DEPARTMENT/i.test(kt.value)) kt.value='TRƯỞNG KHOA'; if(/^DEAN/i.test(kp.value)) kp.value='HIỆU TRƯỞNG'; } });
+$('g-lang').addEventListener('change',()=>{ const en=$('g-lang').value==='en'; const kt=$('g-kytrai'), kp=$('g-kyphai'); if(en){ if(/TRƯỞNG KHOA/i.test(kt.value)) kt.value='HEAD OF DEPARTMENT'; if(/HIỆU TRƯỞNG/i.test(kp.value)) kp.value='DEAN OF COLLEGE'; } else { if(/HEAD OF DEPARTMENT/i.test(kt.value)) kt.value='TRƯỞNG KHOA'; if(/^DEAN/i.test(kp.value)) kp.value='HIỆU TRƯỞNG'; } applyKhoa(); maHint(); });
 const lines=v=>String(v||'').split('\n').map(x=>x.trim()).filter(Boolean);
 const SAMPLE={lang:'vn',ten:'Nguyên lý quản lý kinh tế',tenEn:'Principles of Economic Management',ma:'DTU301',tc:3,bomon:'Khoa Kinh tế liên ngành',vkLabel:'Trường',vk:'Trường Kinh tế và Quản lý công',tq:'Không',
   gv:'TS. Nguyễn Văn A | nguyenvana@ftu.edu.vn | 0900000000 | HN',
@@ -544,7 +554,7 @@ const SAMPLE={lang:'vn',ten:'Nguyên lý quản lý kinh tế',tenEn:'Principles
   tuchon:'Stiglitz, J. E., & Rosengard, J. K. (2015). Economics of the Public Sector (4th ed.). New York: W. W. Norton.\nMankiw, N. G. (2021). Principles of Economics (9th ed.). Boston: Cengage.',
   web:'https://www.gso.gov.vn',q61:'Đọc tài liệu trước mỗi buổi học và tham gia thảo luận.\nNộp bài tập nhóm đúng hạn.',q62:'Sinh viên vắng quá 30% số buổi không được dự thi cuối kỳ.',
   dg:'Đánh giá quá trình | Chuyên cần | Mức độ chuyên cần và tham gia thảo luận | Điểm danh và quan sát mức độ tham gia | 1, 2, 3, 4, 5 | 10%\nĐánh giá quá trình | Kiểm tra giữa kỳ | Thi viết hoặc bài tập nhóm kèm báo cáo | Bài thi viết trên lớp hoặc báo cáo nhóm theo rubric | 1, 2, 3 | 30%\nĐánh giá tổng kết | Thi cuối kỳ | Toàn bộ nội dung học phần | Thi viết tự luận hoặc vấn đáp theo rubric | 1, 2, 3, 4, 5 | 60%',
-  kytrai:'TRƯỞNG KHOA',kyphai:'HIỆU TRƯỞNG'};
+  kytrai:'TRƯỞNG KHOA',kyphai:'HIỆU TRƯỞNG',kytraiten:'TS. Đỗ Ngọc Kiên',kyphaiten:'PGS. TS. Bùi Thị Lý'};
 function read(){ const o={}; F.forEach(k=>o[k]=$('g-'+k).value); return o; }
 function write(o){ F.forEach(k=>{ if(o[k]!=null) $('g-'+k).value=o[k]; }); }
 function save(){ try{ localStorage.setItem('dc_gen',JSON.stringify(read())); }catch(_){} }
@@ -552,14 +562,14 @@ F.forEach(k=>$('g-'+k).addEventListener('input',save)); $('g-clo').addEventListe
 $('g-tc').addEventListener('change',()=>{ $('b-tc').value=$('g-tc').value; renderB(); });
 $('g-sample').addEventListener('click',()=>{ write(SAMPLE); save(); if(!B.rows.some(r=>r.nd)){ $('b-tc').value=3; $('b-x').value=24; $('b-y').value=6; B.rows=Array.from({length:10},(_,i)=>({nd:`Chương ${i+1}`,ht:'Trực tiếp',x:0,y:0,z:0,e:0,clo:String(1+(i%5)),c52:{lt:`Nội dung chương ${i+1}`,th:'',tl:`Bài tập chương ${i+1}`,tu:'Đọc giáo trình [1], chương '+(i+1),kt:i<5?'Chuyên cần, Giữa kỳ, Cuối kỳ':'Chuyên cần, Cuối kỳ'},kth:0})); even(); B.rows.forEach(r=>{ if(r.y>0&&!r.c52.th) r.c52.th='Thảo luận tình huống'; if(r.y===0) r.c52.th=''; }); renderB(); } toast('g-toast','Đã nạp ví dụ. Bảng 5.1 và 5.2 ở phần 2.'); });
 $('g-clear').addEventListener('click',()=>{ F.forEach(k=>$('g-'+k).value=''); $('g-lang').value='vn'; $('g-vkLabel').value='Trường'; save(); });
-(function init(){ let o=null; try{ o=JSON.parse(localStorage.getItem('dc_gen')||'null'); }catch(_){} if(o) write(o); else write(SAMPLE); $('g-tc').value=$('b-tc').value||3; })();
+(function init(){ let o=null; try{ o=JSON.parse(localStorage.getItem('dc_gen')||'null'); }catch(_){} if(o) write(o); else write(SAMPLE); $('g-tc').value=$('b-tc').value||3; try{ $('g-khoa').checked=localStorage.getItem('dc_bomon')!=='0'; }catch(_){ $('g-khoa').checked=true; } maHint(); })();
 function collect(){ const o=read(); const d={lang:o.lang,ten:o.ten.trim(),tenEn:o.tenEn.trim(),ma:o.ma.trim(),bomon:o.bomon.trim(),vkLabel:o.vkLabel,vk:o.vk.trim(),tc:num($('b-tc').value)||3,tienquyet:o.tq.trim(),
     gv:lines(o.gv).map(l=>{ const p=l.split('|').map(x=>x.trim()); return {ten:p[0]||'',email:p[1]||'',dt:p[2]||'',truso:p[3]||''}; }),
     mota:String(o.mota||'').split(/\n\s*\n/).map(x=>x.replace(/\s*\n\s*/g,' ').trim()).filter(Boolean), muctieu:lines(o.muctieu), clo:lines(o.clo).map(c=>c.replace(/^-?\s*CLO\s*\d+\s*:\s*/i,'')),
     nPLO:Math.max(1,parseInt(o.nplo,10)||7), cloPlo:lines(o.cloplo).map(l=>l.split(/[,;\s]+/).map(x=>parseInt(x.replace(/\D/g,''),10)).filter(x=>x>0)), hocphanRow:String(o.hocphan||'').split(',').map(x=>x.trim()),
     giaotrinh:lines(o.gt),batbuoc:lines(o.bb),tuchon:lines(o.tuchon),web:lines(o.web),rows:B.rows.map(r=>norm(r)),quydinh61:lines(o.q61),quydinh62:lines(o.q62),
-    danhgia:lines(o.dg).map(l=>{ const p=l.split('|').map(x=>x.trim()); return {nhom:p[0]||'',hinhthuc:p[1]||'',noidung:p[2]||'',congcu:p[3]||'',clo:p[4]||'',trongso:p[5]||''}; }), kyTrai:o.kytrai.trim(), kyPhai:o.kyphai.trim(), dacThu:$('g-dacthu').checked};
-  const miss=[]; if(!d.ten) miss.push('tên học phần'); if(!d.ma) miss.push('mã học phần'); if(!d.clo.length) miss.push('CLO'); if(!d.rows.length) miss.push('bảng 5.1 (phần 2)'); if(!d.danhgia.length) miss.push('đánh giá');
+    danhgia:lines(o.dg).map(l=>{ const p=l.split('|').map(x=>x.trim()); return {nhom:p[0]||'',hinhthuc:p[1]||'',noidung:p[2]||'',congcu:p[3]||'',clo:p[4]||'',trongso:p[5]||''}; }), kyTrai:o.kytrai.trim(), kyPhai:o.kyphai.trim(), kyTraiTen:o.kytraiten.trim(), kyPhaiTen:o.kyphaiten.trim(), dacThu:$('g-dacthu').checked};
+  const miss=[]; if(!d.ten) miss.push('tên học phần'); if(!d.ma) miss.push('mã học phần'); else { const info=NT.maHocPhan(d.ma); if(!info) miss.push(`mã học phần "${d.ma}" sai định dạng`); else if(info.lang!==(d.lang==='en'?'en':'vn')) miss.push(`mã ${d.ma.toUpperCase()} là ${info.mota}, không khớp ngôn ngữ đề cương đang chọn`); } if(!d.clo.length) miss.push('CLO'); if(!d.rows.length) miss.push('bảng 5.1 (phần 2)'); if(!d.danhgia.length) miss.push('đánh giá');
   if(d.cloPlo.length&&d.cloPlo.length!==d.clo.length) miss.push(`ma trận có ${d.cloPlo.length} dòng, CLO có ${d.clo.length}`);
   const badRows=d.rows.map((r,i)=>cloRefs(r.clo).some(k=>k>d.clo.length)?i+1:0).filter(Boolean); if(badRows.length) miss.push(`buổi ${badRows.join(', ')} ghi CLO không có trong danh sách ${d.clo.length} CLO`);
   const badDG=d.danhgia.filter(x=>cloRefs(x.clo).some(k=>k>d.clo.length)).map(x=>x.hinhthuc); if(badDG.length) miss.push(`đánh giá (${badDG.join(', ')}) ghi CLO không tồn tại`);

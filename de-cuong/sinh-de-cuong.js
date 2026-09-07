@@ -144,7 +144,8 @@ async function build(data,tplBuf){
     rows.push({cells:[{t:c.total,span:5,b:true,jc:'right'},{t:fmt(tot)+'%',b:true,jc:'center'}]});
     tbl.parentNode.replaceChild(frag(doc,mkTable([1300,1500,2200,2200,1315,1000],rows))[0],tbl); }
   // 12. khối ký (bỏ bảng ký sẵn của mẫu nếu còn, rồi dựng lại)
-  { kids().filter(n=>n.localName==='tbl').filter(t=>/DEAN OF|HEAD OF DEPARTMENT|PRESIDENT|TRƯỞNG/i.test(t.textContent)).forEach(rm); const sig=data.dacThu?mkTable([4757,4758],[{cells:[{lines:['','','',''],b:true,jc:'center'},{lines:[data.kyPhai||S.kyPhai,'','',''],b:true,jc:'center'}]}],{noBorder:true}):mkTable([4757,4758],[{cells:[{lines:[data.kyTrai||S.kyTrai,'','',''],b:true,jc:'center'},{lines:[data.kyPhai||S.kyPhai,'','',''],b:true,jc:'center'}]}],{noBorder:true});
+  { kids().filter(n=>n.localName==='tbl').filter(t=>/DEAN OF|HEAD OF DEPARTMENT|PRESIDENT|TRƯỞNG/i.test(t.textContent)).forEach(rm); const cell=(title,name)=>({lines:[title,'','','',name||''],b:true,jc:'center'}); const empty={lines:['','','','',''],b:true,jc:'center'};
+    const sig=mkTable([4757,4758],[{cells:[data.dacThu?empty:cell(data.kyTrai||S.kyTrai,data.kyTraiTen),cell(data.kyPhai||S.kyPhai,data.kyPhaiTen)]}],{noBorder:true});
     insBefore(sect,frag(doc,P('',{after:0})).concat(frag(doc,sig))); }
   // 13. gộp đoạn trống liên tiếp
   { let prevEmpty=false; for(const n of kids()){ if(n.localName!=='p'){ prevEmpty=false; continue; } const e=!pText(n); if(e&&prevEmpty) rm(n); prevEmpty=e; } }

@@ -90,6 +90,7 @@ table.g52 td.h input{text-align:right}
 table.g52 td.ktcell label{display:inline-flex;align-items:center;gap:5px;margin-right:14px;font-size:13.5px;cursor:pointer}
 table.g52 td.ktcell small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
 table.g52 td.rs{vertical-align:top;font-weight:600;text-align:center;background:var(--bg)}
+table.g52 td.rs input{width:100%;min-width:70px;text-align:center;font-weight:600;padding:5px 6px}
 table.g52 td textarea{font:inherit;font-size:13.5px;width:100%;min-height:34px;padding:5px 7px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);resize:vertical}
 table.g52 tr.first td{border-top:2px solid var(--line)}
 table.g52 td textarea.zero{border-color:var(--red);background:var(--red-soft)}
@@ -430,7 +431,7 @@ function render52(){
       const hrs=src?(num(r[src])||0):0; const zero=k!=='kt'&&hrs===0&&(r.c52[k]||'').trim();
       if(k==='kt'){ const cur=String(r.c52.kt||'').split(/\s*,\s*/); html+=`<td class="ktcell">${['Chuyên cần','Giữa kỳ','Cuối kỳ'].map(f=>`<label><input type="checkbox" data-i="${i}" data-kt="${f}" ${cur.includes(f)?'checked':''}> ${f}</label>`).join('')}<small>Nội dung buổi này được dùng để đánh giá ở hình thức nào</small></td>`; }
       else html+=`<td><textarea class="${zero?'zero':''}" title="${zero?'Dòng này 0 giờ nhưng có nội dung':''}" data-i="${i}" data-k="${k}" placeholder="${({lt:'Nội dung giảng',th:'Chủ đề thảo luận, bài thực hành',tl:'Bài tập lớn, tiểu luận, thực tế',tu:'Tài liệu đọc, việc chuẩn bị'})[k]}">${esc(r.c52[k])}</textarea></td>`;
-      if(j===0) html+=`<td class="rs" rowspan="5">${esc(r.clo)}</td>`;
+      if(j===0) html+=`<td class="rs" rowspan="5"><input type="text" data-i="${i}" data-k="clo" value="${esc(r.clo)}" placeholder="1, 2" title="Dùng chung với cột CLO của bảng 5.1"></td>`;
       tr.innerHTML=html; tb.appendChild(tr);
     });
   });
@@ -445,7 +446,7 @@ function setN(){ const n=Math.max(1,Math.min(30,parseInt($('b-n').value,10)||1))
 $('b-body').addEventListener('input',e=>{ const tr=e.target.closest('tr'); const i=[...$('b-body').children].indexOf(tr); const k=e.target.dataset.k; if(i<0||!k) return; B.rows[i][k]=e.target.type==='number'?(num(e.target.value)||0):e.target.value; renderB(); e.target.focus&&null; });
 $('b-body').addEventListener('click',e=>{ const d=e.target.dataset.del; if(d!=null){ B.rows.splice(+d,1); renderB(); } });
 $('b52').addEventListener('change',e=>{ const f=e.target.dataset.kt; if(!f) return; const i=+e.target.dataset.i; const r=norm(B.rows[i]); const set=new Set(String(r.c52.kt||'').split(/\s*,\s*/).filter(Boolean)); if(e.target.checked) set.add(f); else set.delete(f); r.c52.kt=['Chuyên cần','Giữa kỳ','Cuối kỳ'].filter(x=>set.has(x)).join(', '); try{ const a=alloc(); localStorage.setItem('dc51',JSON.stringify({tc:a.tc,x:a.x,y:a.y,rows:B.rows})); }catch(_){} });
-$('b52').addEventListener('input',e=>{ const i=+e.target.dataset.i, k=e.target.dataset.k; if(isNaN(i)||!k) return; const r=norm(B.rows[i]); if(k==='kth') r.kth=num(e.target.value)||0; else r.c52[k]=e.target.value; if(k!=='kth'&&k!=='kt'){ const src=ACTS.find(a=>a[0]===k)[2]; const z=(num(r[src])||0)===0&&e.target.value.trim(); e.target.classList.toggle('zero',!!z); const nz=$('b52').querySelectorAll('textarea.zero').length; const note=$('g52note'); if(note){ note.textContent=nz?`${nz} dòng có nội dung nhưng 0 giờ (ô đỏ): phân bổ giờ ở bảng 5.1 hoặc bỏ nội dung.`:''; note.hidden=!nz; } } try{ const a=alloc(); localStorage.setItem('dc51',JSON.stringify({tc:a.tc,x:a.x,y:a.y,rows:B.rows})); }catch(_){} });
+$('b52').addEventListener('input',e=>{ const i=+e.target.dataset.i, k=e.target.dataset.k; if(isNaN(i)||!k) return; const r=norm(B.rows[i]); if(k==='clo'){ r.clo=e.target.value; const tr=$('b-body').children[i]; const inp=tr&&tr.querySelector('input[data-k=clo]'); if(inp) inp.value=r.clo; } else if(k==='kth') r.kth=num(e.target.value)||0; else r.c52[k]=e.target.value; if(k!=='kth'&&k!=='kt'){ const src=ACTS.find(a=>a[0]===k)[2]; const z=(num(r[src])||0)===0&&e.target.value.trim(); e.target.classList.toggle('zero',!!z); const nz=$('b52').querySelectorAll('textarea.zero').length; const note=$('g52note'); if(note){ note.textContent=nz?`${nz} dòng có nội dung nhưng 0 giờ (ô đỏ): phân bổ giờ ở bảng 5.1 hoặc bỏ nội dung.`:''; note.hidden=!nz; } } try{ const a=alloc(); localStorage.setItem('dc51',JSON.stringify({tc:a.tc,x:a.x,y:a.y,rows:B.rows})); }catch(_){} });
 $('b-fill52').addEventListener('click',()=>{ B.rows.forEach(r=>{ norm(r); if(!r.c52.lt&&r.nd) r.c52.lt=r.nd; }); render52(); toast('b-toast2','Đã điền nội dung lý thuyết từ cột Nội dung của 5.1'); });
 ['b-tc','b-x','b-y'].forEach(id=>$(id).addEventListener('input',renderB));
 $('b-n').addEventListener('change',setN);

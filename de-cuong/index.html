@@ -165,7 +165,8 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
         <ul>
           <li><b>Mô tả học phần chép nguyên văn</b> từ Bản mô tả CTĐT. Không diễn đạt lại, không rút gọn.</li>
           <li><b>Mục 3.2</b> gồm các dòng CLO tới PLO và dòng cuối "Học phần" lấy đúng từ ma trận CTĐT.</li>
-          <li><b>Học liệu cùng ngôn ngữ</b> với đề cương. Chương trình tiếng Việt thì giáo trình và tài liệu bắt buộc phải tiếng Việt; chưa có bản dịch thì ghi "Tập bài giảng do giảng viên biên soạn".</li>
+          <li><b>Học liệu cùng ngôn ngữ giảng dạy.</b> Giáo trình và tài liệu tham khảo bắt buộc phải cùng ngôn ngữ với đề cương; tài liệu khác ngôn ngữ đưa xuống mục tự chọn. Chương trình tiếng Việt chưa có bản dịch thì ghi "Tập bài giảng do giảng viên biên soạn (trên cơ sở …)".</li>
+          <li><b>Chưa có giáo trình thì bỏ mục 4.1 Giáo trình</b> và đánh số lại từ 4.1 Tài liệu tham khảo bắt buộc, 4.2 Tài liệu tham khảo tự chọn, 4.3 Website.</li>
           <li><b>Bảng 5.1</b> có cột "Hình thức" ngay sau cột Nội dung (mặc định Trực tiếp). Tổng bốn cột giờ khớp chính xác phân bổ của CTĐT.</li>
           <li><b>Bảng 5.2</b> mỗi buổi đủ năm dòng hoạt động: Lý thuyết, Thực hành thảo luận, Tiểu luận và bài tập lớn, Tự học có hướng dẫn, Kiểm tra đánh giá. Chỉ gộp dọc ô Buổi và ô CLO; ô Nội dung chính mỗi dòng riêng.</li>
           <li><b>Cuối mục 5.2</b> có dòng in nghiêng: "Lưu ý: Các hoạt động kết nối thực tiễn và phương pháp kiểm tra đánh giá có thể linh hoạt theo điều kiện thực tế và quyết định của Bộ môn."</li>
@@ -185,7 +186,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
       <li>Đủ bảy mục và các tiểu mục 3.1, 3.2, 4.1 đến 4.4, 5.1, 5.2, 6.1, 6.2.</li>
       <li>Mô tả học phần nguyên văn CTĐT. CLO đánh số liền, không còn dấu "…" của mẫu.</li>
       <li>Ma trận 3.2 có đủ dòng CLO và dòng "Học phần".</li>
-      <li>Giáo trình và tài liệu bắt buộc đúng ngôn ngữ, đúng nhà xuất bản, năm, ấn bản thật.</li>
+      <li>Giáo trình và tài liệu bắt buộc cùng ngôn ngữ giảng dạy, đúng nhà xuất bản, năm, ấn bản thật. Không có giáo trình thì mục 4 đánh số lại từ 4.1 Tài liệu tham khảo bắt buộc.</li>
       <li>Bảng 5.1 có cột Hình thức, có dòng tổng, tổng bốn cột giờ bằng 50 giờ nhân số tín chỉ và khớp phân bổ CTĐT.</li>
       <li>Bảng 5.2 mỗi buổi năm dòng hoạt động, giờ từng buổi khớp 5.1, có dòng lưu ý cuối bảng.</li>
       <li>Bảng đánh giá: chuyên cần 10%, cuối kỳ ít nhất 50%, tổng 100%.</li>
@@ -421,11 +422,17 @@ function check(blocks,expect){
   if(tcText&&/\(/.test(tcText)) add(G2,'warn','Số tín chỉ ghi kèm ngoặc phân bổ giờ',`"${tcText}". Quy ước ghi gọn, ví dụ "03"; phân bổ giờ đã có ở bảng 5.1.`);
 
   // 7 mục + tiểu mục
-  const H=[['1.','THÔNG TIN VỀ GIẢNG VIÊN'],['2.','MÔ TẢ HỌC PHẦN'],['3.','CHUẨN ĐẦU RA'],['3.1.','Chuẩn đầu ra của học phần'],['3.2.','Ma trận đóng góp'],['4.','HỌC LIỆU'],['4.1.','Giáo trình'],['4.2.','Tài liệu tham khảo bắt buộc'],['4.3.','Tài liệu tham khảo tự chọn'],['4.4.','Website'],['5.','NỘI DUNG, PHƯƠNG PHÁP'],['5.1.','Nội dung học phần'],['5.2.','Phương pháp và kế hoạch giảng dạy'],['6.','QUY ĐỊNH ĐỐI VỚI HỌC PHẦN'],['6.1.','Nhiệm vụ của sinh viên'],['6.2.','Quy định về thi cử'],['7.','PHƯƠNG PHÁP, HÌNH THỨC KIỂM TRA']];
+  const H=[['1.','THÔNG TIN VỀ GIẢNG VIÊN'],['2.','MÔ TẢ HỌC PHẦN'],['3.','CHUẨN ĐẦU RA'],['3.1.','Chuẩn đầu ra của học phần'],['3.2.','Ma trận đóng góp'],['4.','HỌC LIỆU'],['5.','NỘI DUNG, PHƯƠNG PHÁP'],['5.1.','Nội dung học phần'],['5.2.','Phương pháp và kế hoạch giảng dạy'],['6.','QUY ĐỊNH ĐỐI VỚI HỌC PHẦN'],['6.1.','Nhiệm vụ của sinh viên'],['6.2.','Quy định về thi cử'],['7.','PHƯƠNG PHÁP, HÌNH THỨC KIỂM TRA']];
   const missing=[]; const idx={};
   H.forEach(([n,name])=>{ const i=paras.findIndex(p=>p.text.startsWith(n)&&lower(p.text).includes(lower(name).slice(0,18))); if(i<0) missing.push(n+' '+name); else idx[n]=i; });
-  if(missing.length) add(G1,'fail','Thiếu mục của mẫu: '+missing.join('; ')); else add(G1,'pass','Đủ 7 mục và các tiểu mục theo mẫu');
-  if(idx['4.1.']!=null){ const p=paras[idx['4.1.']]; if(/đề nghị sử dụng giáo trình/i.test(p.text)) add(G5,'warn','Tiêu đề 4.1 còn nguyên câu hướng dẫn trong ngoặc của mẫu','Rút gọn thành "4.1. Giáo trình".'); }
+  // Mục 4: có giáo trình thì 4.1 Giáo trình / 4.2 bắt buộc / 4.3 tự chọn / 4.4 Website; không có giáo trình thì đánh số lại từ 4.1 Tài liệu tham khảo bắt buộc
+  const find4=(n,name)=>paras.findIndex(p=>new RegExp('^'+n.replace('.','\\.')+'\\.?\\s').test(p.text)&&lower(p.text).includes(lower(name)));
+  const hasGT=find4('4.1','giáo trình')>=0;
+  const L=hasGT?[['4.1','giáo trình'],['4.2','tài liệu tham khảo bắt buộc'],['4.3','tài liệu tham khảo tự chọn'],['4.4','website']]:[['4.1','tài liệu tham khảo bắt buộc'],['4.2','tài liệu tham khảo tự chọn'],['4.3','website']];
+  const key4={'giáo trình':'GT','tài liệu tham khảo bắt buộc':'BB','tài liệu tham khảo tự chọn':'TC','website':'WEB'};
+  L.forEach(([n,name])=>{ const i=find4(n,name); if(i<0) missing.push(n+'. '+name.charAt(0).toUpperCase()+name.slice(1)+(hasGT?'':' (không có giáo trình thì đánh số lại từ 4.1)')); else idx[key4[name]]=i; });
+  if(missing.length) add(G1,'fail','Thiếu mục của mẫu: '+missing.join('; ')); else add(G1,'pass',hasGT?'Đủ 7 mục và các tiểu mục theo mẫu':'Đủ 7 mục; mục 4 không có giáo trình, đánh số lại từ 4.1 Tài liệu tham khảo bắt buộc');
+  if(idx.GT!=null){ const p=paras[idx.GT]; if(/đề nghị sử dụng giáo trình/i.test(p.text)) add(G5,'warn','Tiêu đề 4.1 còn nguyên câu hướng dẫn trong ngoặc của mẫu','Rút gọn thành "4.1. Giáo trình".'); }
   if(idx['3.2.']!=null){ const p=paras[idx['3.2.']]; if(/Xem Bảng phân nhiệm/i.test(p.text)) add(G5,'warn','Tiêu đề 3.2 còn câu hướng dẫn "(Xem Bảng phân nhiệm…)" của mẫu'); }
   if(idx['2.']!=null){ const nxt=paras[idx['2.']+1]; if(nxt&&/Bao gồm mục tiêu đào tạo/i.test(nxt.text)) add(G5,'warn','Dưới mục 2 còn dòng hướng dẫn "(Bao gồm mục tiêu đào tạo của học phần)"'); }
 
@@ -452,9 +459,16 @@ function check(blocks,expect){
   const ins=findTable(tables,g=>/họ và tên/i.test(g[0].join(' ')));
   if(!ins) add(G2,'fail','Không có bảng thông tin giảng viên'); else { const filled=ins.grid.slice(1).filter(r=>(r[1]||'').trim()); if(!filled.length) add(G2,'fail','Bảng giảng viên chưa có tên'); else { add(G2,'pass',`Bảng giảng viên: ${filled.length} người`); const empties=ins.grid.slice(1).filter(r=>!r.slice(1).some(c=>c.trim())).length; if(empties) add(G5,'warn',`Bảng giảng viên còn ${empties} dòng trống`,'Xóa dòng thừa cho gọn.'); } }
 
-  // Học liệu
-  if(idx['4.1.']!=null&&idx['4.2.']!=null){ const seg=paras.slice(idx['4.1.']+1,idx['4.2.']).filter(p=>p.text); if(!seg.length) add(G2,'fail','Mục 4.1 chưa có giáo trình'); else add(G2,'pass',`Mục 4.1 giáo trình: ${seg[0].text.slice(0,80)}${seg[0].text.length>80?'…':''}`,'Tự kiểm: cùng ngôn ngữ với đề cương, đúng NXB, năm, ấn bản.'); }
-  if(idx['4.2.']!=null&&idx['4.3.']!=null){ const seg=paras.slice(idx['4.2.']+1,idx['4.3.']).filter(p=>p.text&&!/^\*/.test(p.text)); if(!seg.length) add(G2,'warn','Mục 4.2 tài liệu bắt buộc chưa có gì'); const end=idx['5.']||paras.length; const emptyStars=[]; for(let i=idx['4.2.']+1;i<end;i++){ const p=paras[i]; if(!/^\*\s/.test(p.text)) continue; let j=i+1; while(j<end&&!paras[j].text) j++; const nx=j<end?paras[j].text:''; if(!nx||/^\*\s/.test(nx)||/^\d+\.(\d+\.)?\s/.test(nx)) emptyStars.push(p.text); } if(emptyStars.length) add(G5,'warn',`Còn ${emptyStars.length} nhãn "* …" của mẫu không có tài liệu bên dưới`,[...new Set(emptyStars)].join(', ')+'. Xóa nhãn trống.'); }
+  // Học liệu + ngôn ngữ học liệu phải tương đồng ngôn ngữ giảng dạy
+  const viChars=/[ăâđêôơưĂÂĐÊÔƠƯàáảãạằắẳẵặầấẩẫậèéẻẽẹềếểễệìíỉĩịòóỏõọồốổỗộờớởỡợùúủũụừứửữựỳýỷỹỵ]/;
+  const enWords=/\b(the|and|of|edition|press|introduction|analysis|economics|handbook|journal|review|university|publishing|principles|management|theory)\b/i;
+  const isEnglish=t=>!viChars.test(t.replace(/\([^)]*\)/g,''))&&enWords.test(t);
+  const entriesBetween=(a,b)=>paras.slice(a+1,b).filter(p=>p.text&&!/^\*\s/.test(p.text)).map(p=>p.text);
+  const after=k=>{ const order=['GT','BB','TC','WEB']; const i=order.indexOf(k); for(let j=i+1;j<order.length;j++) if(idx[order[j]]!=null) return idx[order[j]]; return idx['5.']; };
+  if(idx.GT!=null){ const seg=entriesBetween(idx.GT,after('GT')); if(!seg.length) add(G2,'fail','Mục 4.1 Giáo trình để trống','Chưa có giáo trình thì bỏ mục này và đánh số lại từ 4.1 Tài liệu tham khảo bắt buộc.'); else { add(G2,'pass',`Giáo trình: ${seg[0].slice(0,80)}${seg[0].length>80?'…':''}`,'Tự kiểm: đúng NXB, năm, ấn bản thật.'); const en=seg.filter(isEnglish); if(vn&&en.length) add(G2,'fail','Giáo trình tiếng Anh trong đề cương tiếng Việt',en.map(t=>'"'+t.slice(0,80)+'"').join('\n')+'\nGiáo trình phải cùng ngôn ngữ giảng dạy. Tìm bản dịch; chưa có thì ghi "Tập bài giảng do giảng viên biên soạn (trên cơ sở …)" và đưa sách gốc xuống tài liệu tự chọn.'); } }
+  else add(G2,'pass','Học phần không có giáo trình, dùng tài liệu tham khảo bắt buộc','Chấp nhận theo quy ước; tài liệu bắt buộc phải đủ để dạy và cùng ngôn ngữ giảng dạy.');
+  if(idx.BB!=null){ const seg=entriesBetween(idx.BB,after('BB')); if(!seg.length) add(G2,'warn','Mục Tài liệu tham khảo bắt buộc chưa có gì'); else { add(G2,'pass',`Tài liệu tham khảo bắt buộc: ${seg.length} mục`); const en=seg.filter(isEnglish); if(vn&&en.length) add(G2,'fail',`${en.length} tài liệu bắt buộc bằng tiếng Anh trong đề cương tiếng Việt`,en.map(t=>'"'+t.slice(0,80)+'"').join('\n')+'\nTài liệu khác ngôn ngữ giảng dạy đưa xuống mục tự chọn.'); } }
+  if(idx.BB!=null){ const end=idx['5.']||paras.length; const emptyStars=[]; for(let i=idx.BB+1;i<end;i++){ const p=paras[i]; if(!/^\*\s/.test(p.text)) continue; let j=i+1; while(j<end&&!paras[j].text) j++; const nx=j<end?paras[j].text:''; if(!nx||/^\*\s/.test(nx)||/^\d+\.(\d+\.)?\s/.test(nx)) emptyStars.push(p.text); } if(emptyStars.length) add(G5,'warn',`Còn ${emptyStars.length} nhãn "* …" của mẫu không có tài liệu bên dưới`,[...new Set(emptyStars)].join(', ')+'. Xóa nhãn trống.'); }
 
   // 5.1
   const t51=findTable(tables,g=>/^buổi/i.test(g[0][0]||'')&&/phân bổ thời gian|lý thuyết/i.test(g.slice(0,3).map(r=>r.join(' ')).join(' ')));

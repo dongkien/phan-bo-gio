@@ -77,7 +77,7 @@ const CFG={
     assess:{cc:/chuyên cần/i,ck:/cuối kỳ|kết thúc học phần|tổng kết/i,total:/^tổng/i,example:/ví dụ:/i},
     ktForm:/chuyên cần|giữa kỳ|cuối kỳ|thường xuyên|kết thúc học phần|tổng kết|bài tập lớn|tiểu luận|thuyết trình/i, ktHint:'Dòng "Kiểm tra, đánh giá" không ghi giờ; ô Nội dung chính ghi tên hình thức đánh giá sẽ dùng nội dung của buổi này (Chuyên cần, Giữa kỳ, Cuối kỳ), không ghi câu hỏi hay nội dung ôn tập.',
     oldUnit:/\bBộ môn\b/, oldUnitMsg:'Còn chữ "Bộ môn" trong văn bản. Trường đã bỏ Bộ môn, thay bằng "Khoa".',
-    ph:/\(mô tả chi tiết\)|Ví dụ:|…{1,}%|\.{4,}\s*%|^…$|1,2,\.\.\.|5,6,\.\.\.|\(nếu có\)/, phSkip:/Kèm theo/,
+    ph:/\((đề nghị )?mô tả chi tiết\)|Ví dụ:|…{1,}%|\.{4,}\s*%|^…$|1,2,\.\.\.|5,6,\.\.\.|\(nếu có\)/, phSkip:/Kèm theo/,
     sig:{bm:/trưởng khoa/i,vk:/hiệu trưởng/i,old:/trưởng bộ môn|viện trưởng/i,gv:/giảng viên biên soạn/i,bmName:'Trưởng Khoa',vkName:'Hiệu trưởng',oldMsg:'Khối ký còn chức danh cũ (Trưởng Bộ môn / Viện trưởng). Trường đã bỏ Bộ môn: ô trái TRƯỞNG KHOA, ô phải HIỆU TRƯỞNG.'},
     otherLang:isEnglish, otherLangName:'tiếng Anh', leftover:/^(Course title|Course code|Credit hours|COURSE DESCRIPTION|READING MATERIALS)/,
     unit:'giờ'
@@ -149,6 +149,7 @@ function check(blocks,opts){
   const iWeb=find4(hasGT?'4.4':'4.3',C.sec4.web); if(iWeb>=0) idx.WEB=iWeb;
   if(missing.length) add(G1,'fail','Thiếu mục của mẫu: '+missing.join('; ')); else add(G1,'pass',hasGT?'Đủ 7 mục và các tiểu mục theo mẫu':'Đủ 7 mục; mục 4 không có giáo trình, đánh số lại từ 4.1 '+C.sec4.bb);
   if(idx.GT!=null&&C.gtGuide.test(paras[idx.GT].text)) add(G5,'warn','Tiêu đề 4.1 còn nguyên câu hướng dẫn trong ngoặc của mẫu','Rút gọn thành "4.1. '+(vn?'Giáo trình':'Textbook(s)')+'".',BM);
+  if(idx.BB!=null&&/đề nghị sử dụng tài liệu|It is required to use/i.test(paras[idx.BB].text)) add(G5,'warn','Tiêu đề Tài liệu tham khảo bắt buộc còn câu hướng dẫn trong ngoặc của mẫu (bản Sau đại học)','Rút gọn thành "'+C.sec4.bb.charAt(0).toUpperCase()+C.sec4.bb.slice(1)+'".',BM);
   if(idx['3.2.']!=null&&C.matGuide.test(paras[idx['3.2.']].text)) add(G5,'warn','Tiêu đề 3.2 còn câu hướng dẫn của mẫu','Bỏ phần "(Xem Bảng phân nhiệm…)".',BM);
   if(idx['2.']!=null){ const nxt=paras[idx['2.']+1]; if(nxt&&C.descGuide.test(nxt.text)) add(G5,'warn','Dưới mục 2 còn dòng hướng dẫn của mẫu','Bỏ dòng "(Bao gồm mục tiêu đào tạo của học phần)".',BM); }
 

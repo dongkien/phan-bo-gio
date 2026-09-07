@@ -5,7 +5,7 @@
    Finding: {g: nhóm, status: fail|warn|pass, t: tiêu đề, d: chi tiết, src: 'truong'|'bomon'} */
 (function(global){
 'use strict';
-const VERSION='2.7 (8/9/2026)';
+const VERSION='2.9 (8/9/2026)';
 function maTheoNgonNgu(code,lang){ const info=maHocPhan(code); if(!info) return null; const m=String(code).trim().toUpperCase().match(/^([A-Z]{3})E?(\d{3})E?$/); if(!m) return null; return lang==='en'?(info.dang==='dddE'?m[1]+m[2]+'E':m[1]+'E'+m[2]):m[1]+m[2]; }
 /* Mã học phần: 3 chữ cái lĩnh vực + (ddd | Hddd | Eddd | dddE) */
 function maHocPhan(code){ const m=String(code||'').trim().toUpperCase().match(/^([A-Z]{3})(\d{3}E|E\d{3}|H\d{3}|\d{3})$/); if(!m) return null; const t=m[2];
@@ -183,6 +183,8 @@ function check(blocks,opts){
     if(!hp){ if(hpOld) add(G2,'fail','Dòng tổng của ma trận 3.2 phải tên "'+(vn?'Học phần':'Course')+'"',`Đang ghi "${(hpOld.find(c=>c.trim())||'').trim()}". Quy định chung của Trường: dòng cuối ma trận là "${vn?'Học phần':'Course'}", giá trị lấy từ ma trận đóng góp học phần vào PLO trong CTĐT.`); else add(G2,'fail','Ma trận 3.2 thiếu dòng "'+(vn?'Học phần':'Course')+'"','Quy định chung của Trường: dòng cuối ma trận là mức đóng góp của cả học phần vào từng PLO, lấy từ CTĐT.'); } else if(!hp.slice(cloCol+1).some(c=>c.trim())) add(G2,'fail','Dòng "Học phần" trong ma trận 3.2 để trống');
     const emptyClo=cloRows.filter(r=>!r.slice(cloCol+1).some(c=>c.trim())); if(emptyClo.length) add(G2,'warn',`${emptyClo.length} dòng CLO trong ma trận không đánh dấu PLO nào`);
     const badCells=[]; const okClo=/^[1-3]$/, okHp=/^([1-3]|3,A)$/i; cloRows.forEach(r=>{ r.slice(cloCol+1).forEach((c,j)=>{ const v=(c||'').replace(/\s+/g,'').trim(); if(v&&!okClo.test(v)) badCells.push(`${(r[cloCol]||'').trim()}×cột ${j+1}: "${v}"`); }); }); if(hp) hp.slice(cloCol+1).forEach((c,j)=>{ const v=(c||'').replace(/\s+/g,'').trim(); if(v&&!okHp.test(v)) badCells.push(`Học phần×cột ${j+1}: "${v}"`); });
+    if(hp&&cloRows.length){ const mism=[],lv=[]; const ncol=g[0].length; for(let j=cloCol+1;j<ncol;j++){ const hv=(hp[j]||'').replace(/\s+/g,'').trim(); const hl=parseInt(hv,10)||0; const cl=cloRows.map(r=>parseInt((r[j]||'').trim(),10)||0).filter(v=>v>0); const nm=(meta.mat.ploHeader[j-cloCol-1]||('cột '+j)); if(hv&&!cl.length) mism.push(`${nm}: học phần ${hv} nhưng không CLO nào ghi`); else if(!hv&&cl.length) mism.push(`${nm}: có CLO ghi mức nhưng dòng Học phần trống`); else if(hv&&cl.length&&Math.max(...cl)!==hl) lv.push(`${nm}: học phần mức ${hl}, CLO cao nhất mức ${Math.max(...cl)}`); }
+      if(mism.length) add(G2,'fail','Ma trận 3.2: dòng Học phần và các CLO không tương ứng',mism.join('; ')); if(lv.length) add(G2,'warn','Ma trận 3.2: mức cao nhất của CLO khác mức của học phần',lv.join('; ')); if(!mism.length&&!lv.length) add(G2,'pass','Ma trận 3.2: các CLO tương ứng với đóng góp của học phần từng PLO'); }
     if(badCells.length) add(G2,'fail','Ô ma trận 3.2 ghi sai dạng',badCells.slice(0,10).join('; ')+(badCells.length>10?'…':'')+'\nÔ CLO×PLO chỉ ghi mức 1 (I), 2 (R) hoặc 3 (M). Dòng "Học phần" ghi 1, 2, 3 hoặc "3,A" nếu học phần dùng để đánh giá PLO. Không đánh "X", không ghi ",A" ở dòng CLO.'); else if(cloRows.some(r=>r.slice(cloCol+1).some(c=>c.trim()))) add(G2,'pass','Ô ma trận 3.2 ghi đúng dạng: CLO×PLO mức 1-3, dòng Học phần 1-3 hoặc 3,A'); }
 
   // giảng viên

@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Bộ công cụ đề cương học phần FTU mẫu 2025: hướng dẫn và checklist, dựng bảng 5.1 có kiểm tổng giờ, nghiệm thu file docx đã điền.">
+<title>Bộ công cụ đề cương FTU</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+:root{
+  --bg:#F3F5F8; --panel:#FFFFFF; --ink:#152238; --muted:#5C6B80; --line:#D6DCE5; --line-soft:#E8ECF2;
+  --navy:#0E2C54; --navy-ink:#FFFFFF; --red:#9B1B1E; --red-soft:#F7E6E6; --ok:#2E6B3E; --ok-soft:#E3F0E6;
+  --warn:#8A5A12; --warn-soft:#FBF0DA; --focus:#3A6EA5;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#101722; --panel:#18212F; --ink:#E9EEF5; --muted:#9AA8BB; --line:#2C3849; --line-soft:#232E3E;
+    --navy:#8FB3E0; --navy-ink:#0E1A2C; --red:#E07A7D; --red-soft:#3A1E20; --ok:#7CC48C; --ok-soft:#1D3324;
+    --warn:#E0B060; --warn-soft:#3A2E17; --focus:#8FB3E0;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#101722; --panel:#18212F; --ink:#E9EEF5; --muted:#9AA8BB; --line:#2C3849; --line-soft:#232E3E;
+  --navy:#8FB3E0; --navy-ink:#0E1A2C; --red:#E07A7D; --red-soft:#3A1E20; --ok:#7CC48C; --ok-soft:#1D3324;
+  --warn:#E0B060; --warn-soft:#3A2E17; --focus:#8FB3E0;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;font-size:15px;line-height:1.55;font-variant-numeric:tabular-nums}
+a{color:var(--navy)}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 56px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;padding-bottom:14px;border-bottom:2px solid var(--navy)}
+h1{font-family:"Source Serif 4",Cambria,Georgia,serif;font-size:30px;font-weight:700;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font-family:"Source Serif 4",Cambria,Georgia,serif;font-size:20px;font-weight:600;margin:0 0 12px}
+h3{font-size:15px;font-weight:600;margin:18px 0 8px}
+.sub{color:var(--muted);margin:4px 0 0;font-size:14px}
+.eyebrow{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.crumb{font-size:13.5px;color:var(--muted)}
+nav.tabs{display:flex;gap:4px;margin:18px 0 20px;border-bottom:1px solid var(--line);overflow-x:auto}
+nav.tabs button{border:0;background:transparent;color:var(--muted);font:inherit;font-weight:600;font-size:14.5px;padding:10px 14px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--navy);border-bottom-color:var(--navy)}
+nav.tabs button:hover{color:var(--ink)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:20px 22px;margin-bottom:18px}
+.prose{max-width:72ch}
+.prose p{margin:0 0 10px}
+.prose ol,.prose ul{padding-left:22px;margin:0 0 10px}
+.prose li{margin-bottom:6px}
+.prose li b{font-weight:600}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:820px){.two{grid-template-columns:1fr}}
+.btn{border:1px solid var(--navy);background:var(--navy);color:var(--navy-ink);font:inherit;font-weight:600;font-size:13.5px;padding:7px 14px;border-radius:4px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.ghost{background:transparent;color:var(--navy)}
+.btn.small{padding:4px 9px;font-size:12.5px}
+.btn:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.5;cursor:default}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.toast{font-size:13px;color:var(--muted)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+.check{list-style:none;padding:0;margin:0}
+.check li{display:grid;grid-template-columns:22px 1fr;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line-soft);align-items:start}
+.check li::before{content:"";width:16px;height:16px;border:1.5px solid var(--navy);border-radius:3px;margin-top:3px}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.field{display:grid;gap:5px}
+.field label{font-weight:600;font-size:13.5px}
+.field small{color:var(--muted);font-size:12px}
+input[type=number],input[type=text],select{font:inherit;font-size:15px;padding:7px 10px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);width:100%;min-width:0}
+input[readonly]{color:var(--muted)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line-soft);border-radius:4px;margin-top:14px}
+table.grid{width:100%;border-collapse:collapse;font-size:14px;min-width:760px}
+.grid th{background:var(--bg);text-align:left;padding:8px 8px;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);font-weight:600;white-space:nowrap}
+.grid td{padding:5px 6px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+.grid td input{padding:5px 7px;font-size:14px}
+.grid td.n{width:74px}.grid td.n input{text-align:right}
+.grid td.b{width:52px;text-align:center;font-weight:600}
+.grid td.ht{width:120px}
+.grid td.clo{width:110px}
+.grid td.x{width:34px;text-align:center}
+.grid td.x button{border:0;background:transparent;color:var(--muted);font-size:16px;cursor:pointer;padding:2px 6px}
+.grid td.x button:hover{color:var(--red)}
+.grid tfoot td{font-weight:700;border-top:2px solid var(--line);border-bottom:0;text-align:right;padding:8px 6px}
+.grid tfoot td.lbl{text-align:left}
+.grid tfoot .target{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.grid tfoot td.bad{color:var(--red)}
+.grid tfoot td.good{color:var(--ok)}
+.drop{border:2px dashed var(--line);border-radius:6px;padding:26px 20px;text-align:center;color:var(--muted);cursor:pointer;background:var(--bg)}
+.drop.on{border-color:var(--navy);color:var(--ink)}
+.drop input{display:none}
+.drop b{color:var(--navy)}
+.summary{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 4px}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;font-weight:600;font-size:13.5px}
+.pill::before{content:"";width:9px;height:9px;border-radius:50%;background:currentColor}
+.pill.fail{background:var(--red-soft);color:var(--red)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.pass{background:var(--ok-soft);color:var(--ok)}
+.pill.info{background:var(--line-soft);color:var(--muted)}
+.group{margin-top:16px}
+.group h3{margin:0 0 6px;padding-bottom:6px;border-bottom:1px solid var(--line-soft)}
+.res{list-style:none;padding:0;margin:0}
+.res li{display:grid;grid-template-columns:78px 1fr;gap:12px;padding:8px 0;border-bottom:1px dashed var(--line-soft);align-items:start}
+.res .tag{font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 0;text-align:center;border-radius:3px}
+.res .tag.fail{background:var(--red-soft);color:var(--red)}
+.res .tag.warn{background:var(--warn-soft);color:var(--warn)}
+.res .tag.pass{background:var(--ok-soft);color:var(--ok)}
+.res .tag.info{background:var(--line-soft);color:var(--muted)}
+.res .t{font-weight:600}
+.res .d{color:var(--muted);font-size:13.5px;margin-top:2px;white-space:pre-line}
+.mini{width:auto;border-collapse:collapse;font-size:13.5px;margin-top:8px}
+.mini th,.mini td{padding:4px 12px 4px 0;text-align:right;border-bottom:1px dashed var(--line-soft)}
+.mini th{font-weight:600;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.mini td:first-child,.mini th:first-child{text-align:left}
+.note{font-size:12.5px;color:var(--muted);margin:10px 0 0}
+footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <div class="eyebrow">Đề cương chi tiết học phần · mẫu 2025 · Trường Đại học Ngoại thương</div>
+    <h1>Bộ công cụ đề cương FTU</h1>
+    <p class="sub">Hướng dẫn soạn đúng chuẩn, dựng bảng 5.1 có kiểm tổng giờ, và nghiệm thu file đề cương đã điền ngay trên trình duyệt.</p>
+  </div>
+  <div class="crumb"><a href="../">Phân bổ giờ tín chỉ</a> · <a href="https://github.com/dongkien/phan-bo-gio">GitHub</a></div>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button role="tab" data-tab="huong-dan" aria-selected="true">1. Hướng dẫn và checklist</button>
+  <button role="tab" data-tab="bang-51" aria-selected="false">2. Dựng bảng 5.1</button>
+  <button role="tab" data-tab="nghiem-thu" aria-selected="false">3. Nghiệm thu file docx</button>
+</nav>
+
+<!-- ============ TAB 1 ============ -->
+<section id="tab-huong-dan" role="tabpanel">
+  <div class="panel">
+    <h2>Tải mẫu và bắt đầu</h2>
+    <div class="prose">
+      <p>Đề cương phải được điền vào đúng file mẫu 2025 của Trường. Không tự vẽ lại bảng, không đổi thứ tự bảy mục. Mẫu gốc là bản song ngữ, nửa tiếng Việt trước, nửa tiếng Anh sau; khi nộp bản một thứ tiếng thì tách nửa còn lại ra.</p>
+    </div>
+    <div class="actions">
+      <a class="btn" href="Mau_de_cuong_2025.docx" download>Tải mẫu đề cương 2025 (.docx)</a>
+      <a class="btn ghost" href="https://github.com/dongkien/phan-bo-gio/tree/main/skills/tao-de-cuong">Skill soạn đề cương cho Claude</a>
+      <a class="btn ghost" href="../">Tính phân bổ giờ</a>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="panel">
+      <h2>Quy trình bảy bước</h2>
+      <div class="prose">
+        <ol>
+          <li><b>Khảo sát.</b> Xác định đề cương thuộc chương trình đào tạo nào, lấy Bản mô tả CTĐT và một đề cương đã duyệt cùng chương trình làm mẫu.</li>
+          <li><b>Gom nội dung.</b> Từ CTĐT: mô tả học phần, danh sách PLO, dòng ánh xạ học phần vào PLO. Từ giáo trình: mục lục thật tới cấp tiểu mục.</li>
+          <li><b>Đối chiếu giáo trình với nội dung.</b> Chỗ thiếu, chỗ gộp, chỗ đảo thứ tự, thuật ngữ dịch lệch, ấn bản lệch.</li>
+          <li><b>Chuẩn hóa học liệu</b> theo ngôn ngữ giảng dạy. Tài liệu khác ngôn ngữ đẩy xuống mục tự chọn.</li>
+          <li><b>Điền vào mẫu.</b> Tách nửa song ngữ trước khi điền. Thứ tự: đầu đề, mô tả, CLO, học liệu, các bảng 5.1, 5.2, đánh giá, ma trận 3.2.</li>
+          <li><b>Dọn.</b> Xóa chữ đỏ và chú thích chân trang của mẫu, giữ dòng "Kèm theo QĐ". Bỏ ảnh tiêu đề thư, bỏ ngắt trang thủ công, gộp đoạn trống.</li>
+          <li><b>Nghiệm thu.</b> Đọc lại file thật, dùng phần 3 của trang này, rồi liệt kê các điểm cần tác giả quyết.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Nguyên tắc cứng</h2>
+      <div class="prose">
+        <ul>
+          <li><b>Mô tả học phần chép nguyên văn</b> từ Bản mô tả CTĐT. Không diễn đạt lại, không rút gọn.</li>
+          <li><b>Mục 3.2</b> gồm các dòng CLO tới PLO và dòng cuối "Học phần" lấy đúng từ ma trận CTĐT.</li>
+          <li><b>Học liệu cùng ngôn ngữ</b> với đề cương. Chương trình tiếng Việt thì giáo trình và tài liệu bắt buộc phải tiếng Việt; chưa có bản dịch thì ghi "Tập bài giảng do giảng viên biên soạn".</li>
+          <li><b>Bảng 5.1</b> có cột "Hình thức" ngay sau cột Nội dung (mặc định Trực tiếp). Tổng bốn cột giờ khớp chính xác phân bổ của CTĐT.</li>
+          <li><b>Bảng 5.2</b> mỗi buổi đủ năm dòng hoạt động: Lý thuyết, Thực hành thảo luận, Tiểu luận và bài tập lớn, Tự học có hướng dẫn, Kiểm tra đánh giá. Chỉ gộp dọc ô Buổi và ô CLO; ô Nội dung chính mỗi dòng riêng.</li>
+          <li><b>Cuối mục 5.2</b> có dòng in nghiêng: "Lưu ý: Các hoạt động kết nối thực tiễn và phương pháp kiểm tra đánh giá có thể linh hoạt theo điều kiện thực tế và quyết định của Bộ môn."</li>
+          <li><b>Đánh giá:</b> chuyên cần 10%, cuối kỳ ít nhất 50%, tổng đúng 100%. Cuối kỳ thi viết hoặc vấn đáp.</li>
+          <li><b>Số tín chỉ ghi gọn</b>, ví dụ "03", không kèm ngoặc phân bổ giờ.</li>
+          <li><b>Cấu trúc buổi theo logic môn</b>, không máy móc một buổi bằng một chương sách.</li>
+          <li><b>Khối ký</b> hai ô: Trưởng Bộ môn bên trái, Viện trưởng hoặc Trưởng khoa bên phải. Không ghi "Giảng viên biên soạn".</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Checklist trước khi nộp</h2>
+    <ul class="check prose">
+      <li>Đúng file mẫu 2025, còn dòng "Kèm theo QĐ số … /QĐ-ĐHNT".</li>
+      <li>Đủ bảy mục và các tiểu mục 3.1, 3.2, 4.1 đến 4.4, 5.1, 5.2, 6.1, 6.2.</li>
+      <li>Mô tả học phần nguyên văn CTĐT. CLO đánh số liền, không còn dấu "…" của mẫu.</li>
+      <li>Ma trận 3.2 có đủ dòng CLO và dòng "Học phần".</li>
+      <li>Giáo trình và tài liệu bắt buộc đúng ngôn ngữ, đúng nhà xuất bản, năm, ấn bản thật.</li>
+      <li>Bảng 5.1 có cột Hình thức, có dòng tổng, tổng bốn cột giờ bằng 50 giờ nhân số tín chỉ và khớp phân bổ CTĐT.</li>
+      <li>Bảng 5.2 mỗi buổi năm dòng hoạt động, giờ từng buổi khớp 5.1, có dòng lưu ý cuối bảng.</li>
+      <li>Bảng đánh giá: chuyên cần 10%, cuối kỳ ít nhất 50%, tổng 100%.</li>
+      <li>Không còn chữ đỏ chú thích, chú thích chân trang, chỗ giữ chỗ "Ví dụ:", "(mô tả chi tiết)", "……%".</li>
+      <li>Không còn ảnh tiêu đề thư, ngắt trang thủ công, đoạn trống liên tiếp. Khối ký không bị đẩy sang trang riêng.</li>
+      <li>Đã tách bản tiếng Việt và tiếng Anh nếu nộp riêng.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ TAB 2 ============ -->
+<section id="tab-bang-51" role="tabpanel" hidden>
+  <div class="panel">
+    <h2>Phân bổ giờ của học phần</h2>
+    <div class="fields">
+      <div class="field"><label for="b-tc">Số tín chỉ</label><input id="b-tc" type="number" min="1" step="1" value="3"></div>
+      <div class="field"><label for="b-x">Lý thuyết (x)</label><input id="b-x" type="number" min="0" step="1" value="24"></div>
+      <div class="field"><label for="b-y">Thực hành, thảo luận (y)</label><input id="b-y" type="number" min="0" step="1" value="6"></div>
+      <div class="field"><label for="b-z">Tiểu luận, BTL, thực tế (z)</label><input id="b-z" type="number" readonly><small>Tự tính: 50 × (TC − x/15 − y/30)</small></div>
+      <div class="field"><label for="b-e">Tự học có hướng dẫn</label><input id="b-e" type="number" readonly><small>Phần bù để tổng bằng 50 × TC</small></div>
+      <div class="field"><label for="b-n">Số buổi</label><input id="b-n" type="number" min="1" max="30" step="1" value="10"></div>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn ghost" id="b-even">Chia đều giờ cho các buổi</button>
+      <button type="button" class="btn ghost" id="b-add">Thêm buổi</button>
+      <span class="toast" id="b-hint"></span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Bảng 5.1 Nội dung học phần</h2>
+    <div class="tablewrap">
+      <table class="grid" id="b-table">
+        <thead><tr><th>Buổi</th><th>Nội dung</th><th>Hình thức</th><th>Lý thuyết</th><th>Thực hành, thảo luận</th><th>Tiểu luận, BTL, thực tế</th><th>Tự học có HD</th><th>CLO</th><th></th></tr></thead>
+        <tbody id="b-body"></tbody>
+        <tfoot><tr>
+          <td class="lbl" colspan="3">Tổng cộng (giờ)<span class="target">so với phân bổ x / y / z / tự học</span></td>
+          <td id="s-x"></td><td id="s-y"></td><td id="s-z"></td><td id="s-e"></td><td colspan="2" id="s-all"></td>
+        </tr></tfoot>
+      </table>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn" id="b-copy51">Sao chép bảng 5.1</button>
+      <button type="button" class="btn ghost" id="b-copy52">Sao chép khung bảng 5.2</button>
+      <button type="button" class="btn ghost" id="b-reset">Xóa bảng</button>
+      <span class="toast" id="b-toast"></span>
+    </div>
+    <p class="note">Sao chép rồi dán vào Word: bảng dán thành bảng Word, chỉnh lại ô gộp theo mẫu. Khung 5.2 tạo sẵn năm dòng hoạt động mỗi buổi với số giờ lấy từ 5.1, dòng Kiểm tra đánh giá để 0 giờ. Số liệu được lưu trên trình duyệt này.</p>
+  </div>
+</section>
+
+<!-- ============ TAB 3 ============ -->
+<section id="tab-nghiem-thu" role="tabpanel" hidden>
+  <div class="panel">
+    <h2>Nghiệm thu file đề cương</h2>
+    <div class="prose"><p>Chọn file .docx đã điền theo mẫu 2025 (bản tiếng Việt). Trang đọc file ngay trên máy của bạn, không gửi đi đâu, và đối chiếu với các nguyên tắc ở phần 1.</p></div>
+    <label class="drop" id="drop"><input type="file" id="file" accept=".docx"><b>Chọn file .docx</b> hoặc kéo thả vào đây</label>
+    <div class="fields" style="margin-top:14px">
+      <div class="field"><label for="c-x">Phân bổ CTĐT: lý thuyết</label><input id="c-x" type="number" min="0" placeholder="vd 24"></div>
+      <div class="field"><label for="c-y">Thực hành, thảo luận</label><input id="c-y" type="number" min="0" placeholder="vd 6"></div>
+      <div class="field"><label for="c-z">Tiểu luận, BTL, thực tế</label><input id="c-z" type="number" min="0" placeholder="vd 60"></div>
+      <div class="field"><label for="c-e">Tự học có hướng dẫn</label><input id="c-e" type="number" min="0" placeholder="vd 60"></div>
+    </div>
+    <p class="note">Bốn ô trên không bắt buộc. Có nhập thì trang đối chiếu dòng tổng của bảng 5.1 với phân bổ trong Bản mô tả CTĐT; không nhập thì chỉ kiểm tổng bằng 50 giờ nhân số tín chỉ.</p>
+  </div>
+  <div class="panel" id="c-out" hidden>
+    <div class="eyebrow" id="c-name"></div>
+    <div class="summary" id="c-sum"></div>
+    <div id="c-groups"></div>
+    <div class="actions"><button type="button" class="btn ghost" id="c-copy">Sao chép báo cáo</button><span class="toast" id="c-toast"></span></div>
+  </div>
+</section>
+
+<footer>Quy tắc trong trang này rút từ thực tế soạn đề cương ở Bộ môn Kinh tế và Quản lý, Viện Kinh tế và Kinh doanh quốc tế. Đơn vị khác thay tên đơn vị và tỷ lệ đánh giá theo quy định của mình. Mọi xử lý chạy trên trình duyệt, không có máy chủ.</footer>
+</div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const fmt=v=>Math.abs(v-Math.round(v))<1e-9?String(Math.round(v)):v.toLocaleString('vi-VN',{maximumFractionDigits:2});
+const num=s=>{ if(s==null) return NaN; s=String(s).trim().replace(/\s+/g,''); if(!s) return NaN; if(/^-?\d+,\d+$/.test(s)) s=s.replace(',','.'); const v=parseFloat(s); return isNaN(v)?NaN:v; };
+const lower=s=>String(s||'').normalize('NFC').toLowerCase();
+function toast(id,msg){ $(id).textContent=msg; setTimeout(()=>{ $(id).textContent=''; },3000); }
+function copyRich(html,text,id,msg){
+  const done=()=>toast(id,msg);
+  const fb=()=>{ const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');}catch(_){} ta.remove(); done(); };
+  try{
+    if(navigator.clipboard&&window.ClipboardItem&&html){
+      navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([text],{type:'text/plain'})})]).then(done,fb);
+    } else if(navigator.clipboard){ navigator.clipboard.writeText(text).then(done,fb); } else fb();
+  }catch(_){ fb(); }
+}
+const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+/* ---------- tabs ---------- */
+const tabs=[...document.querySelectorAll('nav.tabs button')];
+function show(name){
+  tabs.forEach(b=>b.setAttribute('aria-selected',String(b.dataset.tab===name)));
+  ['huong-dan','bang-51','nghiem-thu'].forEach(t=>$('tab-'+t).hidden=(t!==name));
+  if(location.hash!=='#'+name) history.replaceState(null,'','#'+name);
+}
+tabs.forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
+const h=location.hash.slice(1); show(['huong-dan','bang-51','nghiem-thu'].includes(h)?h:'huong-dan');
+
+/* ---------- TAB 2: bảng 5.1 ---------- */
+const B={rows:[]};
+function alloc(){ const tc=Math.max(1,num($('b-tc').value)||3), x=Math.max(0,num($('b-x').value)||0), y=Math.max(0,num($('b-y').value)||0);
+  const z=50*(tc-x/15-y/30), e=50*tc-(x+y+z); $('b-z').value=fmt(z).replace(',','.'); $('b-e').value=fmt(e).replace(',','.'); return {tc,x,y,z,e}; }
+function newRow(i){ return {nd:'',ht:'Trực tiếp',x:0,y:0,z:0,e:0,clo:''}; }
+function spread(total,n){ // chia total cho n buổi, ưu tiên số nguyên, dư dồn về buổi đầu
+  const base=Math.floor(total/n), rem=Math.round(total-base*n); const out=[];
+  for(let i=0;i<n;i++) out.push(base+(i<rem?1:0));
+  if(Math.abs(out.reduce((a,b)=>a+b,0)-total)>1e-9){ const q=total/n; return Array(n).fill(0).map(()=>Math.round(q*100)/100); }
+  return out;
+}
+function renderB(){
+  const a=alloc(); const tb=$('b-body'); tb.innerHTML='';
+  B.rows.forEach((r,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="b">${i+1}</td><td><input type="text" data-k="nd" placeholder="Chương / chủ đề buổi ${i+1}" value="${esc(r.nd)}"></td><td class="ht"><input type="text" data-k="ht" value="${esc(r.ht)}"></td>`+
+      ['x','y','z','e'].map(k=>`<td class="n"><input type="number" min="0" step="0.5" data-k="${k}" value="${r[k]}"></td>`).join('')+
+      `<td class="clo"><input type="text" data-k="clo" placeholder="1, 2" value="${esc(r.clo)}"></td><td class="x"><button type="button" title="Xóa buổi" data-del="${i}">×</button></td>`;
+    tb.appendChild(tr);
+  });
+  const s={x:0,y:0,z:0,e:0}; B.rows.forEach(r=>{ for(const k in s) s[k]+=num(r[k])||0; });
+  [['x',a.x],['y',a.y],['z',a.z],['e',a.e]].forEach(([k,t])=>{ const td=$('s-'+k); const ok=Math.abs(s[k]-t)<1e-9; td.className=ok?'good':'bad'; td.innerHTML=`${fmt(s[k])}<span class="target">/ ${fmt(t)}${ok?'':' (lệch '+fmt(s[k]-t)+')'}</span>`; });
+  const tot=s.x+s.y+s.z+s.e, T=50*a.tc; const all=$('s-all'); all.className=Math.abs(tot-T)<1e-9?'good':'bad'; all.innerHTML=`${fmt(tot)}<span class="target">/ ${fmt(T)} giờ = 50 × ${fmt(a.tc)} TC</span>`;
+  $('b-n').value=B.rows.length;
+  try{ localStorage.setItem('dc51',JSON.stringify({tc:a.tc,x:a.x,y:a.y,rows:B.rows})); }catch(_){}
+}
+function even(){
+  const a=alloc(); const n=B.rows.length; if(!n) return;
+  const sx=spread(a.x,n), sy=spread(a.y,n), sz=spread(a.z,n), se=spread(a.e,n);
+  B.rows.forEach((r,i)=>{ r.x=sx[i]; r.y=sy[i]; r.z=sz[i]; r.e=se[i]; }); renderB();
+}
+function setN(){ const n=Math.max(1,Math.min(30,parseInt($('b-n').value,10)||1)); while(B.rows.length<n) B.rows.push(newRow()); B.rows.length=n; renderB(); }
+$('b-body').addEventListener('input',e=>{ const tr=e.target.closest('tr'); const i=[...$('b-body').children].indexOf(tr); const k=e.target.dataset.k; if(i<0||!k) return; B.rows[i][k]=e.target.type==='number'?(num(e.target.value)||0):e.target.value; renderB(); e.target.focus&&null; });
+$('b-body').addEventListener('click',e=>{ const d=e.target.dataset.del; if(d!=null){ B.rows.splice(+d,1); renderB(); } });
+['b-tc','b-x','b-y'].forEach(id=>$(id).addEventListener('input',renderB));
+$('b-n').addEventListener('change',setN);
+$('b-add').addEventListener('click',()=>{ B.rows.push(newRow()); renderB(); });
+$('b-even').addEventListener('click',even);
+$('b-reset').addEventListener('click',()=>{ B.rows=Array.from({length:10},newRow); even(); });
+function table51(){
+  const a=alloc(); const s={x:0,y:0,z:0,e:0}; B.rows.forEach(r=>{ for(const k in s) s[k]+=num(r[k])||0; });
+  const head=['Buổi','Nội dung','Hình thức','Lý thuyết (thuyết giảng) (1)','Thực hành, thảo luận (2)','Tiểu luận, bài tập lớn, thực tế (3)','Tự học, chuẩn bị có hướng dẫn (4)','Đóng góp vào CLOs'];
+  const rows=B.rows.map((r,i)=>[String(i+1),r.nd,r.ht,fmt(r.x),fmt(r.y),fmt(r.z),fmt(r.e),r.clo]);
+  rows.push(['Tổng cộng (giờ)','','',fmt(s.x),fmt(s.y),fmt(s.z),fmt(s.e),'']);
+  return {head,rows};
+}
+function table52(){
+  const head=['Buổi','Hoạt động dạy và học','Số giờ','Nội dung chính','Đóng góp vào CLOs'];
+  const acts=[['Lý thuyết','x'],['Thực hành, thảo luận','y'],['Tiểu luận, bài tập lớn, thực tế','z'],['Tự học, chuẩn bị có hướng dẫn','e'],['Kiểm tra, đánh giá',null]];
+  const rows=[];
+  B.rows.forEach((r,i)=>acts.forEach(([n,k],j)=>rows.push([j===0?String(i+1):'',n,k?fmt(r[k]):'0',j===0?r.nd:'',j===0?r.clo:''])));
+  return {head,rows};
+}
+function toHtml(t){ return '<table border="1" style="border-collapse:collapse"><tr>'+t.head.map(c=>`<th>${esc(c)}</th>`).join('')+'</tr>'+t.rows.map(r=>'<tr>'+r.map(c=>`<td>${esc(c)}</td>`).join('')+'</tr>').join('')+'</table>'; }
+function toTsv(t){ return [t.head,...t.rows].map(r=>r.join('\t')).join('\n'); }
+$('b-copy51').addEventListener('click',()=>{ const t=table51(); copyRich(toHtml(t),toTsv(t),'b-toast','Đã sao chép bảng 5.1, dán vào Word'); });
+$('b-copy52').addEventListener('click',()=>{ const t=table52(); copyRich(toHtml(t),toTsv(t),'b-toast','Đã sao chép khung 5.2 ('+t.rows.length+' dòng), dán vào Word'); });
+(function initB(){
+  let saved=null; try{ saved=JSON.parse(localStorage.getItem('dc51')||'null'); }catch(_){}
+  if(saved&&Array.isArray(saved.rows)&&saved.rows.length){ $('b-tc').value=saved.tc; $('b-x').value=saved.x; $('b-y').value=saved.y; B.rows=saved.rows; renderB(); }
+  else { B.rows=Array.from({length:10},newRow); even(); }
+})();
+
+/* ---------- TAB 3: nghiệm thu docx ---------- */
+const W='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+function parseDocx(xml){
+  const doc=new DOMParser().parseFromString(xml,'application/xml');
+  const body=doc.getElementsByTagNameNS(W,'body')[0];
+  const blocks=[]; // {type:'p',text,red,hasFootnote,pageBreak,italic} | {type:'t',grid:[[text]]}
+  const textOf=el=>{ let s=''; const walk=n=>{ for(const c of n.childNodes){ if(c.nodeType!==1) continue; const ln=c.localName; if(ln==='t') s+=c.textContent; else if(ln==='tab') s+='\t'; else if(ln==='br'&&c.getAttributeNS(W,'type')!=='page') s+='\n'; else if(ln==='footnoteReference'||ln==='drawing'||ln==='pict') {} else walk(c); } }; walk(el); return s.normalize('NFC'); };
+  const paraInfo=p=>{
+    const info={type:'p',text:textOf(p).trim(),red:[],footnote:0,pageBreak:0,drawing:0};
+    for(const r of p.getElementsByTagNameNS(W,'r')){
+      const col=r.getElementsByTagNameNS(W,'color')[0]; const val=col?col.getAttributeNS(W,'val').toUpperCase():'';
+      const t=textOf(r).trim();
+      if(t&&(val==='FF0000'||val==='C00000'||val==='RED')) info.red.push(t);
+      info.footnote+=r.getElementsByTagNameNS(W,'footnoteReference').length;
+      for(const br of r.getElementsByTagNameNS(W,'br')) if(br.getAttributeNS(W,'type')==='page') info.pageBreak++;
+      info.drawing+=r.getElementsByTagNameNS(W,'drawing').length+r.getElementsByTagNameNS(W,'pict').length;
+    }
+    const ppr=p.getElementsByTagNameNS(W,'pPr')[0]; if(ppr&&ppr.getElementsByTagNameNS(W,'pageBreakBefore').length) info.pageBreak++;
+    return info;
+  };
+  const tableGrid=tbl=>{
+    const grid=[]; const red=[]; let footnote=0;
+    for(const tr of [...tbl.childNodes].filter(n=>n.nodeType===1&&n.localName==='tr')){
+      const row=[];
+      for(const tc of [...tr.childNodes].filter(n=>n.nodeType===1&&n.localName==='tc')){
+        const ps=[...tc.childNodes].filter(n=>n.nodeType===1&&n.localName==='p').map(paraInfo);
+        const text=ps.map(x=>x.text).filter(Boolean).join('\n');
+        ps.forEach(x=>{ red.push(...x.red); footnote+=x.footnote; });
+        const tcPr=tc.getElementsByTagNameNS(W,'tcPr')[0]; const gs=tcPr?tcPr.getElementsByTagNameNS(W,'gridSpan')[0]:null; const span=gs?parseInt(gs.getAttributeNS(W,'val'),10)||1:1;
+        for(let i=0;i<span;i++) row.push(text);
+      }
+      grid.push(row);
+    }
+    return {type:'t',grid,red,footnote};
+  };
+  const walkBody=n=>{ for(const c of n.childNodes){ if(c.nodeType!==1) continue; if(c.localName==='p') blocks.push(paraInfo(c)); else if(c.localName==='tbl') blocks.push(tableGrid(c)); else if(c.localName==='sdt'||c.localName==='sdtContent') walkBody(c); } };
+  walkBody(body);
+  return blocks;
+}
+function findTable(tables,pred){ return tables.find(t=>pred(t.grid)); }
+function headerRows(grid){ const rows=[]; for(const r of grid){ const c0=(r[0]||'').trim(); if(rows.length&&(/^\d/.test(c0)||/^buổi\s*\d/i.test(c0)||r.some(c=>/^tổng/i.test(c)))) break; rows.push(r); if(rows.length>=4) break; } return rows; }
+function colIndex(hdrRows,ncol,kw){ // tìm cột có từ khóa trong bất kỳ dòng header nào
+  for(let c=0;c<ncol;c++){ for(let i=hdrRows.length-1;i>=0;i--){ const t=lower(hdrRows[i][c]); if(kw.some(k=>t.includes(k))) return c; } } return -1;
+}
+
+function check(blocks,expect){
+  const R=[]; const add=(g,status,t,d)=>R.push({g,status,t,d:d||''});
+  const paras=blocks.filter(b=>b.type==='p'); const tables=blocks.filter(b=>b.type==='t');
+  const allText=paras.map(p=>p.text).join('\n');
+  const vn=/ĐỀ CƯƠNG CHI TIẾT HỌC PHẦN/.test(allText), en=/^SYLLABUS$/m.test(allText);
+  const G1='Cấu trúc', G2='Nội dung', G3='Giờ và bảng 5.1, 5.2', G4='Đánh giá', G5='Hình thức';
+
+  if(!vn&&en){ add(G1,'warn','File chỉ có bản tiếng Anh','Trang này đối chiếu bản tiếng Việt. Các kiểm tra về hình thức vẫn chạy, các kiểm tra theo tên mục sẽ báo thiếu.'); }
+  if(vn&&en) add(G1,'warn','Chưa tách song ngữ','File còn cả "ĐỀ CƯƠNG CHI TIẾT HỌC PHẦN" và "SYLLABUS". Nộp bản một thứ tiếng thì tách nửa còn lại ra.');
+  else if(vn) add(G1,'pass','Bản tiếng Việt, đã tách song ngữ');
+
+  // Dòng QĐ
+  if(/Kèm theo QĐ/.test(allText)) add(G1,'pass','Còn dòng "Kèm theo QĐ số … /QĐ-ĐHNT"'); else add(G1,'fail','Mất dòng "Kèm theo QĐ số … /QĐ-ĐHNT"','Đây là cấu phần chính thức, không phải chú thích. Khôi phục từ mẫu.');
+
+  // Header fields
+  const field=lbl=>{ const p=paras.find(p=>lower(p.text).startsWith(lower(lbl))); if(!p) return null; return p.text.slice(p.text.indexOf(':')+1).trim(); };
+  const placeholders={'Tên học phần':'tiếng Việt (tiếng Anh)','Mã học phần':'','Bộ môn phụ trách':'','Viện/Khoa':'','Số tín chỉ':''};
+  for(const lbl in placeholders){ const v=field(lbl); if(v==null) add(G1,'fail',`Thiếu dòng "${lbl}:"`); else if(!v||v===placeholders[lbl]) add(G2,'fail',`"${lbl}:" chưa điền`); else add(G2,'pass',`${lbl}: ${v.length>90?v.slice(0,90)+'…':v}`); }
+  const tq=field('Điều kiện tiên quyết'); if(tq&&/Tên học phần \(Mã học phần tiên quyết\)/.test(tq)) add(G2,'fail','"Điều kiện tiên quyết" còn nguyên chữ mẫu','Ghi tên và mã học phần tiên quyết, hoặc "Không".');
+  const tcText=field('Số tín chỉ'); const tc=tcText?num((tcText.match(/\d+([.,]\d+)?/)||[''])[0]):NaN;
+  if(tcText&&/\(/.test(tcText)) add(G2,'warn','Số tín chỉ ghi kèm ngoặc phân bổ giờ',`"${tcText}". Quy ước ghi gọn, ví dụ "03"; phân bổ giờ đã có ở bảng 5.1.`);
+
+  // 7 mục + tiểu mục
+  const H=[['1.','THÔNG TIN VỀ GIẢNG VIÊN'],['2.','MÔ TẢ HỌC PHẦN'],['3.','CHUẨN ĐẦU RA'],['3.1.','Chuẩn đầu ra của học phần'],['3.2.','Ma trận đóng góp'],['4.','HỌC LIỆU'],['4.1.','Giáo trình'],['4.2.','Tài liệu tham khảo bắt buộc'],['4.3.','Tài liệu tham khảo tự chọn'],['4.4.','Website'],['5.','NỘI DUNG, PHƯƠNG PHÁP'],['5.1.','Nội dung học phần'],['5.2.','Phương pháp và kế hoạch giảng dạy'],['6.','QUY ĐỊNH ĐỐI VỚI HỌC PHẦN'],['6.1.','Nhiệm vụ của sinh viên'],['6.2.','Quy định về thi cử'],['7.','PHƯƠNG PHÁP, HÌNH THỨC KIỂM TRA']];
+  const missing=[]; const idx={};
+  H.forEach(([n,name])=>{ const i=paras.findIndex(p=>p.text.startsWith(n)&&lower(p.text).includes(lower(name).slice(0,18))); if(i<0) missing.push(n+' '+name); else idx[n]=i; });
+  if(missing.length) add(G1,'fail','Thiếu mục của mẫu: '+missing.join('; ')); else add(G1,'pass','Đủ 7 mục và các tiểu mục theo mẫu');
+  if(idx['4.1.']!=null){ const p=paras[idx['4.1.']]; if(/đề nghị sử dụng giáo trình/i.test(p.text)) add(G5,'warn','Tiêu đề 4.1 còn nguyên câu hướng dẫn trong ngoặc của mẫu','Rút gọn thành "4.1. Giáo trình".'); }
+  if(idx['3.2.']!=null){ const p=paras[idx['3.2.']]; if(/Xem Bảng phân nhiệm/i.test(p.text)) add(G5,'warn','Tiêu đề 3.2 còn câu hướng dẫn "(Xem Bảng phân nhiệm…)" của mẫu'); }
+  if(idx['2.']!=null){ const nxt=paras[idx['2.']+1]; if(nxt&&/Bao gồm mục tiêu đào tạo/i.test(nxt.text)) add(G5,'warn','Dưới mục 2 còn dòng hướng dẫn "(Bao gồm mục tiêu đào tạo của học phần)"'); }
+
+  // Mô tả học phần
+  if(idx['2.']!=null&&idx['3.']!=null){ const desc=paras.slice(idx['2.']+1,idx['3.']).map(p=>p.text).filter(t=>t&&!/^\(Bao gồm/.test(t)).join(' '); if(desc.length<200) add(G2,'fail','Mô tả học phần quá ngắn hoặc chưa điền',`${desc.length} ký tự. Mô tả phải chép nguyên văn từ Bản mô tả CTĐT.`); else add(G2,'pass',`Mô tả học phần có ${desc.length} ký tự`,'Tự đối chiếu nguyên văn với Bản mô tả CTĐT.'); }
+
+  // CLO
+  let nCLO=0;
+  if(idx['3.1.']!=null&&idx['3.2.']!=null){ const seg=paras.slice(idx['3.1.']+1,idx['3.2.']); nCLO=seg.filter(p=>/^-?\s*CLO\s*\d+/i.test(p.text)).length; const dots=seg.some(p=>/^…$|^\.\.\.$/.test(p.text));
+    if(!nCLO) add(G2,'fail','Mục 3.1 chưa có CLO nào'); else add(G2,'pass',`Mục 3.1 có ${nCLO} CLO`);
+    if(dots) add(G5,'fail','Mục 3.1 còn dòng "…" của mẫu');
+    const empty=seg.filter(p=>/^-?\s*CLO\s*\d+\s*:?\s*$/i.test(p.text)); if(empty.length) add(G2,'fail',`${empty.length} dòng CLO chưa có nội dung`); }
+
+  // Ma trận 3.2
+  const mat=findTable(tables,g=>g.length>1&&/cđr|clo/i.test(g[0][0]||'')&&g[0].some(c=>/PLO/i.test(c)));
+  if(!mat) add(G2,'fail','Không có bảng ma trận 3.2 (CLO tới PLO)','Mẫu không kèm sẵn bảng này, phải dựng thêm: dòng CLO và dòng cuối "Học phần".');
+  else { const g=mat.grid; const nPLO=g[0].filter(c=>/PLO/i.test(c)).length; const cloRows=g.filter(r=>/^CLO\s*\d+/i.test(r[0])); const hp=g.find(r=>/^học phần/i.test(r[0]));
+    add(G2,'pass',`Ma trận 3.2: ${nPLO} PLO, ${cloRows.length} dòng CLO`);
+    if(nCLO&&cloRows.length!==nCLO) add(G2,'fail',`Số CLO trong ma trận (${cloRows.length}) khác mục 3.1 (${nCLO})`);
+    if(!hp) add(G2,'fail','Ma trận 3.2 thiếu dòng "Học phần"','Dòng này lấy đúng từ ma trận đóng góp học phần vào PLO trong CTĐT.'); else if(!hp.slice(1).some(c=>c.trim())) add(G2,'fail','Dòng "Học phần" trong ma trận 3.2 để trống');
+    const emptyClo=cloRows.filter(r=>!r.slice(1).some(c=>c.trim())); if(emptyClo.length) add(G2,'warn',`${emptyClo.length} dòng CLO trong ma trận không đánh dấu PLO nào`); }
+
+  // Giảng viên
+  const ins=findTable(tables,g=>/họ và tên/i.test(g[0].join(' ')));
+  if(!ins) add(G2,'fail','Không có bảng thông tin giảng viên'); else { const filled=ins.grid.slice(1).filter(r=>(r[1]||'').trim()); if(!filled.length) add(G2,'fail','Bảng giảng viên chưa có tên'); else { add(G2,'pass',`Bảng giảng viên: ${filled.length} người`); const empties=ins.grid.slice(1).filter(r=>!r.slice(1).some(c=>c.trim())).length; if(empties) add(G5,'warn',`Bảng giảng viên còn ${empties} dòng trống`,'Xóa dòng thừa cho gọn.'); } }
+
+  // Học liệu
+  if(idx['4.1.']!=null&&idx['4.2.']!=null){ const seg=paras.slice(idx['4.1.']+1,idx['4.2.']).filter(p=>p.text); if(!seg.length) add(G2,'fail','Mục 4.1 chưa có giáo trình'); else add(G2,'pass',`Mục 4.1 giáo trình: ${seg[0].text.slice(0,80)}${seg[0].text.length>80?'…':''}`,'Tự kiểm: cùng ngôn ngữ với đề cương, đúng NXB, năm, ấn bản.'); }
+  if(idx['4.2.']!=null&&idx['4.3.']!=null){ const seg=paras.slice(idx['4.2.']+1,idx['4.3.']).filter(p=>p.text&&!/^\*/.test(p.text)); if(!seg.length) add(G2,'warn','Mục 4.2 tài liệu bắt buộc chưa có gì'); const end=idx['5.']||paras.length; const emptyStars=[]; for(let i=idx['4.2.']+1;i<end;i++){ const p=paras[i]; if(!/^\*\s/.test(p.text)) continue; let j=i+1; while(j<end&&!paras[j].text) j++; const nx=j<end?paras[j].text:''; if(!nx||/^\*\s/.test(nx)||/^\d+\.(\d+\.)?\s/.test(nx)) emptyStars.push(p.text); } if(emptyStars.length) add(G5,'warn',`Còn ${emptyStars.length} nhãn "* …" của mẫu không có tài liệu bên dưới`,[...new Set(emptyStars)].join(', ')+'. Xóa nhãn trống.'); }
+
+  // 5.1
+  const t51=findTable(tables,g=>/^buổi/i.test(g[0][0]||'')&&/phân bổ thời gian|lý thuyết/i.test(g.slice(0,3).map(r=>r.join(' ')).join(' ')));
+  let tot51=null, rows51=[];
+  if(!t51) add(G3,'fail','Không tìm thấy bảng 5.1 (đầu bảng "Buổi | Nội dung | … | Phân bổ thời gian")');
+  else { const g=t51.grid; const hdr=headerRows(g); const ncol=Math.max(...g.map(r=>r.length));
+    const ci={ht:colIndex(hdr,ncol,['hình thức']),x:colIndex(hdr,ncol,['lý thuyết']),y:colIndex(hdr,ncol,['thực hành']),z:colIndex(hdr,ncol,['tiểu luận','bài tập lớn']),e:colIndex(hdr,ncol,['tự học']),clo:colIndex(hdr,ncol,['clo'])};
+    if(ci.x<0||ci.y<0){ const gd=[]; for(let c=0;c<ncol;c++){ if(hdr.some(r=>lower(r[c]).includes('giảng dạy trên lớp'))) gd.push(c); } if(gd.length>=2){ ci.x=gd[0]; ci.y=gd[1]; } }
+    if(ci.ht<0) add(G3,'fail','Bảng 5.1 thiếu cột "Hình thức"','Cột này đứng ngay sau cột Nội dung (Trực tiếp / Trực tuyến).'); else add(G3,'pass','Bảng 5.1 có cột Hình thức');
+    if(ci.x<0||ci.y<0||ci.z<0||ci.e<0) add(G3,'fail','Bảng 5.1 không nhận ra đủ 4 cột giờ (lý thuyết, thực hành, tiểu luận, tự học)');
+    else { const body=g.slice(hdr.length); rows51=body.filter(r=>(/^\d+/.test((r[0]||'').trim())||/^buổi\s*\d+/i.test(r[0]||''))&&!/^tổng/i.test((r[0]||'').trim()));
+      const totalRow=body.find(r=>{ const c=(r.find(c=>(c||'').trim())||'').trim(); return /^tổng/i.test(c); });
+      const sum={x:0,y:0,z:0,e:0}; const bad=[];
+      rows51.forEach(r=>{ for(const k of ['x','y','z','e']){ const v=num(r[ci[k]]); if(isNaN(v)) bad.push(`buổi ${r[0].trim()} cột ${k}`); else sum[k]+=v; } });
+      tot51=sum; const T=sum.x+sum.y+sum.z+sum.e;
+      add(G3,'pass',`Bảng 5.1: ${rows51.length} buổi, tổng ${fmt(sum.x)} / ${fmt(sum.y)} / ${fmt(sum.z)} / ${fmt(sum.e)} = ${fmt(T)} giờ`);
+      if(bad.length) add(G3,'fail','Ô giờ trong 5.1 để trống hoặc không phải số: '+bad.slice(0,6).join(', ')+(bad.length>6?'…':''));
+      if(!totalRow) add(G3,'fail','Bảng 5.1 thiếu dòng "Tổng cộng"'); else { const tv=['x','y','z','e'].map(k=>num(totalRow[ci[k]])); const diff=['x','y','z','e'].filter((k,i)=>!isNaN(tv[i])&&Math.abs(tv[i]-sum[k])>1e-9); if(diff.length) add(G3,'fail','Dòng Tổng cộng trong 5.1 không bằng tổng các buổi',`Dòng tổng ghi ${tv.map(v=>isNaN(v)?'?':fmt(v)).join(' / ')}, cộng thực ${fmt(sum.x)} / ${fmt(sum.y)} / ${fmt(sum.z)} / ${fmt(sum.e)}.`); else add(G3,'pass','Dòng Tổng cộng khớp tổng các buổi'); }
+      if(!isNaN(tc)){ if(Math.abs(T-50*tc)>1e-9) add(G3,'fail',`Tổng giờ ${fmt(T)} khác 50 × ${fmt(tc)} TC = ${fmt(50*tc)}`); else add(G3,'pass',`Tổng giờ bằng 50 × ${fmt(tc)} TC`); }
+      if(expect){ const d=['x','y','z','e'].filter(k=>!isNaN(expect[k])&&Math.abs(expect[k]-sum[k])>1e-9); if(d.length) add(G3,'fail','Tổng 5.1 lệch phân bổ CTĐT đã nhập',`CTĐT: ${['x','y','z','e'].map(k=>isNaN(expect[k])?'–':fmt(expect[k])).join(' / ')}; bảng: ${fmt(sum.x)} / ${fmt(sum.y)} / ${fmt(sum.z)} / ${fmt(sum.e)}.`); else add(G3,'pass','Tổng 5.1 khớp phân bổ CTĐT đã nhập'); }
+      else if(!isNaN(tc)){ const h=sum.x/15+sum.y/30, z=50*(tc-h), e=50*tc-(sum.x+sum.y+z); if(Math.abs(z-sum.z)>1e-9||Math.abs(e-sum.e)>1e-9) add(G3,'warn','Cột z và tự học không theo công thức quy đổi tín chỉ',`Theo x=${fmt(sum.x)}, y=${fmt(sum.y)}, ${fmt(tc)} TC thì z=${fmt(z)}, tự học=${fmt(e)}. Chỉ chấp nhận nếu CTĐT quy định khác.`); }
+      const htEmpty=ci.ht>=0?rows51.filter(r=>!(r[ci.ht]||'').trim()).length:0; if(htEmpty) add(G3,'warn',`${htEmpty} buổi chưa ghi Hình thức`);
+      const cloEmpty=ci.clo>=0?rows51.filter(r=>!(r[ci.clo]||'').trim()).length:0; if(cloEmpty) add(G3,'warn',`${cloEmpty} buổi trong 5.1 chưa ghi CLO`);
+      rows51=rows51.map(r=>({n:(r[0].match(/\d+/)||[''])[0],x:num(r[ci.x]),y:num(r[ci.y]),z:num(r[ci.z]),e:num(r[ci.e])}));
+    } }
+
+  // 5.2
+  const t52=findTable(tables,g=>/hoạt động dạy và học/i.test(g[0].join(' ')));
+  if(!t52) add(G3,'fail','Không tìm thấy bảng 5.2 (đầu bảng "Buổi | Hoạt động dạy và học | Số giờ…")');
+  else { const g=t52.grid.slice(1); const by={}; let cur=null; const order=[];
+    g.forEach(r=>{ const b=(r[0]||'').trim(); if(b){ cur=(b.match(/\d+/)||[b])[0]; if(!by[cur]){ by[cur]=[]; order.push(cur);} } if(cur==null) return; by[cur].push({act:lower(r[1]),h:num(r[2]),nd:(r[3]||'').trim()}); });
+    const cats=[['lt',/lý thuyết/],['th',/thực hành|thảo luận/],['tl',/tiểu luận|bài tập|thực tế/],['tu',/tự học/],['kt',/kiểm tra|đánh giá/]];
+    const short=[], mism=[], noContent=[]; 
+    order.forEach(b=>{ const acts=by[b]; const have=cats.map(([k,re])=>acts.some(a=>re.test(a.act))); if(have.some(v=>!v)) short.push(`buổi ${b} thiếu ${cats.filter((c,i)=>!have[i]).map(c=>({lt:'Lý thuyết',th:'Thực hành thảo luận',tl:'Tiểu luận BTL',tu:'Tự học',kt:'Kiểm tra đánh giá'})[c[0]]).join(', ')}`);
+      const r51=rows51.find(r=>r.n===b); if(r51){ const s=k=>acts.filter(a=>cats.find(c=>c[0]===k)[1].test(a.act)&&!(k!=='kt'&&/kiểm tra|đánh giá/.test(a.act)&&!/tự học|lý thuyết|thực hành|tiểu luận/.test(a.act))).reduce((t,a)=>t+(isNaN(a.h)?0:a.h),0);
+        const d=[['x','lt'],['y','th'],['z','tl'],['e','tu']].filter(([k5,k])=>!isNaN(r51[k5])&&Math.abs(s(k)-r51[k5])>1e-9); if(d.length) mism.push(`buổi ${b} (${d.map(([k5,k])=>`${k}: 5.2=${fmt(s(k))} vs 5.1=${fmt(r51[k5])}`).join('; ')})`); }
+      const empties=acts.filter(a=>!/kiểm tra|đánh giá/.test(a.act)&&!a.nd&&!(a.h===0)).length; if(empties) noContent.push(`buổi ${b}: ${empties} dòng`); });
+    add(G3,'pass',`Bảng 5.2: ${order.length} buổi, ${g.length} dòng hoạt động`);
+    if(rows51.length&&order.length!==rows51.length) add(G3,'fail',`Số buổi trong 5.2 (${order.length}) khác 5.1 (${rows51.length})`);
+    if(short.length) add(G3,'fail','Buổi trong 5.2 chưa đủ 5 dòng hoạt động',short.join('\n')); else if(order.length) add(G3,'pass','Mỗi buổi trong 5.2 đủ 5 dòng hoạt động');
+    if(mism.length) add(G3,'fail','Giờ trong 5.2 lệch 5.1',mism.join('\n')); else if(rows51.length&&order.length) add(G3,'pass','Giờ từng buổi trong 5.2 khớp 5.1');
+    if(noContent.length) add(G3,'warn','Dòng hoạt động trong 5.2 chưa có "Nội dung chính"',noContent.slice(0,8).join('; ')+(noContent.length>8?'…':''),'Mỗi dòng hoạt động ghi nội dung riêng; chỉ gộp dọc ô Buổi và ô CLO.');
+  }
+  if(/Lưu ý:\s*Các hoạt động kết nối thực tiễn/i.test(allText)) add(G3,'pass','Có dòng lưu ý linh hoạt cuối mục 5.2'); else add(G3,'warn','Thiếu dòng lưu ý cuối mục 5.2','"Lưu ý: Các hoạt động kết nối thực tiễn và phương pháp kiểm tra đánh giá có thể linh hoạt theo điều kiện thực tế và quyết định của Bộ môn."');
+
+  // Đánh giá
+  const ta=findTable(tables,g=>/trọng số/i.test(g[0].join(' ')));
+  if(!ta) add(G4,'fail','Không tìm thấy bảng đánh giá (cột "Trọng số")');
+  else { const g=ta.grid.slice(1); const wi=ta.grid[0].findIndex(c=>/trọng số/i.test(c)); let sum=0; let cc=NaN, ck=NaN; const ex=[];
+    g.forEach(r=>{ if(r.some(c=>/^tổng/i.test((c||'').trim()))) return; const lbl=r.filter((c,i)=>i!==wi).join(' '); const w=num((r[wi]||'').replace('%','')); if(isNaN(w)){ if(!/[\d]/.test(r[wi]||'')) ex.push(lbl.trim()||'(dòng trống)'); return; } sum+=w; if(/chuyên cần/i.test(lbl)) cc=w; if(/cuối kỳ|kết thúc học phần|tổng kết/i.test(lbl)) ck=w; if(/ví dụ:/i.test(r.join(' '))) ex.push(lbl.trim()+' còn "Ví dụ:"'); });
+    if(Math.abs(sum-100)>1e-9) add(G4,'fail',`Tổng trọng số = ${fmt(sum)}%, phải bằng 100%`); else add(G4,'pass','Tổng trọng số bằng 100%');
+    if(isNaN(cc)) add(G4,'warn','Không thấy dòng Chuyên cần có trọng số'); else if(Math.abs(cc-10)>1e-9) add(G4,'warn',`Chuyên cần ${fmt(cc)}%`,'Quy ước Bộ môn là 10%.'); else add(G4,'pass','Chuyên cần 10%');
+    if(isNaN(ck)) add(G4,'warn','Không thấy dòng Cuối kỳ có trọng số'); else if(ck<50) add(G4,'fail',`Cuối kỳ ${fmt(ck)}%, phải ít nhất 50%`); else add(G4,'pass',`Cuối kỳ ${fmt(ck)}%`);
+    if(ex.length) add(G4,'warn','Bảng đánh giá còn dòng chưa điền hoặc còn chữ mẫu',ex.join('; ')); }
+
+  // Khối ký
+  const sig=findTable(tables,g=>/trưởng bộ môn|trưởng khoa|viện trưởng/i.test(g.map(r=>r.join(' ')).join(' ')));
+  if(!sig) add(G1,'fail','Thiếu khối ký (Trưởng Bộ môn / Viện trưởng hoặc Trưởng khoa)'); else { const s=sig.grid.map(r=>r.join(' | ')).join(' '); if(/giảng viên biên soạn/i.test(s)) add(G1,'warn','Khối ký có "Giảng viên biên soạn"','Quy ước Bộ môn: chỉ Trưởng Bộ môn và Viện trưởng.'); else add(G1,'pass','Khối ký: '+sig.grid[0].map(c=>c.replace(/\s+/g,' ').trim()).filter(Boolean).join(' | ')); }
+
+  // Hình thức: chữ đỏ, footnote, placeholder, ảnh, ngắt trang, đoạn trống
+  const redP=paras.filter(p=>p.red.length&&!/Kèm theo|QĐ-ĐHNT|Hiệu trưởng|Attached to|President/.test(p.text)); const redT=tables.reduce((a,t)=>a+t.red.length,0);
+  if(redP.length+redT) add(G5,'fail',`Còn chữ đỏ của mẫu: ${redP.length} đoạn, ${redT} ô bảng`,redP.slice(0,4).map(p=>'"'+p.red.join(' ').slice(0,80)+'"').join('\n')); else add(G5,'pass','Không còn chữ đỏ chú thích (ngoài dòng QĐ)');
+  const fn=paras.reduce((a,p)=>a+p.footnote,0)+tables.reduce((a,t)=>a+t.footnote,0); if(fn) add(G5,'fail',`Còn ${fn} chú thích chân trang của mẫu`); else add(G5,'pass','Không còn chú thích chân trang');
+  const ph=[]; const phRe=/\(mô tả chi tiết\)|Ví dụ:|…{1,}%|\.{4,}\s*%|^…$|1,2,\.\.\.|5,6,\.\.\.|\(nếu có\)/;
+  paras.forEach(p=>{ if(phRe.test(p.text)&&!/Kèm theo/.test(p.text)) ph.push(p.text.slice(0,70)); }); tables.forEach(t=>t.grid.forEach(r=>r.forEach(c=>{ if(phRe.test(c)) ph.push(c.slice(0,70)); })));
+  const uph=[...new Set(ph)]; if(uph.length) add(G5,'fail',`Còn ${uph.length} chỗ giữ chỗ của mẫu`,uph.slice(0,8).map(s=>'"'+s+'"').join('\n')); else add(G5,'pass','Không còn chỗ giữ chỗ của mẫu');
+  const dr=paras.reduce((a,p)=>a+p.drawing,0); if(dr) add(G5,'warn',`Còn ${dr} ảnh trong văn bản`,'Thường là ảnh tiêu đề thư ở đầu; mẫu thống nhất không dùng.'); else add(G5,'pass','Không có ảnh tiêu đề thư');
+  const pb=paras.reduce((a,p)=>a+p.pageBreak,0); if(pb) add(G5,'warn',`Còn ${pb} ngắt trang thủ công`,'Bỏ để khối ký không bị đẩy sang trang riêng.'); else add(G5,'pass','Không có ngắt trang thủ công');
+  let run=0,maxRun=0; paras.forEach(p=>{ if(!p.text){ run++; maxRun=Math.max(maxRun,run);} else run=0; }); if(maxRun>=3) add(G5,'warn',`Có chỗ ${maxRun} đoạn trống liên tiếp`,'Gộp lại cho gọn.'); else add(G5,'pass','Không có chuỗi đoạn trống dài');
+  const engLeft=vn&&!en?paras.filter(p=>/^(Course title|Course code|Credit hours|COURSE DESCRIPTION|READING MATERIALS)/.test(p.text)).length:0; if(engLeft) add(G5,'warn',`Còn ${engLeft} dòng tiếng Anh sót lại từ nửa song ngữ`);
+  return R;
+}
+
+function renderCheck(name,R){
+  $('c-out').hidden=false; $('c-name').textContent=name;
+  const n={fail:0,warn:0,pass:0}; R.forEach(r=>n[r.status]=(n[r.status]||0)+1);
+  $('c-sum').innerHTML=`<span class="pill fail">${n.fail} lỗi</span><span class="pill warn">${n.warn} cảnh báo</span><span class="pill pass">${n.pass} đạt</span>`+(n.fail?'':'<span class="pill info">Không còn lỗi cứng, còn lại là việc tự kiểm nội dung</span>');
+  const groups=[...new Set(R.map(r=>r.g))]; const rank={fail:0,warn:1,pass:2};
+  $('c-groups').innerHTML=groups.map(g=>`<div class="group"><h3>${g}</h3><ul class="res">`+R.filter(r=>r.g===g).sort((a,b)=>rank[a.status]-rank[b.status]).map(r=>`<li><span class="tag ${r.status}">${({fail:'Lỗi',warn:'Xem lại',pass:'Đạt'})[r.status]}</span><div><div class="t">${esc(r.t)}</div>${r.d?`<div class="d">${esc(r.d)}</div>`:''}</div></li>`).join('')+'</ul></div>').join('');
+  window.__report=`Nghiệm thu: ${name}\n${n.fail} lỗi, ${n.warn} cảnh báo, ${n.pass} đạt\n\n`+groups.map(g=>g.toUpperCase()+'\n'+R.filter(r=>r.g===g).map(r=>`[${({fail:'LỖI',warn:'XEM LẠI',pass:'đạt'})[r.status]}] ${r.t}${r.d?'\n    '+r.d.replace(/\n/g,'\n    '):''}`).join('\n')).join('\n\n');
+  $('c-out').scrollIntoView({behavior:'smooth',block:'start'});
+}
+window.__parseDocx=parseDocx;
+let runId=0;
+window.__runCheck=async function(file){
+  const my=++runId;
+  try{
+    if(!window.JSZip) throw new Error('Không tải được thư viện đọc file. Kiểm tra kết nối mạng rồi tải lại trang.');
+    const zip=await JSZip.loadAsync(file); const f=zip.file('word/document.xml'); if(!f) throw new Error('Không phải file .docx hợp lệ (thiếu word/document.xml).');
+    const xml=await f.async('string'); const blocks=parseDocx(xml);
+    const ex={x:num($('c-x').value),y:num($('c-y').value),z:num($('c-z').value),e:num($('c-e').value)}; const useEx=Object.values(ex).some(v=>!isNaN(v));
+    const R=check(blocks,useEx?ex:null); if(my!==runId) return R; renderCheck(file.name,R); return R;
+  }catch(err){ if(my===runId) renderCheck(file.name||'',[{g:'Lỗi đọc file',status:'fail',t:err.message||String(err),d:''}]); }
+};
+let lastFile=null;
+$('file').addEventListener('change',e=>{ const f=e.target.files[0]; if(f){ lastFile=f; window.__runCheck(f); } });
+const dz=$('drop'); ['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{ e.preventDefault(); dz.classList.add('on'); })); ['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{ e.preventDefault(); dz.classList.remove('on'); }));
+dz.addEventListener('drop',e=>{ const f=e.dataTransfer.files[0]; if(f){ lastFile=f; window.__runCheck(f); } });
+['c-x','c-y','c-z','c-e'].forEach(id=>$(id).addEventListener('change',()=>{ if(lastFile) window.__runCheck(lastFile); }));
+$('c-copy').addEventListener('click',()=>copyRich(null,window.__report||'','c-toast','Đã sao chép báo cáo'));
+})();
+</script>
+</body>
+</html>

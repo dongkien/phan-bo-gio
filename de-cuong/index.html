@@ -192,14 +192,14 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
       <div class="prose">
         <ul>
           <li><b>Mô tả học phần chép nguyên văn</b> từ Bản mô tả CTĐT. Không diễn đạt lại, không rút gọn.</li>
-          <li><b>Mục 3.2</b> gồm các dòng CLO tới PLO và dòng cuối "Học phần" lấy đúng từ ma trận CTĐT.</li>
+          <li><b>Mục 3.2</b> gồm các dòng CLO tới PLO và dòng cuối tên đúng là "Học phần" (không ghi "Tổng phân nhiệm"), giá trị lấy từ ma trận CTĐT.</li>
           <li><b>Học liệu cùng ngôn ngữ giảng dạy.</b> Giáo trình và tài liệu tham khảo bắt buộc phải cùng ngôn ngữ với đề cương; tài liệu khác ngôn ngữ đưa xuống mục tự chọn. Chương trình tiếng Việt chưa có bản dịch thì ghi "Tập bài giảng do giảng viên biên soạn (trên cơ sở …)".</li>
           <li><b>Chưa có giáo trình thì bỏ mục 4.1 Giáo trình</b> và đánh số lại từ 4.1 Tài liệu tham khảo bắt buộc, 4.2 Tài liệu tham khảo tự chọn, 4.3 Website.</li>
           <li><b>Bảng 5.1</b> có cột "Hình thức" ngay sau cột Nội dung (mặc định Trực tiếp). Tổng bốn cột giờ khớp chính xác phân bổ của CTĐT.</li>
           <li><b>Bảng 5.2</b> mỗi buổi đủ năm dòng hoạt động: Lý thuyết, Thực hành thảo luận, Tiểu luận và bài tập lớn, Tự học có hướng dẫn, Kiểm tra đánh giá. Chỉ gộp dọc ô Buổi và ô CLO; ô Nội dung chính mỗi dòng riêng. <b>Dòng Kiểm tra đánh giá không ghi giờ</b>; nội dung của dòng này là tên hình thức đánh giá sẽ dùng nội dung buổi đó (Chuyên cần, Giữa kỳ, Cuối kỳ), không phải câu hỏi ôn tập.</li>
           <li><b>Cuối mục 5.2</b> có dòng in nghiêng: "Lưu ý: Các hoạt động kết nối thực tiễn và phương pháp kiểm tra đánh giá có thể linh hoạt theo điều kiện thực tế và quyết định của Khoa."</li>
-          <li><b>Đánh giá:</b> chuyên cần 10%, cuối kỳ ít nhất 50%, tổng đúng 100%. Cuối kỳ thi viết hoặc vấn đáp.</li>
-          <li><b>Số tín chỉ ghi gọn</b>, ví dụ "03", không kèm ngoặc phân bổ giờ.</li>
+          <li><b>Đánh giá:</b> chuyên cần đúng 10%, cuối kỳ ít nhất 50%, tổng đúng 100%. Cuối kỳ thi viết hoặc vấn đáp.</li>
+          <li><b>Số tín chỉ chỉ ghi số</b>, ví dụ "03", không kèm ngoặc phân bổ giờ. Tiêu đề 3.2, 4.1, 4.2 không giữ câu hướng dẫn trong ngoặc của mẫu. Nhãn "* Sách", "* Bài báo…" không có tài liệu thì xóa. Không để ngắt trang thủ công hay chuỗi đoạn trống.</li>
           <li><b>Cấu trúc buổi theo logic môn</b>, không máy móc một buổi bằng một chương sách.</li>
           <li><b>Trường đã bỏ cấp Bộ môn.</b> Dòng "Bộ môn phụ trách:" nay là "Khoa phụ trách:"; dòng "Viện/Khoa:" nay là "Trường/Khoa:" (ghi "Trường:" hoặc "Khoa:" theo đơn vị quản lý học phần). Chữ "Bộ môn" ở bất kỳ đâu trong đề cương đổi thành "Khoa".</li>
           <li><b>Khối ký</b> hai ô: TRƯỞNG KHOA bên trái, HIỆU TRƯỞNG (trường thuộc) bên phải. Không ghi "Giảng viên biên soạn", không còn Trưởng Bộ môn hay Viện trưởng. Đề cương đặc thù (khóa luận tốt nghiệp, đề án tốt nghiệp, luận văn thạc sĩ) chỉ một chữ ký Hiệu trưởng.</li>
@@ -293,7 +293,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
     <h2>Nghiệm thu file đề cương</h2>
     <div class="prose"><p>Chọn file .docx đã điền theo mẫu 2025 (bản tiếng Việt). Trang đọc file ngay trên máy của bạn, không gửi đi đâu, và đối chiếu với các nguyên tắc ở phần 1.</p></div>
     <label class="drop" id="drop"><input type="file" id="file" accept=".docx" multiple><b>Chọn một hoặc nhiều file .docx</b> hoặc kéo thả vào đây</label>
-    <div class="opts-row"><label class="chk"><input type="checkbox" id="c-bomon" checked> Áp dụng quy ước riêng của Khoa Kinh tế liên ngành (dòng lưu ý 5.2, chuyên cần 10%, dọn chữ hướng dẫn của mẫu)</label></div>
+    <div class="opts-row"><label class="chk"><input type="checkbox" id="c-bomon" checked> Áp dụng quy ước riêng của Khoa Kinh tế liên ngành (dòng lưu ý linh hoạt cuối mục 5.2)</label></div>
     <div class="ctdt-row"><label class="btn ghost small" for="ctdt">Nạp Bản mô tả CTĐT (.docx) để đối chiếu</label><input type="file" id="ctdt" accept=".docx" hidden><button type="button" class="btn ghost small" id="ctdt-clear">Bỏ CTĐT</button><span class="toast" id="ctdt-name"></span></div>
     <div class="fields" style="margin-top:14px">
       <div class="field"><label for="c-x">Phân bổ CTĐT: lý thuyết</label><input id="c-x" type="number" min="0" placeholder="vd 24"></div>
@@ -360,7 +360,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
   </div>
 </section>
 
-<footer>Tiêu chí gắn nhãn <span class="src truong">Trường</span> lấy từ mẫu 2025 và quy định chung; tiêu chí gắn nhãn <span class="src bomon">Khoa</span> là quy ước riêng của Khoa Kinh tế liên ngành (trước là Bộ môn Kinh tế và Quản lý), tắt được ở phần 3. Mọi xử lý chạy trên trình duyệt, không có máy chủ.<br>Phiên bản <span id="ver"></span> · <a href="https://github.com/dongkien/phan-bo-gio/issues">Báo lỗi hoặc góp ý</a> · <a href="https://github.com/dongkien/phan-bo-gio">Mã nguồn</a></footer>
+<footer>Tiêu chí gắn nhãn <span class="src truong">Trường</span> lấy từ mẫu 2025 và quy định chung; tiêu chí gắn nhãn <span class="src bomon">Khoa</span> là quy ước riêng của Khoa Kinh tế liên ngành (hiện chỉ có dòng lưu ý linh hoạt cuối mục 5.2), tắt được ở phần 3. Mọi xử lý chạy trên trình duyệt, không có máy chủ.<br>Phiên bản <span id="ver"></span> · <a href="https://github.com/dongkien/phan-bo-gio/issues">Báo lỗi hoặc góp ý</a> · <a href="https://github.com/dongkien/phan-bo-gio">Mã nguồn</a></footer>
 </div>
 
 <script>

@@ -2,7 +2,7 @@
   "chuan_vn.docx":                    {"fail": 0, "warn": 0},
   "chuan_en.docx":                    {"fail": 0, "warn": 0},
   "loi_khoa_thay_vien.docx":          {"fail": 0, "warn": 0},
-  "loi_thieu_khoi_ky.docx":           {"fail": 1, "must": ["Khối ký thiếu Trưởng Khoa"]},
+  "loi_thieu_khoi_ky.docx":           {"fail": 2, "warn": 0, "must": ["Khối ký thiếu Trưởng Khoa", "Giảng viên biên soạn"]},
   "loi_khoi_ky_cu.docx":              {"fail": 1, "must": ["Khối ký còn chức danh cũ"]},
   "loi_nhan_cu_bo_mon.docx":          {"fail": 2, "must": ["Bộ môn phụ trách", "Còn 1 chỗ nhắc"]},
   "loi_tai_lieu_thieu_tham_khao.docx":{"fail": 1, "must": ["Tên mục viết \"Tài liệu\""]},

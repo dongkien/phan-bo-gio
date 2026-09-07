@@ -26,7 +26,7 @@ Hợp lệ khi z > 0
 
 Đọc file .docx ngay trên máy và đối chiếu: đủ 7 mục và tiểu mục theo mẫu; các ô đầu đề đã điền; mô tả học phần; CLO; ma trận 3.2 có dòng "Học phần"; bảng giảng viên; giáo trình và tài liệu bắt buộc cùng ngôn ngữ giảng dạy (không có giáo trình thì mục 4 đánh số lại từ 4.1); bảng 5.1 có cột Hình thức, dòng tổng, tổng bằng 50 × TC và khớp phân bổ CTĐT; bảng 5.2 mỗi buổi đủ 5 dòng hoạt động và giờ khớp 5.1; dòng lưu ý cuối 5.2; bảng đánh giá tổng 100%, chuyên cần 10%, cuối kỳ ít nhất 50%; khối ký; chữ đỏ, chú thích chân trang, chỗ giữ chỗ, ảnh, ngắt trang, đoạn trống còn sót của mẫu.
 
-Mỗi tiêu chí nghiệm thu gắn nhãn **Trường** (mẫu 2025, quy định chung) hoặc **Bộ môn** (quy ước Bộ môn Kinh tế và Quản lý, tắt được bằng một ô chọn).
+Mỗi tiêu chí nghiệm thu gắn nhãn **Trường** (mẫu 2025 và quy định chung của FTU) hoặc **Khoa** (quy ước riêng của Khoa Kinh tế liên ngành, hiện chỉ có dòng lưu ý linh hoạt cuối mục 5.2; tắt được bằng một ô chọn).
 
 ## Kiểm thử tự động
 

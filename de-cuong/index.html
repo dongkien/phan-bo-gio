@@ -122,7 +122,8 @@ table.g52 td textarea.zero{border-color:var(--red);background:var(--red-soft)}
 .ctdt-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
 .form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
 .form .wide{grid-column:1/-1}
-table.matrix{min-width:0;width:auto}
+table.matrix{min-width:0;width:100%;table-layout:fixed}
+table.matrix th:first-child,table.matrix td:first-child{width:130px}
 table.matrix th,table.matrix td{text-align:center;padding:5px 8px}
 table.matrix td:first-child,table.matrix th:first-child{text-align:left;font-weight:600;white-space:nowrap}
 table.matrix input[type=checkbox]{width:18px;height:18px;cursor:pointer}
@@ -572,9 +573,9 @@ function write(o){ F.forEach(k=>{ if(o[k]!=null) $('g-'+k).value=o[k]; }); }
 function save(){ try{ localStorage.setItem('dc_gen',JSON.stringify(read())); }catch(_){} }
 F.forEach(k=>$('g-'+k).addEventListener('input',save)); $('g-clo').addEventListener('input',()=>renderB());
 $('g-tc').addEventListener('change',()=>{ $('b-tc').value=$('g-tc').value; renderB(); });
-$('g-sample').addEventListener('click',()=>{ write(SAMPLE); save(); renderMatrix(); if(!B.rows.some(r=>r.nd)){ $('b-tc').value=3; $('b-x').value=24; $('b-y').value=6; B.rows=Array.from({length:10},(_,i)=>({nd:`Chương ${i+1}`,ht:'Trực tiếp',x:0,y:0,z:0,e:0,clo:String(1+(i%5)),c52:{lt:`Nội dung chương ${i+1}`,th:'',tl:`Bài tập chương ${i+1}`,tu:'Đọc giáo trình [1], chương '+(i+1),kt:i<5?'Chuyên cần, Giữa kỳ, Cuối kỳ':'Chuyên cần, Cuối kỳ'},kth:0})); even(); B.rows.forEach(r=>{ if(r.y>0&&!r.c52.th) r.c52.th='Thảo luận tình huống'; if(r.y===0) r.c52.th=''; }); renderB(); } toast('g-toast','Đã nạp ví dụ. Bảng 5.1 và 5.2 ở phần 2.'); });
+$('g-sample').addEventListener('click',()=>{ write(SAMPLE); save(); renderMatrix(); applyKhoa(); if(!B.rows.some(r=>r.nd)){ $('b-tc').value=3; $('b-x').value=24; $('b-y').value=6; B.rows=Array.from({length:10},(_,i)=>({nd:`Chương ${i+1}`,ht:'Trực tiếp',x:0,y:0,z:0,e:0,clo:String(1+(i%5)),c52:{lt:`Nội dung chương ${i+1}`,th:'',tl:`Bài tập chương ${i+1}`,tu:'Đọc giáo trình [1], chương '+(i+1),kt:i<5?'Chuyên cần, Giữa kỳ, Cuối kỳ':'Chuyên cần, Cuối kỳ'},kth:0})); even(); B.rows.forEach(r=>{ if(r.y>0&&!r.c52.th) r.c52.th='Thảo luận tình huống'; if(r.y===0) r.c52.th=''; }); renderB(); } toast('g-toast','Đã nạp ví dụ. Bảng 5.1 và 5.2 ở phần 2.'); });
 $('g-clear').addEventListener('click',()=>{ F.forEach(k=>$('g-'+k).value=''); $('g-lang').value='vn'; $('g-vkLabel').value='Trường'; save(); renderMatrix(); });
-(function init(){ let o=null; try{ o=JSON.parse(localStorage.getItem('dc_gen')||'null'); }catch(_){} if(o) write(o); else write(SAMPLE); $('g-tc').value=$('b-tc').value||3; try{ $('g-khoa').checked=localStorage.getItem('dc_bomon')!=='0'; }catch(_){ $('g-khoa').checked=true; } maHint(); renderMatrix(); })();
+(function init(){ let o=null; try{ o=JSON.parse(localStorage.getItem('dc_gen')||'null'); }catch(_){} if(o) write(o); else write(SAMPLE); $('g-tc').value=$('b-tc').value||3; try{ $('g-khoa').checked=localStorage.getItem('dc_bomon')!=='0'; }catch(_){ $('g-khoa').checked=true; } maHint(); renderMatrix(); applyKhoa(); })();
 function collect(){ const o=read(); const d={lang:o.lang,ten:o.ten.trim(),tenEn:o.tenEn.trim(),ma:o.ma.trim(),bomon:o.bomon.trim(),vkLabel:o.vkLabel,vk:o.vk.trim(),tc:num($('b-tc').value)||3,tienquyet:o.tq.trim(),
     gv:lines(o.gv).map(l=>{ const p=l.split('|').map(x=>x.trim()); return {ten:p[0]||'',email:p[1]||'',dt:p[2]||'',truso:p[3]||''}; }),
     mota:String(o.mota||'').split(/\n\s*\n/).map(x=>x.replace(/\s*\n\s*/g,' ').trim()).filter(Boolean), muctieu:[], clo:lines(o.clo).map(c=>c.replace(/^-?\s*CLO\s*\d+\s*:\s*/i,'')),

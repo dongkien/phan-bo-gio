@@ -5,7 +5,8 @@
    Finding: {g: nhóm, status: fail|warn|pass, t: tiêu đề, d: chi tiết, src: 'truong'|'bomon'} */
 (function(global){
 'use strict';
-const VERSION='1.8 (8/9/2026)';
+const VERSION='1.9 (8/9/2026)';
+function cloRefs(t){ const out=new Set(); String(t||'').replace(/CLO/gi,' ').replace(/(\d+)\s*[-–]\s*(\d+)/g,(m,a,b)=>{ for(let k=+a;k<=+b&&k<100;k++) out.add(k); return ' '; }).split(/[^\d]+/).forEach(x=>{ if(x) out.add(parseInt(x,10)); }); return [...out].filter(n=>n>0); }
 const W='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const lower=s=>String(s||'').normalize('NFC').toLowerCase();
 const num=s=>{ if(s==null) return NaN; s=String(s).trim().replace(/\s+/g,''); if(!s) return NaN; if(/^-?\d+,\d+$/.test(s)) s=s.replace(',','.'); const v=parseFloat(s); return isNaN(v)?NaN:v; };
@@ -212,6 +213,7 @@ function check(blocks,opts){
       else if(!isNaN(tc)&&!special){ const h=sum.x/15+sum.y/30, z=50*(tc-h), e=50*tc-(sum.x+sum.y+z); if(Math.abs(z-sum.z)>1e-9||Math.abs(e-sum.e)>1e-9) add(G3,'warn','Cột z và tự học không theo công thức quy đổi tín chỉ',`Theo x=${fmt(sum.x)}, y=${fmt(sum.y)}, ${fmt(tc)} TC thì z=${fmt(z)}, tự học=${fmt(e)}. Chỉ chấp nhận nếu CTĐT quy định khác.`); }
       const htEmpty=ci.ht>=0?rows51.filter(r=>!(r[ci.ht]||'').trim()).length:0; if(htEmpty) add(G3,'warn',`${htEmpty} buổi chưa ghi Hình thức`,null,BM);
       const cloEmpty=ci.clo>=0?rows51.filter(r=>!(r[ci.clo]||'').trim()).length:0; if(cloEmpty) add(G3,'warn',`${cloEmpty} buổi trong 5.1 chưa ghi CLO`);
+      if(ci.clo>=0){ meta.clo51=rows51.map(r=>({n:r[0].replace(C.buoi,'').replace(/\s+/g,'').trim(),refs:cloRefs(r[ci.clo])})); }
       rows51=rows51.map(r=>({n:r[0].replace(C.buoi,'').replace(/\s+/g,'').trim(),x:num(r[ci.x]),y:num(r[ci.y]),z:num(r[ci.z]),e:num(r[ci.e])}));
     } }
 
@@ -219,7 +221,7 @@ function check(blocks,opts){
   const t52=findTable(tables,g=>C.tbl.t52.test(g[0].join(' ')));
   if(!t52) add(G3,'fail','Không tìm thấy bảng 5.2 (đầu bảng "Buổi | Hoạt động dạy và học | Số giờ…")');
   else { const g=t52.grid.slice(1); const by={}; let cur=null; const order=[];
-    g.forEach(r=>{ const b=(r[0]||'').replace(C.buoi,'').replace(/\s+/g,'').trim(); if(b){ cur=b; if(!by[cur]){ by[cur]=[]; order.push(cur);} } if(cur==null) return; by[cur].push({act:lower(r[1]),h:num(r[2]),nd:(r[3]||'').trim()}); });
+    const clo52={}; g.forEach(r=>{ const b=(r[0]||'').replace(C.buoi,'').replace(/\s+/g,'').trim(); if(b){ cur=b; if(!by[cur]){ by[cur]=[]; order.push(cur);} } if(cur==null) return; by[cur].push({act:lower(r[1]),h:num(r[2]),nd:(r[3]||'').trim()}); if((r[4]||'').trim()) clo52[cur]=[...new Set([...(clo52[cur]||[]),...cloRefs(r[4])])]; }); meta.clo52=clo52;
     const short=[],mism=[],noContent=[],zeroWithContent=[],ktHours=[],ktBad=[],ktEmpty=[];
     order.forEach(b=>{ const acts=by[b]; const have=C.acts.map(a=>acts.some(x=>a[2].test(x.act))); if(have.some(v=>!v)) short.push(`buổi ${b} thiếu ${C.acts.filter((a,i)=>!have[i]).map(a=>a[1]).join(', ')}`);
       const r51=rows51.find(r=>r.n===b);
@@ -246,12 +248,21 @@ function check(blocks,opts){
   if(!ta){ if(special) add(G4,'pass','Không có bảng đánh giá (đề cương đặc thù, được phép)'); else add(G4,'fail','Không tìm thấy bảng đánh giá (cột "Trọng số")'); }
   else { const g=ta.grid.slice(1); const wi=ta.grid[0].findIndex(c=>C.tbl.assess.test(c)); let sum=0; let cc=NaN,ck=NaN; const ex=[];
     g.forEach(r=>{ if(r.some(c=>C.assess.total.test((c||'').trim()))) return; const lbl=r.filter((c,i)=>i!==wi).join(' '); const w=num((r[wi]||'').replace('%','')); if(isNaN(w)){ if(!/[\d]/.test(r[wi]||'')) ex.push(lbl.trim().slice(0,60)||'(dòng trống)'); return; } sum+=w; if(C.assess.cc.test(lbl)) cc=w; if(C.assess.ck.test(lbl)) ck=w; if(C.assess.example.test(r.join(' '))) ex.push(lbl.trim().slice(0,40)+' còn "Ví dụ:"'); });
-    meta.assess={sum,cc,ck};
+    meta.assess={sum,cc,ck}; const cloCol=ta.grid[0].findIndex(c=>/clo/i.test(c)); if(cloCol>=0) meta.cloAssess=g.filter(r=>!r.some(c=>C.assess.total.test((c||'').trim()))).map(r=>({lbl:(r.filter((c,i)=>i!==wi&&i!==cloCol).join(' ').trim().slice(0,40)),refs:cloRefs(r[cloCol])}));
     if(Math.abs(sum-100)>1e-9) add(G4,'fail',`Tổng trọng số = ${fmt(sum)}%, phải bằng 100%`); else add(G4,'pass','Tổng trọng số bằng 100%');
     if(isNaN(cc)) add(G4,'warn','Không thấy dòng Chuyên cần có trọng số'); else if(Math.abs(cc-10)>1e-9) add(G4,'warn',`Chuyên cần ${fmt(cc)}%`,'Quy ước Bộ môn là 10%.',BM); else add(G4,'pass','Chuyên cần 10%',null,BM);
     if(isNaN(ck)) add(G4,'warn','Không thấy dòng Cuối kỳ có trọng số'); else if(ck<50) add(G4,'fail',`Cuối kỳ ${fmt(ck)}%, phải ít nhất 50%`); else add(G4,'pass',`Cuối kỳ ${fmt(ck)}%`);
     if(ex.length) add(G4,'warn','Bảng đánh giá còn dòng chưa điền hoặc còn chữ mẫu',ex.join('; ')); }
 
+  // CLO tham chiếu ở 5.1 / 5.2 / đánh giá phải tồn tại ở mục 3.1
+  if(nCLO){ const bad51=[],bad52=[],badDG=[],used=new Set(),mismatch=[];
+    (meta.clo51||[]).forEach(r=>{ r.refs.forEach(k=>{ if(k>nCLO) bad51.push(`buổi ${r.n}: CLO${k}`); else used.add(k); }); });
+    Object.entries(meta.clo52||{}).forEach(([b,refs])=>{ refs.forEach(k=>{ if(k>nCLO) bad52.push(`buổi ${b}: CLO${k}`); else used.add(k); }); const r51=(meta.clo51||[]).find(r=>r.n===b); if(r51&&r51.refs.length&&refs.length&&(r51.refs.length!==refs.length||r51.refs.some(k=>!refs.includes(k)))) mismatch.push(`buổi ${b}: 5.1 ghi ${r51.refs.join(',')} / 5.2 ghi ${refs.join(',')}`); });
+    (meta.cloAssess||[]).forEach(r=>r.refs.forEach(k=>{ if(k>nCLO) badDG.push(`${r.lbl}: CLO${k}`); }));
+    if(bad51.length||bad52.length||badDG.length) add(G2,'fail',`Tham chiếu CLO không tồn tại (học phần chỉ có ${nCLO} CLO)`,[bad51.length?'Bảng 5.1: '+bad51.join('; '):'',bad52.length?'Bảng 5.2: '+bad52.join('; '):'',badDG.length?'Bảng đánh giá: '+badDG.join('; '):''].filter(Boolean).join('\n')); else if((meta.clo51||[]).length) add(G2,'pass',`CLO ở 5.1, 5.2 và bảng đánh giá đều nằm trong CLO1 đến CLO${nCLO}`);
+    if(mismatch.length) add(G3,'warn','CLO của cùng một buổi khác nhau giữa 5.1 và 5.2',mismatch.join('\n'));
+    const unused=[]; for(let k=1;k<=nCLO;k++) if(!used.has(k)) unused.push('CLO'+k); if(unused.length&&(meta.clo51||[]).length) add(G2,'warn',`${unused.join(', ')} không được buổi nào đóng góp trong 5.1/5.2`,'Mỗi CLO cần ít nhất một buổi hướng tới; nếu không thì xem lại CLO hoặc kế hoạch giảng dạy.');
+    if(meta.cloAssess&&meta.cloAssess.length){ const assessed=new Set(); meta.cloAssess.forEach(r=>r.refs.forEach(k=>assessed.add(k))); const na=[]; for(let k=1;k<=nCLO;k++) if(!assessed.has(k)) na.push('CLO'+k); if(na.length) add(G4,'warn',`${na.join(', ')} không được hình thức đánh giá nào kiểm tra`,'Cột "Kiểm tra, đánh giá mức độ đạt CLOs" của bảng đánh giá phải phủ hết các CLO.'); } }
   // khối ký
   const sigT=findTable(tables,g=>C.tbl.sig.test(g.map(r=>r.join(' ')).join(' ')));
   const sigP=paras.slice(-15).filter(p=>C.tbl.sig.test(p.text));

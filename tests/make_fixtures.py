@@ -32,4 +32,5 @@ def dac_thu(x):
 mutate(V,os.path.join(FX,'dac_thu_luan_van.docx'),dac_thu)   # đặc thù, chỉ Hiệu trưởng: phải đạt
 mutate(V,os.path.join(FX,'loi_dac_thu_hai_chu_ky.docx'),lambda x: x.replace('Nguyên lý quản lý kinh tế','Khóa luận tốt nghiệp').replace('NGUYÊN LÝ QUẢN LÝ KINH TẾ','KHÓA LUẬN TỐT NGHIỆP'))
 mutate(E,os.path.join(FX,'loi_en_nhan_cu_school.docx'),lambda x: first_t(x,'>College:<','>Faculty/School:<'))
+mutate(V,os.path.join(FX,'loi_clo_khong_ton_tai.docx'),lambda x: first_t(x,'<w:t xml:space="preserve">5</w:t>','<w:t xml:space="preserve">9</w:t>'))
 print('xong')

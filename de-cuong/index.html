@@ -88,6 +88,8 @@ table.g52 td.h input{text-align:right}
 table.g52 td.rs{vertical-align:top;font-weight:600;text-align:center;background:var(--bg)}
 table.g52 td textarea{font:inherit;font-size:13.5px;width:100%;min-height:34px;padding:5px 7px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);resize:vertical}
 table.g52 tr.first td{border-top:2px solid var(--line)}
+table.g52 td textarea.zero{border-color:var(--red);background:var(--red-soft)}
+.g52note{color:var(--red);font-size:12.5px;margin-top:8px}
 .drop{display:block;margin-top:14px;border:2px dashed var(--line);border-radius:6px;padding:26px 20px;text-align:center;color:var(--muted);cursor:pointer;background:var(--bg)}
 .drop.on{border-color:var(--navy);color:var(--ink)}
 .drop input{display:none}
@@ -352,11 +354,13 @@ function render52(){
       if(j===0) html+=`<td class="rs" rowspan="5">${i+1}</td>`;
       html+=`<td class="act">${name}</td>`;
       html+=src?`<td class="h">${fmt(num(r[src])||0)}</td>`:`<td class="h"><input type="number" min="0" step="0.5" data-i="${i}" data-k="kth" value="${r.kth}"></td>`;
-      html+=`<td><textarea data-i="${i}" data-k="${k}" placeholder="${({lt:'Nội dung giảng',th:'Chủ đề thảo luận, bài thực hành',tl:'Bài tập lớn, tiểu luận, thực tế',tu:'Tài liệu đọc, việc chuẩn bị',kt:'Hình thức kiểm tra (nếu có)'})[k]}">${esc(r.c52[k])}</textarea></td>`;
+      const hrs=src?(num(r[src])||0):(r.kth||0); const zero=k!=='kt'&&hrs===0&&(r.c52[k]||'').trim();
+      html+=`<td><textarea class="${zero?'zero':''}" title="${zero?'Dòng này 0 giờ nhưng có nội dung':''}" data-i="${i}" data-k="${k}" placeholder="${({lt:'Nội dung giảng',th:'Chủ đề thảo luận, bài thực hành',tl:'Bài tập lớn, tiểu luận, thực tế',tu:'Tài liệu đọc, việc chuẩn bị',kt:'Hình thức kiểm tra (nếu có)'})[k]}">${esc(r.c52[k])}</textarea></td>`;
       if(j===0) html+=`<td class="rs" rowspan="5">${esc(r.clo)}</td>`;
       tr.innerHTML=html; tb.appendChild(tr);
     });
   });
+  const nz=tb.querySelectorAll('textarea.zero').length; let note=$('g52note'); if(!note){ note=document.createElement('p'); note.id='g52note'; note.className='g52note'; $('t52').parentNode.after(note); } note.textContent=nz?`${nz} dòng có nội dung nhưng 0 giờ (ô đỏ): phân bổ giờ ở bảng 5.1 hoặc bỏ nội dung.`:''; note.hidden=!nz;
 }
 function even(){
   const a=alloc(); const n=B.rows.length; if(!n) return;
@@ -366,7 +370,7 @@ function even(){
 function setN(){ const n=Math.max(1,Math.min(30,parseInt($('b-n').value,10)||1)); while(B.rows.length<n) B.rows.push(newRow()); B.rows.length=n; renderB(); }
 $('b-body').addEventListener('input',e=>{ const tr=e.target.closest('tr'); const i=[...$('b-body').children].indexOf(tr); const k=e.target.dataset.k; if(i<0||!k) return; B.rows[i][k]=e.target.type==='number'?(num(e.target.value)||0):e.target.value; renderB(); e.target.focus&&null; });
 $('b-body').addEventListener('click',e=>{ const d=e.target.dataset.del; if(d!=null){ B.rows.splice(+d,1); renderB(); } });
-$('b52').addEventListener('input',e=>{ const i=+e.target.dataset.i, k=e.target.dataset.k; if(isNaN(i)||!k) return; const r=norm(B.rows[i]); if(k==='kth') r.kth=num(e.target.value)||0; else r.c52[k]=e.target.value; try{ const a=alloc(); localStorage.setItem('dc51',JSON.stringify({tc:a.tc,x:a.x,y:a.y,rows:B.rows})); }catch(_){} });
+$('b52').addEventListener('input',e=>{ const i=+e.target.dataset.i, k=e.target.dataset.k; if(isNaN(i)||!k) return; const r=norm(B.rows[i]); if(k==='kth') r.kth=num(e.target.value)||0; else r.c52[k]=e.target.value; if(k!=='kth'&&k!=='kt'){ const src=ACTS.find(a=>a[0]===k)[2]; const z=(num(r[src])||0)===0&&e.target.value.trim(); e.target.classList.toggle('zero',!!z); const nz=$('b52').querySelectorAll('textarea.zero').length; const note=$('g52note'); if(note){ note.textContent=nz?`${nz} dòng có nội dung nhưng 0 giờ (ô đỏ): phân bổ giờ ở bảng 5.1 hoặc bỏ nội dung.`:''; note.hidden=!nz; } } try{ const a=alloc(); localStorage.setItem('dc51',JSON.stringify({tc:a.tc,x:a.x,y:a.y,rows:B.rows})); }catch(_){} });
 $('b-fill52').addEventListener('click',()=>{ B.rows.forEach(r=>{ norm(r); if(!r.c52.lt&&r.nd) r.c52.lt=r.nd; }); render52(); toast('b-toast2','Đã điền nội dung lý thuyết từ cột Nội dung của 5.1'); });
 ['b-tc','b-x','b-y'].forEach(id=>$(id).addEventListener('input',renderB));
 $('b-n').addEventListener('change',setN);
@@ -549,15 +553,18 @@ function check(blocks,expect){
   else { const g=t52.grid.slice(1); const by={}; let cur=null; const order=[];
     g.forEach(r=>{ const b=(r[0]||'').replace(/buổi/i,'').replace(/\s+/g,'').trim(); if(b){ cur=b; if(!by[cur]){ by[cur]=[]; order.push(cur);} } if(cur==null) return; by[cur].push({act:lower(r[1]),h:num(r[2]),nd:(r[3]||'').trim()}); });
     const cats=[['lt',/lý thuyết/],['th',/thực hành|thảo luận/],['tl',/tiểu luận|bài tập|thực tế/],['tu',/tự học/],['kt',/kiểm tra|đánh giá/]];
-    const short=[], mism=[], noContent=[]; 
+    const short=[], mism=[], noContent=[], zeroWithContent=[], ktWithContent=[]; 
     order.forEach(b=>{ const acts=by[b]; const have=cats.map(([k,re])=>acts.some(a=>re.test(a.act))); if(have.some(v=>!v)) short.push(`buổi ${b} thiếu ${cats.filter((c,i)=>!have[i]).map(c=>({lt:'Lý thuyết',th:'Thực hành thảo luận',tl:'Tiểu luận BTL',tu:'Tự học',kt:'Kiểm tra đánh giá'})[c[0]]).join(', ')}`);
       const r51=rows51.find(r=>r.n===b); if(r51){ const s=k=>acts.filter(a=>cats.find(c=>c[0]===k)[1].test(a.act)&&!(k!=='kt'&&/kiểm tra|đánh giá/.test(a.act)&&!/tự học|lý thuyết|thực hành|tiểu luận/.test(a.act))).reduce((t,a)=>t+(isNaN(a.h)?0:a.h),0);
         const d=[['x','lt'],['y','th'],['z','tl'],['e','tu']].filter(([k5,k])=>!isNaN(r51[k5])&&Math.abs(s(k)-r51[k5])>1e-9); if(d.length) mism.push(`buổi ${b} (${d.map(([k5,k])=>`${k}: 5.2=${fmt(s(k))} vs 5.1=${fmt(r51[k5])}`).join('; ')})`); }
-      const empties=acts.filter(a=>!/kiểm tra|đánh giá/.test(a.act)&&!a.nd&&!(a.h===0)).length; if(empties) noContent.push(`buổi ${b}: ${empties} dòng`); });
+      const empties=acts.filter(a=>!/kiểm tra|đánh giá/.test(a.act)&&!a.nd&&!(a.h===0)).length; if(empties) noContent.push(`buổi ${b}: ${empties} dòng`);
+      acts.forEach(a=>{ if(!a.nd) return; const zero=isNaN(a.h)||a.h===0; if(!zero) return; const name=a.act.replace(/\s+/g,' ').trim(); if(/kiểm tra|đánh giá/.test(a.act)) ktWithContent.push(`buổi ${b}: "${a.nd.slice(0,50)}"`); else zeroWithContent.push(`buổi ${b}, dòng ${name.slice(0,30)}: "${a.nd.slice(0,50)}"`); }); });
     add(G3,'pass',`Bảng 5.2: ${order.length} buổi, ${g.length} dòng hoạt động`);
     if(rows51.length&&order.length!==rows51.length) add(G3,'fail',`Số buổi trong 5.2 (${order.length}) khác 5.1 (${rows51.length})`);
     if(short.length) add(G3,'fail','Buổi trong 5.2 chưa đủ 5 dòng hoạt động',short.join('\n')); else if(order.length) add(G3,'pass','Mỗi buổi trong 5.2 đủ 5 dòng hoạt động');
     if(mism.length) add(G3,'fail','Giờ trong 5.2 lệch 5.1',mism.join('\n')); else if(rows51.length&&order.length) add(G3,'pass','Giờ từng buổi trong 5.2 khớp 5.1');
+    if(zeroWithContent.length) add(G3,'fail','Dòng trong 5.2 có nội dung hoạt động nhưng không phân bổ giờ',zeroWithContent.join('\n')+'\nHoặc phân bổ giờ cho hoạt động đó (và sửa 5.1 cho khớp), hoặc bỏ nội dung.');
+    if(ktWithContent.length) add(G3,'warn','Dòng Kiểm tra, đánh giá có nội dung nhưng không ghi giờ',ktWithContent.join('\n')+'\nNếu kiểm tra chiếm giờ trên lớp thì ghi giờ, không thì để trống nội dung hoặc ghi rõ ngoài giờ.');
     if(noContent.length) add(G3,'warn','Dòng hoạt động trong 5.2 chưa có "Nội dung chính"',noContent.slice(0,8).join('; ')+(noContent.length>8?'…':''),'Mỗi dòng hoạt động ghi nội dung riêng; chỉ gộp dọc ô Buổi và ô CLO.');
   }
   if(/Lưu ý:\s*Các hoạt động kết nối thực tiễn/i.test(allText)) add(G3,'pass','Có dòng lưu ý linh hoạt cuối mục 5.2'); else add(G3,'warn','Thiếu dòng lưu ý cuối mục 5.2','"Lưu ý: Các hoạt động kết nối thực tiễn và phương pháp kiểm tra đánh giá có thể linh hoạt theo điều kiện thực tế và quyết định của Bộ môn."');

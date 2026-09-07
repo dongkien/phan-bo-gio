@@ -5,7 +5,7 @@
    Finding: {g: nhóm, status: fail|warn|pass, t: tiêu đề, d: chi tiết, src: 'truong'|'bomon'} */
 (function(global){
 'use strict';
-const VERSION='1.5 (8/9/2026)';
+const VERSION='1.6 (8/9/2026)';
 const W='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const lower=s=>String(s||'').normalize('NFC').toLowerCase();
 const num=s=>{ if(s==null) return NaN; s=String(s).trim().replace(/\s+/g,''); if(!s) return NaN; if(/^-?\d+,\d+$/.test(s)) s=s.replace(',','.'); const v=parseFloat(s); return isNaN(v)?NaN:v; };
@@ -132,7 +132,8 @@ function check(blocks,opts){
   (C.oldFields||[]).forEach(([lab,msg])=>{ if(field([lab])!=null) add(G1,'fail',msg.split('.')[0],msg,'truong'); });
   C.fields.forEach(([name,labels,ph])=>{ const v=field(labels); if(v==null){ const isVK=/^(Trường\/Khoa|Faculty\/College)$/.test(name), isBM=/^(Khoa phụ trách|Department)$/.test(name); if((isVK&&field(['viện/khoa','viện','faculty/school','school']))||(isBM&&field(['bộ môn phụ trách','bộ môn']))) return; add(G1,'fail',isVK?C.vkMissing:isBM?C.bmMissing:`Thiếu dòng "${name}:"`); return; } else if(!v||lower(v)===ph) add(G2,'fail',`"${name}:" chưa điền`); else { add(G2,'pass',`${name}: ${v.length>90?v.slice(0,90)+'…':v}`); if(name==='Tên học phần'||name==='Course title') meta.title=v; if(/^(Khoa phụ trách)$/.test(name)&&C.oldUnit.test(v)) add(G2,'fail','Tên đơn vị phụ trách còn "Bộ môn"',`"${v}". Ghi tên Khoa.`); if(name==='Mã học phần'||name==='Course code') meta.code=v; if(name==='Số tín chỉ'||name==='Credit hours'){ meta.tc=num((v.match(/\d+([.,]\d+)?/)||[''])[0]); if(vn&&/\(/.test(v)) add(G2,'warn','Số tín chỉ ghi kèm ngoặc phân bổ giờ',`"${v}". Quy ước ghi gọn, ví dụ "03"; phân bổ giờ đã có ở bảng 5.1.`,BM); } } });
   const tq=field([C.prereq[0]]); if(tq&&C.prereq[1].source!=='^$'&&C.prereq[1].test(tq)) add(G2,'fail','"Điều kiện tiên quyết" còn nguyên chữ mẫu','Ghi tên và mã học phần tiên quyết, hoặc "Không".');
-  const tc=meta.tc;
+  const tc=meta.tc; const special=C.special.test(meta.title||''); meta.special=special;
+  if(special) add(G1,'pass','Đề cương đặc thù (khóa luận, đề án tốt nghiệp, luận văn): được phép không có bảng giảng viên và bảng đánh giá, chỉ một chữ ký '+C.sig.vkName);
 
   // mục
   const missing=[]; const idx={};
@@ -173,7 +174,7 @@ function check(blocks,opts){
 
   // giảng viên
   const ins=findTable(tables,g=>C.tbl.instr.test(g[0].join(' ')));
-  if(!ins) add(G2,'fail','Không có bảng thông tin giảng viên'); else { const filled=ins.grid.slice(1).filter(r=>(r[C.instrName]||'').trim()); if(!filled.length) add(G2,'fail','Bảng giảng viên chưa có tên'); else { add(G2,'pass',`Bảng giảng viên: ${filled.length} người`); const empties=ins.grid.slice(1).filter(r=>!r.slice(1).some(c=>c.trim())).length; if(empties) add(G5,'warn',`Bảng giảng viên còn ${empties} dòng trống`,'Xóa dòng thừa cho gọn.'); } }
+  if(!ins){ if(special) add(G2,'pass','Không có bảng giảng viên (đề cương đặc thù, được phép)'); else add(G2,'fail','Không có bảng thông tin giảng viên'); } else { const filled=ins.grid.slice(1).filter(r=>(r[C.instrName]||'').trim()); if(!filled.length) add(G2,'fail','Bảng giảng viên chưa có tên'); else { add(G2,'pass',`Bảng giảng viên: ${filled.length} người`); const empties=ins.grid.slice(1).filter(r=>!r.slice(1).some(c=>c.trim())).length; if(empties) add(G5,'warn',`Bảng giảng viên còn ${empties} dòng trống`,'Xóa dòng thừa cho gọn.'); } }
 
   // học liệu
   const entriesBetween=(a,b)=>paras.slice(a+1,b).filter(p=>p.text&&!C.starLabel.test(p.text)).map(p=>p.text);
@@ -237,7 +238,7 @@ function check(blocks,opts){
 
   // đánh giá
   const ta=findTable(tables,g=>C.tbl.assess.test(g[0].join(' ')));
-  if(!ta) add(G4,'fail','Không tìm thấy bảng đánh giá (cột "Trọng số")');
+  if(!ta){ if(special) add(G4,'pass','Không có bảng đánh giá (đề cương đặc thù, được phép)'); else add(G4,'fail','Không tìm thấy bảng đánh giá (cột "Trọng số")'); }
   else { const g=ta.grid.slice(1); const wi=ta.grid[0].findIndex(c=>C.tbl.assess.test(c)); let sum=0; let cc=NaN,ck=NaN; const ex=[];
     g.forEach(r=>{ if(r.some(c=>C.assess.total.test((c||'').trim()))) return; const lbl=r.filter((c,i)=>i!==wi).join(' '); const w=num((r[wi]||'').replace('%','')); if(isNaN(w)){ if(!/[\d]/.test(r[wi]||'')) ex.push(lbl.trim().slice(0,60)||'(dòng trống)'); return; } sum+=w; if(C.assess.cc.test(lbl)) cc=w; if(C.assess.ck.test(lbl)) ck=w; if(C.assess.example.test(r.join(' '))) ex.push(lbl.trim().slice(0,40)+' còn "Ví dụ:"'); });
     meta.assess={sum,cc,ck};
@@ -253,7 +254,6 @@ function check(blocks,opts){
   if(!sig) add(G1,'fail',`Thiếu khối ký (${C.sig.bmName} bên trái, ${C.sig.vkName} bên phải)`);
   else { const s=sig.grid.map(r=>r.join(' | ')).join(' '); const names=sig.grid[0].map(c=>c.replace(/\s+/g,' ').trim()).filter(Boolean).join(' | ');
     if(C.sig.gv.test(s)) add(G1,'warn','Khối ký có "Giảng viên biên soạn"','Chỉ cần '+C.sig.bmName+' và '+C.sig.vkName+'.',BM);
-    const special=C.special.test(meta.title||'');
     if(C.sig.old.test(s)) add(G1,'fail','Khối ký còn chức danh cũ',C.sig.oldMsg+' Hiện có: '+names);
     else if(special){ if(!C.sig.vk.test(s)) add(G1,'fail','Đề cương đặc thù: khối ký phải có '+C.sig.vkName,names); else if(C.sig.bm.test(s)) add(G1,'warn','Đề cương đặc thù (khóa luận, đề án, luận văn) chỉ một chữ ký '+C.sig.vkName,'Bỏ ô '+C.sig.bmName+'. Hiện có: '+names); else add(G1,'pass','Khối ký đề cương đặc thù: '+names); }
     else if(!C.sig.bm.test(s)) add(G1,'fail','Khối ký thiếu '+C.sig.bmName,names); else if(!C.sig.vk.test(s)) add(G1,'fail','Khối ký thiếu '+C.sig.vkName,names); else add(G1,'pass','Khối ký: '+names); }

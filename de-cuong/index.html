@@ -331,6 +331,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
     <h2>Sinh file đề cương theo mẫu 2025</h2>
     <div class="prose"><p>Điền nội dung bên dưới, bảng 5.1 và 5.2 lấy từ phần 2. Trang điền vào đúng file mẫu 2025 của Trường ngay trên trình duyệt, cho tải về file .docx đã dọn sạch chữ mẫu, rồi tự chạy nghiệm thu trên file vừa sinh. Mỗi ô "một dòng một mục" nhập bằng cách xuống dòng.</p></div>
     <div class="form">
+      <div class="wide"><label class="chk"><input type="checkbox" id="g-khoa"> <b>Quy ước riêng của Khoa Kinh tế liên ngành.</b>&nbsp;Bật thì tự điền theo ngôn ngữ đề cương: Khoa phụ trách = Khoa Kinh tế liên ngành, đơn vị quản lý = Trường Kinh tế và Quản lý công, khối ký TS. Đỗ Ngọc Kiên (Trưởng Khoa) và PGS. TS. Bùi Thị Lý (Hiệu trưởng). Tắt thì tự điền các ô đó.</label></div>
       <div><label for="g-lang">Ngôn ngữ đề cương</label><select id="g-lang"><option value="vn">Tiếng Việt</option><option value="en">Tiếng Anh</option></select></div>
       <div><label for="g-ten">Tên học phần (tiếng Việt)</label><input type="text" id="g-ten"></div>
       <div><label for="g-tenEn">Tên tiếng Anh</label><input type="text" id="g-tenEn"></div>
@@ -352,7 +353,6 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
       <div><label for="g-q61">Yêu cầu riêng với sinh viên (6.1), mỗi dòng một ý</label><textarea id="g-q61"></textarea></div>
       <div><label for="g-q62">Quy định thi cử riêng (6.2), mỗi dòng một ý</label><textarea id="g-q62"></textarea></div>
       <div class="wide"><label for="g-dg">Đánh giá, mỗi dòng: Nhóm | Hình thức | Nội dung | Công cụ và tiêu chí | CLO | Trọng số</label><textarea id="g-dg" class="tall"></textarea><small>Chuyên cần 10%, cuối kỳ ít nhất 50%, tổng 100%. Nhóm giống nhau ở các dòng liền nhau sẽ được gộp ô.</small></div>
-      <div class="wide"><label class="chk"><input type="checkbox" id="g-khoa"> Quy ước riêng của Khoa Kinh tế liên ngành: tự điền Trường Kinh tế và Quản lý công, tên Khoa theo ngôn ngữ đề cương, người ký TS. Đỗ Ngọc Kiên (Trưởng Khoa) và PGS. TS. Bùi Thị Lý (Hiệu trưởng)</label></div>
       <div><label for="g-kytrai">Khối ký, ô trái (chức danh)</label><input type="text" id="g-kytrai"><small>Tiếng Việt: TRƯỞNG KHOA. Tiếng Anh: HEAD OF DEPARTMENT.</small></div>
       <div><label for="g-kytraiten">Người ký ô trái</label><input type="text" id="g-kytraiten" placeholder="TS. Nguyễn Văn A"></div>
       <div><label for="g-kyphai">Khối ký, ô phải (chức danh)</label><input type="text" id="g-kyphai"><small>Tiếng Việt: HIỆU TRƯỞNG (trường thuộc). Tiếng Anh: DEAN OF COLLEGE.</small></div>

@@ -5,7 +5,7 @@ Hai trang web chạy hoàn toàn trên trình duyệt, không cần cài đặt,
 | Trang | Link | Làm gì |
 |---|---|---|
 | Phân bổ giờ tín chỉ | https://dongkien.github.io/phan-bo-gio/ | Nhập số tín chỉ, giờ lý thuyết, giờ thảo luận; ra giờ thực tế/bài tập lớn, giờ tự học, số buổi, dòng ghi đề cương |
-| Bộ công cụ đề cương | https://dongkien.github.io/phan-bo-gio/de-cuong/ | Hướng dẫn và checklist theo mẫu 2025; dựng bảng 5.1 và 5.2 (nạp được từ file cũ); nghiệm thu file .docx (tiếng Việt và tiếng Anh, nhiều file một lúc, đối chiếu Bản mô tả CTĐT, xuất CSV); sinh file đề cương .docx điền vào đúng mẫu 2025 |
+| Bộ công cụ đề cương | https://dongkien.github.io/phan-bo-gio/de-cuong/ | Hướng dẫn và checklist theo mẫu 2025; dựng bảng 5.1 và 5.2 (nạp được từ file cũ); sinh file đề cương .docx điền vào đúng mẫu 2025; nghiệm thu file .docx (tiếng Việt và tiếng Anh, nhiều file một lúc, đối chiếu Bản mô tả CTĐT, xuất CSV) |
 
 ## Quy ước phân bổ giờ (1 tín chỉ = 50 giờ học tập)
 

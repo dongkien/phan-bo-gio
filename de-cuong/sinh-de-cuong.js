@@ -87,7 +87,7 @@ async function build(data,tplBuf){
   lbl(S.tenLabel,L==='vn'?`${data.ten}${data.tenEn?' ('+data.tenEn+')':''}`:`${data.tenEn||data.ten}${data.ten&&data.tenEn?' ('+data.ten+')':''}`);
   lbl(S.maLabel,data.ma);
   { const p=findP(t=>/^(bộ môn phụ trách|department)\s*:/i.test(t)); if(p) setLabel(p,S.bmLabel,data.bomon); }
-  { const p=findP(t=>/^(viện\/khoa|faculty\/school)\s*:/i.test(t)); if(p) setLabel(p,(L==='vn'?(data.vkLabel||'Trường'):(data.vkLabel==='Khoa'?'Faculty':'College'))+':',data.vk); }
+  { const p=findP(t=>/^(viện\/khoa|faculty\/school)\s*:/i.test(t)); if(p) setLabel(p,(data.vkLabel||(L==='vn'?'Trường/Khoa':'Faculty/College'))+':',data.vk); }
   lbl(S.tcLabel,String(data.tc).padStart(2,'0')); lbl(S.tqLabel,data.tienquyet||(L==='vn'?'Không':'None'));
   // 4. giảng viên
   { const tbl=kids().find(n=>n.localName==='tbl'); const rows=[{h:true,cells:S.gvHead.map(t=>({t}))}]; (data.gv.length?data.gv:[{ten:'',email:'',dt:'',truso:''}]).forEach((g,i)=>rows.push({cells:[{t:String(i+1),jc:'center'},{t:g.ten},{t:g.email},{t:g.dt},{t:g.truso,jc:'center'}]}));

@@ -36,4 +36,5 @@ def clo9(x):
     i=x.index('Chương 5'); j=x.index('<w:t xml:space="preserve">5</w:t>',i)   # ô CLO của buổi 5 trong bảng 5.1
     return x[:j]+'<w:t xml:space="preserve">9</w:t>'+x[j+len('<w:t xml:space="preserve">5</w:t>'):]
 mutate(V,os.path.join(FX,'loi_clo_khong_ton_tai.docx'),clo9)
+mutate(V,os.path.join(FX,'loi_ma_tran_danh_X.docx'),lambda x: first_t(x,'<w:t xml:space="preserve">3,A</w:t>','<w:t xml:space="preserve">X</w:t>'))
 print('xong')

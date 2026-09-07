@@ -13,6 +13,7 @@
   "loi_en_tai_lieu_tieng_viet.docx":  {"fail": 1, "must": ["tiếng Việt trong đề cương tiếng Anh"]},
   "loi_en_nhan_cu_school.docx":       {"fail": 1, "must": ["Faculty/School:\" là nhãn cũ"]},
   "loi_clo_khong_ton_tai.docx":       {"fail": 1, "must": ["Tham chiếu CLO không tồn tại"]},
+  "loi_ma_tran_danh_X.docx":          {"fail": 1, "must": ["Ô ma trận 3.2 ghi sai dạng"]},
   "dac_thu_luan_van.docx":            {"fail": 0, "must": ["Khối ký đề cương đặc thù"]},
   "loi_dac_thu_hai_chu_ky.docx":      {"fail": 0, "warn": 1, "must": ["chỉ một chữ ký"]},
   "Mau_de_cuong_2025.docx":           {"fail_min": 15}

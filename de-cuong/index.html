@@ -126,8 +126,7 @@ table.matrix{min-width:0;width:100%;table-layout:fixed}
 table.matrix th:first-child,table.matrix td:first-child{width:130px}
 table.matrix th,table.matrix td{text-align:center;padding:5px 8px}
 table.matrix td:first-child,table.matrix th:first-child{text-align:left;font-weight:600;white-space:nowrap}
-table.matrix input[type=checkbox]{width:18px;height:18px;cursor:pointer}
-table.matrix input[type=text]{width:44px;text-align:center;padding:4px}
+table.matrix select{width:64px;padding:4px 2px;text-align:center;font-size:13.5px}
 table.matrix tr.hp td{border-top:2px solid var(--line);font-weight:600;background:var(--bg)}
 .form textarea{font:inherit;font-size:14px;width:100%;min-height:70px;padding:7px 10px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);resize:vertical}
 .form textarea.tall{min-height:120px}
@@ -199,7 +198,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
       <div class="prose">
         <ul>
           <li><b>Mô tả học phần chép nguyên văn</b> từ Bản mô tả CTĐT. Không diễn đạt lại, không rút gọn.</li>
-          <li><b>Mục 3.2</b> gồm các dòng CLO tới PLO và dòng cuối tên đúng là "Học phần" (không ghi "Tổng phân nhiệm"), giá trị lấy từ ma trận CTĐT.</li>
+          <li><b>Mục 3.2</b> gồm các dòng CLO tới PLO và dòng cuối tên đúng là "Học phần" (không ghi "Tổng phân nhiệm"). Ô giao CLO và PLO ghi mức đóng góp 1, 2 hoặc 3; CLO dùng để đánh giá PLO thì ghi thêm ",A" (ví dụ "3,A"). Không đánh dấu "X". Dòng "Học phần" lấy từ ma trận CTĐT.</li>
           <li><b>Học liệu cùng ngôn ngữ giảng dạy.</b> Giáo trình và tài liệu tham khảo bắt buộc phải cùng ngôn ngữ với đề cương; tài liệu khác ngôn ngữ đưa xuống mục tự chọn. Chương trình tiếng Việt chưa có bản dịch thì ghi "Tập bài giảng do giảng viên biên soạn (trên cơ sở …)".</li>
           <li><b>Chưa có giáo trình thì bỏ mục 4.1 Giáo trình</b> và đánh số lại từ 4.1 Tài liệu tham khảo bắt buộc, 4.2 Tài liệu tham khảo tự chọn, 4.3 Website.</li>
           <li><b>Bảng 5.1</b> có cột "Hình thức" ngay sau cột Nội dung (mặc định Trực tiếp). Tổng bốn cột giờ khớp chính xác phân bổ của CTĐT.</li>
@@ -345,7 +344,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
       <div class="wide"><label for="g-mota">Mô tả học phần (chép nguyên văn CTĐT; cách đoạn bằng một dòng trống; mục tiêu nếu muốn ghi thì viết luôn trong mô tả)</label><textarea id="g-mota" class="tall"></textarea></div>
       <div class="wide"><label for="g-clo">Chuẩn đầu ra học phần, mỗi dòng một CLO (không cần ghi "CLO1:")</label><textarea id="g-clo" class="tall"></textarea></div>
       <div><label for="g-nplo">Số PLO của chương trình</label><input type="number" id="g-nplo" min="1" max="20" step="1"></div>
-      <div class="wide"><label>Ma trận 3.2: đánh dấu PLO mà mỗi CLO đóng góp; dòng "Học phần" ghi mức đóng góp của cả học phần cho từng PLO (1, 2 hoặc 3, lấy từ CTĐT; để trống nếu không đóng góp)</label><div class="tablewrap"><table class="grid matrix" id="g-matrix"></table></div><small>Bảng tự dựng theo số CLO ở ô trên và số PLO. Thêm bớt CLO hoặc đổi số PLO thì bảng cập nhật, dấu đã đánh vẫn giữ.</small><input type="hidden" id="g-cloplo"><input type="hidden" id="g-hocphan"></div>
+      <div class="wide"><label>Ma trận 3.2: ô giao CLO và PLO ghi mức đóng góp 1, 2 hoặc 3; nếu CLO đó dùng để đánh giá PLO thì chọn mức kèm ",A" (ví dụ "3,A"). Dòng "Học phần" ghi mức của cả học phần cho từng PLO theo CTĐT. Để trống ô không đóng góp.</label><div class="tablewrap"><table class="grid matrix" id="g-matrix"></table></div><small>Bảng tự dựng theo số CLO ở ô trên và số PLO. Thêm bớt CLO hoặc đổi số PLO thì bảng cập nhật, dấu đã đánh vẫn giữ.</small><input type="hidden" id="g-cloplo"><input type="hidden" id="g-hocphan"></div>
       <div class="wide"><label for="g-gt">Giáo trình, mỗi dòng một cuốn (để trống nếu chưa có, mục 4 sẽ tự đánh số lại)</label><textarea id="g-gt"></textarea></div>
       <div class="wide"><label for="g-bb">Tài liệu tham khảo bắt buộc, mỗi dòng một tài liệu, cùng ngôn ngữ đề cương</label><textarea id="g-bb"></textarea></div>
       <div class="wide"><label for="g-tuchon">Tài liệu tham khảo tự chọn, mỗi dòng một tài liệu</label><textarea id="g-tuchon"></textarea></div>
@@ -539,14 +538,17 @@ $('b-import').addEventListener('change',async e=>{ const f=e.target.files[0]; if
 /* ---------- TAB 4: sinh file docx ---------- */
 (function(){
 const F=['lang','ten','tenEn','ma','tc','bomon','vkLabel','vk','tq','gv','mota','clo','nplo','cloplo','hocphan','gt','bb','tuchon','web','q61','q62','dg','kytrai','kyphai','kytraiten','kyphaiten'];
-function renderMatrix(){ const n=Math.max(1,Math.min(20,parseInt($('g-nplo').value,10)||7)); const clos=lines($('g-clo').value); const cur=lines($('g-cloplo').value).map(l=>l.split(/[,;\s]+/).map(x=>parseInt(x.replace(/\D/g,''),10)).filter(x=>x>0)); const hp=String($('g-hocphan').value||'').split(',').map(x=>x.trim());
+const MAT_OPTS=['','1','2','3','1,A','2,A','3,A'];
+function matJson(v,fallback){ try{ const x=JSON.parse(v||''); return Array.isArray(x)?x:fallback; }catch(_){ return fallback; } }
+function matSel(attrs,val){ return `<select ${attrs}>`+MAT_OPTS.map(o=>`<option value="${o}" ${o===val?'selected':''}>${o||'–'}</option>`).join('')+'</select>'; }
+function renderMatrix(){ const n=Math.max(1,Math.min(20,parseInt($('g-nplo').value,10)||7)); const clos=lines($('g-clo').value); const cur=matJson($('g-cloplo').value,[]); const hp=matJson($('g-hocphan').value,[]);
   const t=$('g-matrix'); let h='<thead><tr><th>CĐR học phần</th>'+Array.from({length:n},(_,j)=>`<th>PLO${j+1}</th>`).join('')+'</tr></thead><tbody>';
-  clos.forEach((c,i)=>{ h+=`<tr><td title="${esc(c)}">CLO${i+1}</td>`+Array.from({length:n},(_,j)=>`<td><input type="checkbox" data-r="${i}" data-c="${j+1}" ${(cur[i]||[]).includes(j+1)?'checked':''}></td>`).join('')+'</tr>'; });
+  clos.forEach((c,i)=>{ h+=`<tr><td title="${esc(c)}">CLO${i+1}</td>`+Array.from({length:n},(_,j)=>`<td>${matSel(`data-r="${i}" data-c="${j}"`,(cur[i]||[])[j]||'')}</td>`).join('')+'</tr>'; });
   if(!clos.length) h+=`<tr><td colspan="${n+1}" style="text-align:left;color:var(--muted)">Nhập CLO ở ô trên để dựng bảng.</td></tr>`;
-  h+=`<tr class="hp"><td>Học phần</td>`+Array.from({length:n},(_,j)=>`<td><input type="text" data-hp="${j}" maxlength="3" value="${esc(hp[j]||'')}" placeholder="–"></td>`).join('')+'</tr></tbody>';
+  h+=`<tr class="hp"><td>Học phần</td>`+Array.from({length:n},(_,j)=>`<td>${matSel(`data-hp="${j}"`,hp[j]||'')}</td>`).join('')+'</tr></tbody>';
   t.innerHTML=h; }
-function syncMatrix(){ const n=Math.max(1,Math.min(20,parseInt($('g-nplo').value,10)||7)); const clos=lines($('g-clo').value); const rows=clos.map((c,i)=>[...$('g-matrix').querySelectorAll(`input[type=checkbox][data-r="${i}"]:checked`)].map(e=>e.dataset.c).join(', ')); $('g-cloplo').value=rows.join('\n'); $('g-hocphan').value=Array.from({length:n},(_,j)=>{ const e=$('g-matrix').querySelector(`input[data-hp="${j}"]`); return e?e.value.trim():''; }).join(','); save(); }
-$('g-matrix').addEventListener('change',syncMatrix); $('g-matrix').addEventListener('input',e=>{ if(e.target.dataset.hp!=null) syncMatrix(); });
+function syncMatrix(){ const n=Math.max(1,Math.min(20,parseInt($('g-nplo').value,10)||7)); const clos=lines($('g-clo').value); const rows=clos.map((c,i)=>Array.from({length:n},(_,j)=>{ const e=$('g-matrix').querySelector(`select[data-r="${i}"][data-c="${j}"]`); return e?e.value:''; })); $('g-cloplo').value=JSON.stringify(rows); $('g-hocphan').value=JSON.stringify(Array.from({length:n},(_,j)=>{ const e=$('g-matrix').querySelector(`select[data-hp="${j}"]`); return e?e.value:''; })); save(); }
+$('g-matrix').addEventListener('change',syncMatrix);
 $('g-nplo').addEventListener('input',()=>{ renderMatrix(); syncMatrix(); }); $('g-clo').addEventListener('input',()=>{ renderMatrix(); syncMatrix(); });
 const KHOA={vn:{bomon:'Khoa Kinh tế liên ngành',vk:'Trường Kinh tế và Quản lý công',kytrai:'TRƯỞNG KHOA',kyphai:'HIỆU TRƯỞNG',kytraiten:'TS. Đỗ Ngọc Kiên',kyphaiten:'PGS. TS. Bùi Thị Lý'},en:{bomon:'Department of Economics and Interdisciplinary Management',vk:'College of Economics and Public Management',kytrai:'HEAD OF DEPARTMENT',kyphai:'DEAN OF COLLEGE',kytraiten:'Dr. Do Ngoc Kien',kyphaiten:'Assoc. Prof. Dr. Bui Thi Ly'}};
 function applyKhoa(){ if(!$('g-khoa').checked) return; const k=KHOA[$('g-lang').value==='en'?'en':'vn']; $('g-vkLabel').value='Trường'; ['bomon','vk','kytrai','kyphai','kytraiten','kyphaiten'].forEach(f=>$('g-'+f).value=k[f]); save(); }
@@ -561,7 +563,7 @@ const SAMPLE={lang:'vn',ten:'Nguyên lý quản lý kinh tế',tenEn:'Principles
   gv:'TS. Nguyễn Văn A | nguyenvana@ftu.edu.vn | 0900000000 | HN',
   mota:'Học phần cung cấp cho sinh viên những nguyên lý cơ bản của quản lý kinh tế ở cấp độ quốc gia: vì sao nhà nước can thiệp vào nền kinh tế, can thiệp bằng công cụ nào, và đánh giá kết quả can thiệp ra sao. Nội dung gồm bốn khối: bản chất và chức năng của quản lý kinh tế; các công cụ quản lý kinh tế vĩ mô; quản lý các thị trường và khu vực kinh tế; đánh giá hiệu lực và hiệu quả của chính sách kinh tế. Học phần kết hợp lý thuyết với các tình huống thực tế của Việt Nam để sinh viên vận dụng được khung phân tích vào các vấn đề quản lý kinh tế đương đại.',
   clo:'Giải thích được bản chất, chức năng và các nguyên tắc của quản lý kinh tế.\nPhân tích được tác động của các công cụ quản lý kinh tế vĩ mô tới doanh nghiệp và hộ gia đình.\nVận dụng được khung phân tích chính sách vào một vấn đề quản lý kinh tế của Việt Nam.\nLàm việc nhóm và trình bày kết quả phân tích một cách thuyết phục.\nTuân thủ chuẩn mực đạo đức nghề nghiệp và liêm chính học thuật.',
-  nplo:7,cloplo:'1, 2\n2, 3\n3, 4\n5, 6\n7',hocphan:'2,3,3,2,2,2,3',
+  nplo:7,cloplo:'[["2","3,A","","","","",""],["","3","3,A","","","",""],["","","3","2","","",""],["","","","","2","2,A",""],["","","","","","","3,A"]]',hocphan:'["2","3,A","3,A","2","2","2,A","3,A"]',
   gt:'Đỗ Ngọc Kiên (chủ biên) (2026). Nguyên lý quản lý kinh tế. Hà Nội: Nhà xuất bản Đại học Ngoại thương.',
   bb:'Nguyễn Văn B (2020). Quản lý nhà nước về kinh tế. Hà Nội: Nhà xuất bản Kinh tế quốc dân.',
   tuchon:'Stiglitz, J. E., & Rosengard, J. K. (2015). Economics of the Public Sector (4th ed.). New York: W. W. Norton.\nMankiw, N. G. (2021). Principles of Economics (9th ed.). Boston: Cengage.',
@@ -579,7 +581,7 @@ $('g-clear').addEventListener('click',()=>{ F.forEach(k=>$('g-'+k).value=''); $(
 function collect(){ const o=read(); const d={lang:o.lang,ten:o.ten.trim(),tenEn:o.tenEn.trim(),ma:o.ma.trim(),bomon:o.bomon.trim(),vkLabel:o.vkLabel,vk:o.vk.trim(),tc:num($('b-tc').value)||3,tienquyet:o.tq.trim(),
     gv:lines(o.gv).map(l=>{ const p=l.split('|').map(x=>x.trim()); return {ten:p[0]||'',email:p[1]||'',dt:p[2]||'',truso:p[3]||''}; }),
     mota:String(o.mota||'').split(/\n\s*\n/).map(x=>x.replace(/\s*\n\s*/g,' ').trim()).filter(Boolean), muctieu:[], clo:lines(o.clo).map(c=>c.replace(/^-?\s*CLO\s*\d+\s*:\s*/i,'')),
-    nPLO:Math.max(1,parseInt(o.nplo,10)||7), cloPlo:lines(o.cloplo).map(l=>l.split(/[,;\s]+/).map(x=>parseInt(x.replace(/\D/g,''),10)).filter(x=>x>0)), hocphanRow:String(o.hocphan||'').split(',').map(x=>x.trim()),
+    nPLO:Math.max(1,parseInt(o.nplo,10)||7), cloPlo:matJson(o.cloplo,[]), hocphanRow:matJson(o.hocphan,[]),
     giaotrinh:lines(o.gt),batbuoc:lines(o.bb),tuchon:lines(o.tuchon),web:lines(o.web),rows:B.rows.map(r=>norm(r)),quydinh61:lines(o.q61),quydinh62:lines(o.q62),
     danhgia:lines(o.dg).map(l=>{ const p=l.split('|').map(x=>x.trim()); return {nhom:p[0]||'',hinhthuc:p[1]||'',noidung:p[2]||'',congcu:p[3]||'',clo:p[4]||'',trongso:p[5]||''}; }), kyTrai:o.kytrai.trim(), kyPhai:o.kyphai.trim(), kyTraiTen:o.kytraiten.trim(), kyPhaiTen:o.kyphaiten.trim(), dacThu:$('g-dacthu').checked};
   const miss=[]; if(!d.ten) miss.push('tên học phần'); if(!d.ma) miss.push('mã học phần'); else { const info=NT.maHocPhan(d.ma); if(!info) miss.push(`mã học phần "${d.ma}" sai định dạng`); else if(info.lang!==(d.lang==='en'?'en':'vn')) miss.push(`mã ${d.ma.toUpperCase()} là ${info.mota}, không khớp ngôn ngữ đề cương đang chọn (bản ${d.lang==='en'?'tiếng Anh':'tiếng Việt'} dùng ${NT.maTheoNgonNgu(d.ma,d.lang==='en'?'en':'vn')})`); } if(!d.clo.length) miss.push('CLO'); if(!d.rows.length) miss.push('bảng 5.1 (phần 2)'); if(!d.danhgia.length) miss.push('đánh giá');

@@ -104,7 +104,7 @@ async function build(data,tplBuf){
   // 7. ma trận 3.2
   { const h32=findP(t=>t.startsWith(S.h32)); const n=data.nPLO; const wPLO=Math.floor((9515-1600)/n); const widths=[1600,...Array(n).fill(wPLO)];
     const rows=[{h:true,cells:[{t:S.matHead},...Array.from({length:n},(_,i)=>({t:'PLO'+(i+1)}))]}];
-    data.clo.forEach((c,i)=>{ const marks=data.cloPlo[i]||[]; rows.push({cells:[{t:'CLO'+(i+1),b:true},...Array.from({length:n},(_,j)=>({t:marks.includes(j+1)?'X':'',jc:'center'}))]}); });
+    data.clo.forEach((c,i)=>{ const vals=data.cloPlo[i]||[]; rows.push({cells:[{t:'CLO'+(i+1),b:true},...Array.from({length:n},(_,j)=>({t:String(vals[j]||''),jc:'center'}))]}); });
     rows.push({cells:[{t:S.matCourse,b:true},...Array.from({length:n},(_,j)=>({t:(data.hocphanRow[j]||'').toString(),jc:'center',b:true}))]});
     insAfter(h32,frag(doc,mkTable(widths,rows)).concat(frag(doc,P('',{after:0})))); }
   // 8. học liệu

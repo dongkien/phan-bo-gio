@@ -122,6 +122,12 @@ table.g52 td textarea.zero{border-color:var(--red);background:var(--red-soft)}
 .ctdt-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
 .form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
 .form .wide{grid-column:1/-1}
+table.matrix{min-width:0;width:auto}
+table.matrix th,table.matrix td{text-align:center;padding:5px 8px}
+table.matrix td:first-child,table.matrix th:first-child{text-align:left;font-weight:600;white-space:nowrap}
+table.matrix input[type=checkbox]{width:18px;height:18px;cursor:pointer}
+table.matrix input[type=text]{width:44px;text-align:center;padding:4px}
+table.matrix tr.hp td{border-top:2px solid var(--line);font-weight:600;background:var(--bg)}
 .form textarea{font:inherit;font-size:14px;width:100%;min-height:70px;padding:7px 10px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);resize:vertical}
 .form textarea.tall{min-height:120px}
 .form label{font-weight:600;font-size:13.5px;display:block;margin-bottom:4px}
@@ -334,12 +340,10 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
       <div><label for="g-vk">Tên Trường hoặc Khoa quản lý</label><input type="text" id="g-vk"><small>Tiếng Anh: trường thuộc là College, khoa độc lập là Faculty.</small></div>
       <div><label for="g-tq">Điều kiện tiên quyết</label><input type="text" id="g-tq" placeholder="Không"></div>
       <div class="wide"><label for="g-gv">Giảng viên, mỗi dòng một người: Họ tên | Email FTU | Điện thoại | Trụ sở</label><textarea id="g-gv"></textarea></div>
-      <div class="wide"><label for="g-mota">Mô tả học phần (chép nguyên văn CTĐT; cách đoạn bằng một dòng trống)</label><textarea id="g-mota" class="tall"></textarea></div>
-      <div class="wide"><label for="g-muctieu">Mục tiêu đào tạo, mỗi dòng một mục tiêu</label><textarea id="g-muctieu"></textarea></div>
+      <div class="wide"><label for="g-mota">Mô tả học phần (chép nguyên văn CTĐT; cách đoạn bằng một dòng trống; mục tiêu nếu muốn ghi thì viết luôn trong mô tả)</label><textarea id="g-mota" class="tall"></textarea></div>
       <div class="wide"><label for="g-clo">Chuẩn đầu ra học phần, mỗi dòng một CLO (không cần ghi "CLO1:")</label><textarea id="g-clo" class="tall"></textarea></div>
       <div><label for="g-nplo">Số PLO của chương trình</label><input type="number" id="g-nplo" min="1" max="20" step="1"></div>
-      <div class="wide"><label for="g-cloplo">Ma trận 3.2: mỗi dòng ứng với một CLO, ghi số các PLO mà CLO đóng góp (ví dụ "1, 3")</label><textarea id="g-cloplo"></textarea></div>
-      <div class="wide"><label for="g-hocphan">Dòng "Học phần" của ma trận: giá trị đóng góp cho từng PLO, cách nhau bằng dấu phẩy, để trống PLO không đóng góp (ví dụ "2,3,,3,3,3,")</label><input type="text" id="g-hocphan"></div>
+      <div class="wide"><label>Ma trận 3.2: đánh dấu PLO mà mỗi CLO đóng góp; dòng "Học phần" ghi mức đóng góp của cả học phần cho từng PLO (1, 2 hoặc 3, lấy từ CTĐT; để trống nếu không đóng góp)</label><div class="tablewrap"><table class="grid matrix" id="g-matrix"></table></div><small>Bảng tự dựng theo số CLO ở ô trên và số PLO. Thêm bớt CLO hoặc đổi số PLO thì bảng cập nhật, dấu đã đánh vẫn giữ.</small><input type="hidden" id="g-cloplo"><input type="hidden" id="g-hocphan"></div>
       <div class="wide"><label for="g-gt">Giáo trình, mỗi dòng một cuốn (để trống nếu chưa có, mục 4 sẽ tự đánh số lại)</label><textarea id="g-gt"></textarea></div>
       <div class="wide"><label for="g-bb">Tài liệu tham khảo bắt buộc, mỗi dòng một tài liệu, cùng ngôn ngữ đề cương</label><textarea id="g-bb"></textarea></div>
       <div class="wide"><label for="g-tuchon">Tài liệu tham khảo tự chọn, mỗi dòng một tài liệu</label><textarea id="g-tuchon"></textarea></div>
@@ -533,7 +537,16 @@ $('b-import').addEventListener('change',async e=>{ const f=e.target.files[0]; if
 
 /* ---------- TAB 4: sinh file docx ---------- */
 (function(){
-const F=['lang','ten','tenEn','ma','tc','bomon','vkLabel','vk','tq','gv','mota','muctieu','clo','nplo','cloplo','hocphan','gt','bb','tuchon','web','q61','q62','dg','kytrai','kyphai','kytraiten','kyphaiten'];
+const F=['lang','ten','tenEn','ma','tc','bomon','vkLabel','vk','tq','gv','mota','clo','nplo','cloplo','hocphan','gt','bb','tuchon','web','q61','q62','dg','kytrai','kyphai','kytraiten','kyphaiten'];
+function renderMatrix(){ const n=Math.max(1,Math.min(20,parseInt($('g-nplo').value,10)||7)); const clos=lines($('g-clo').value); const cur=lines($('g-cloplo').value).map(l=>l.split(/[,;\s]+/).map(x=>parseInt(x.replace(/\D/g,''),10)).filter(x=>x>0)); const hp=String($('g-hocphan').value||'').split(',').map(x=>x.trim());
+  const t=$('g-matrix'); let h='<thead><tr><th>CĐR học phần</th>'+Array.from({length:n},(_,j)=>`<th>PLO${j+1}</th>`).join('')+'</tr></thead><tbody>';
+  clos.forEach((c,i)=>{ h+=`<tr><td title="${esc(c)}">CLO${i+1}</td>`+Array.from({length:n},(_,j)=>`<td><input type="checkbox" data-r="${i}" data-c="${j+1}" ${(cur[i]||[]).includes(j+1)?'checked':''}></td>`).join('')+'</tr>'; });
+  if(!clos.length) h+=`<tr><td colspan="${n+1}" style="text-align:left;color:var(--muted)">Nhập CLO ở ô trên để dựng bảng.</td></tr>`;
+  h+=`<tr class="hp"><td>Học phần</td>`+Array.from({length:n},(_,j)=>`<td><input type="text" data-hp="${j}" maxlength="3" value="${esc(hp[j]||'')}" placeholder="–"></td>`).join('')+'</tr></tbody>';
+  t.innerHTML=h; }
+function syncMatrix(){ const n=Math.max(1,Math.min(20,parseInt($('g-nplo').value,10)||7)); const clos=lines($('g-clo').value); const rows=clos.map((c,i)=>[...$('g-matrix').querySelectorAll(`input[type=checkbox][data-r="${i}"]:checked`)].map(e=>e.dataset.c).join(', ')); $('g-cloplo').value=rows.join('\n'); $('g-hocphan').value=Array.from({length:n},(_,j)=>{ const e=$('g-matrix').querySelector(`input[data-hp="${j}"]`); return e?e.value.trim():''; }).join(','); save(); }
+$('g-matrix').addEventListener('change',syncMatrix); $('g-matrix').addEventListener('input',e=>{ if(e.target.dataset.hp!=null) syncMatrix(); });
+$('g-nplo').addEventListener('input',()=>{ renderMatrix(); syncMatrix(); }); $('g-clo').addEventListener('input',()=>{ renderMatrix(); syncMatrix(); });
 const KHOA={vn:{bomon:'Khoa Kinh tế liên ngành',vk:'Trường Kinh tế và Quản lý công',kytrai:'TRƯỞNG KHOA',kyphai:'HIỆU TRƯỞNG',kytraiten:'TS. Đỗ Ngọc Kiên',kyphaiten:'PGS. TS. Bùi Thị Lý'},en:{bomon:'Department of Economics and Interdisciplinary Management',vk:'College of Economics and Public Management',kytrai:'HEAD OF DEPARTMENT',kyphai:'DEAN OF COLLEGE',kytraiten:'Dr. Do Ngoc Kien',kyphaiten:'Assoc. Prof. Dr. Bui Thi Ly'}};
 function applyKhoa(){ if(!$('g-khoa').checked) return; const k=KHOA[$('g-lang').value==='en'?'en':'vn']; $('g-vkLabel').value='Trường'; ['bomon','vk','kytrai','kyphai','kytraiten','kyphaiten'].forEach(f=>$('g-'+f).value=k[f]); save(); }
 $('g-khoa').addEventListener('change',()=>{ try{ localStorage.setItem('dc_bomon',$('g-khoa').checked?'1':'0'); }catch(_){} $('c-bomon').checked=$('g-khoa').checked; applyKhoa(); });
@@ -546,7 +559,6 @@ const lines=v=>String(v||'').split('\n').map(x=>x.trim()).filter(Boolean);
 const SAMPLE={lang:'vn',ten:'Nguyên lý quản lý kinh tế',tenEn:'Principles of Economic Management',ma:'DTU301',tc:3,bomon:'Khoa Kinh tế liên ngành',vkLabel:'Trường',vk:'Trường Kinh tế và Quản lý công',tq:'Không',
   gv:'TS. Nguyễn Văn A | nguyenvana@ftu.edu.vn | 0900000000 | HN',
   mota:'Học phần cung cấp cho sinh viên những nguyên lý cơ bản của quản lý kinh tế ở cấp độ quốc gia: vì sao nhà nước can thiệp vào nền kinh tế, can thiệp bằng công cụ nào, và đánh giá kết quả can thiệp ra sao. Nội dung gồm bốn khối: bản chất và chức năng của quản lý kinh tế; các công cụ quản lý kinh tế vĩ mô; quản lý các thị trường và khu vực kinh tế; đánh giá hiệu lực và hiệu quả của chính sách kinh tế. Học phần kết hợp lý thuyết với các tình huống thực tế của Việt Nam để sinh viên vận dụng được khung phân tích vào các vấn đề quản lý kinh tế đương đại.',
-  muctieu:'Trang bị khung lý thuyết về vai trò và công cụ của nhà nước trong nền kinh tế.\nRèn kỹ năng phân tích một chính sách kinh tế theo mục tiêu, công cụ và kết quả.\nHình thành thái độ khách quan, dựa trên bằng chứng khi đánh giá chính sách.',
   clo:'Giải thích được bản chất, chức năng và các nguyên tắc của quản lý kinh tế.\nPhân tích được tác động của các công cụ quản lý kinh tế vĩ mô tới doanh nghiệp và hộ gia đình.\nVận dụng được khung phân tích chính sách vào một vấn đề quản lý kinh tế của Việt Nam.\nLàm việc nhóm và trình bày kết quả phân tích một cách thuyết phục.\nTuân thủ chuẩn mực đạo đức nghề nghiệp và liêm chính học thuật.',
   nplo:7,cloplo:'1, 2\n2, 3\n3, 4\n5, 6\n7',hocphan:'2,3,3,2,2,2,3',
   gt:'Đỗ Ngọc Kiên (chủ biên) (2026). Nguyên lý quản lý kinh tế. Hà Nội: Nhà xuất bản Đại học Ngoại thương.',
@@ -560,12 +572,12 @@ function write(o){ F.forEach(k=>{ if(o[k]!=null) $('g-'+k).value=o[k]; }); }
 function save(){ try{ localStorage.setItem('dc_gen',JSON.stringify(read())); }catch(_){} }
 F.forEach(k=>$('g-'+k).addEventListener('input',save)); $('g-clo').addEventListener('input',()=>renderB());
 $('g-tc').addEventListener('change',()=>{ $('b-tc').value=$('g-tc').value; renderB(); });
-$('g-sample').addEventListener('click',()=>{ write(SAMPLE); save(); if(!B.rows.some(r=>r.nd)){ $('b-tc').value=3; $('b-x').value=24; $('b-y').value=6; B.rows=Array.from({length:10},(_,i)=>({nd:`Chương ${i+1}`,ht:'Trực tiếp',x:0,y:0,z:0,e:0,clo:String(1+(i%5)),c52:{lt:`Nội dung chương ${i+1}`,th:'',tl:`Bài tập chương ${i+1}`,tu:'Đọc giáo trình [1], chương '+(i+1),kt:i<5?'Chuyên cần, Giữa kỳ, Cuối kỳ':'Chuyên cần, Cuối kỳ'},kth:0})); even(); B.rows.forEach(r=>{ if(r.y>0&&!r.c52.th) r.c52.th='Thảo luận tình huống'; if(r.y===0) r.c52.th=''; }); renderB(); } toast('g-toast','Đã nạp ví dụ. Bảng 5.1 và 5.2 ở phần 2.'); });
-$('g-clear').addEventListener('click',()=>{ F.forEach(k=>$('g-'+k).value=''); $('g-lang').value='vn'; $('g-vkLabel').value='Trường'; save(); });
-(function init(){ let o=null; try{ o=JSON.parse(localStorage.getItem('dc_gen')||'null'); }catch(_){} if(o) write(o); else write(SAMPLE); $('g-tc').value=$('b-tc').value||3; try{ $('g-khoa').checked=localStorage.getItem('dc_bomon')!=='0'; }catch(_){ $('g-khoa').checked=true; } maHint(); })();
+$('g-sample').addEventListener('click',()=>{ write(SAMPLE); save(); renderMatrix(); if(!B.rows.some(r=>r.nd)){ $('b-tc').value=3; $('b-x').value=24; $('b-y').value=6; B.rows=Array.from({length:10},(_,i)=>({nd:`Chương ${i+1}`,ht:'Trực tiếp',x:0,y:0,z:0,e:0,clo:String(1+(i%5)),c52:{lt:`Nội dung chương ${i+1}`,th:'',tl:`Bài tập chương ${i+1}`,tu:'Đọc giáo trình [1], chương '+(i+1),kt:i<5?'Chuyên cần, Giữa kỳ, Cuối kỳ':'Chuyên cần, Cuối kỳ'},kth:0})); even(); B.rows.forEach(r=>{ if(r.y>0&&!r.c52.th) r.c52.th='Thảo luận tình huống'; if(r.y===0) r.c52.th=''; }); renderB(); } toast('g-toast','Đã nạp ví dụ. Bảng 5.1 và 5.2 ở phần 2.'); });
+$('g-clear').addEventListener('click',()=>{ F.forEach(k=>$('g-'+k).value=''); $('g-lang').value='vn'; $('g-vkLabel').value='Trường'; save(); renderMatrix(); });
+(function init(){ let o=null; try{ o=JSON.parse(localStorage.getItem('dc_gen')||'null'); }catch(_){} if(o) write(o); else write(SAMPLE); $('g-tc').value=$('b-tc').value||3; try{ $('g-khoa').checked=localStorage.getItem('dc_bomon')!=='0'; }catch(_){ $('g-khoa').checked=true; } maHint(); renderMatrix(); })();
 function collect(){ const o=read(); const d={lang:o.lang,ten:o.ten.trim(),tenEn:o.tenEn.trim(),ma:o.ma.trim(),bomon:o.bomon.trim(),vkLabel:o.vkLabel,vk:o.vk.trim(),tc:num($('b-tc').value)||3,tienquyet:o.tq.trim(),
     gv:lines(o.gv).map(l=>{ const p=l.split('|').map(x=>x.trim()); return {ten:p[0]||'',email:p[1]||'',dt:p[2]||'',truso:p[3]||''}; }),
-    mota:String(o.mota||'').split(/\n\s*\n/).map(x=>x.replace(/\s*\n\s*/g,' ').trim()).filter(Boolean), muctieu:lines(o.muctieu), clo:lines(o.clo).map(c=>c.replace(/^-?\s*CLO\s*\d+\s*:\s*/i,'')),
+    mota:String(o.mota||'').split(/\n\s*\n/).map(x=>x.replace(/\s*\n\s*/g,' ').trim()).filter(Boolean), muctieu:[], clo:lines(o.clo).map(c=>c.replace(/^-?\s*CLO\s*\d+\s*:\s*/i,'')),
     nPLO:Math.max(1,parseInt(o.nplo,10)||7), cloPlo:lines(o.cloplo).map(l=>l.split(/[,;\s]+/).map(x=>parseInt(x.replace(/\D/g,''),10)).filter(x=>x>0)), hocphanRow:String(o.hocphan||'').split(',').map(x=>x.trim()),
     giaotrinh:lines(o.gt),batbuoc:lines(o.bb),tuchon:lines(o.tuchon),web:lines(o.web),rows:B.rows.map(r=>norm(r)),quydinh61:lines(o.q61),quydinh62:lines(o.q62),
     danhgia:lines(o.dg).map(l=>{ const p=l.split('|').map(x=>x.trim()); return {nhom:p[0]||'',hinhthuc:p[1]||'',noidung:p[2]||'',congcu:p[3]||'',clo:p[4]||'',trongso:p[5]||''}; }), kyTrai:o.kytrai.trim(), kyPhai:o.kyphai.trim(), kyTraiTen:o.kytraiten.trim(), kyPhaiTen:o.kyphaiten.trim(), dacThu:$('g-dacthu').checked};

@@ -82,7 +82,7 @@ table.grid{width:100%;border-collapse:collapse;font-size:14px;min-width:760px}
 .grid tfoot .target{display:block;font-weight:400;color:var(--muted);font-size:12px}
 .grid tfoot td.bad{color:var(--red)}
 .grid tfoot td.good{color:var(--ok)}
-.drop{border:2px dashed var(--line);border-radius:6px;padding:26px 20px;text-align:center;color:var(--muted);cursor:pointer;background:var(--bg)}
+.drop{display:block;margin-top:14px;border:2px dashed var(--line);border-radius:6px;padding:26px 20px;text-align:center;color:var(--muted);cursor:pointer;background:var(--bg)}
 .drop.on{border-color:var(--navy);color:var(--ink)}
 .drop input{display:none}
 .drop b{color:var(--navy)}
@@ -470,7 +470,7 @@ function check(blocks,expect){
       const sum={x:0,y:0,z:0,e:0}; const bad=[];
       rows51.forEach(r=>{ for(const k of ['x','y','z','e']){ const v=num(r[ci[k]]); if(isNaN(v)) bad.push(`buổi ${r[0].trim()} cột ${k}`); else sum[k]+=v; } });
       tot51=sum; const T=sum.x+sum.y+sum.z+sum.e;
-      add(G3,'pass',`Bảng 5.1: ${rows51.length} buổi, tổng ${fmt(sum.x)} / ${fmt(sum.y)} / ${fmt(sum.z)} / ${fmt(sum.e)} = ${fmt(T)} giờ`);
+      if(!rows51.length) add(G3,'fail','Bảng 5.1 chưa có buổi nào'); else add(G3,'pass',`Bảng 5.1: ${rows51.length} buổi, tổng ${fmt(sum.x)} / ${fmt(sum.y)} / ${fmt(sum.z)} / ${fmt(sum.e)} = ${fmt(T)} giờ`);
       if(bad.length) add(G3,'fail','Ô giờ trong 5.1 để trống hoặc không phải số: '+bad.slice(0,6).join(', ')+(bad.length>6?'…':''));
       if(!totalRow) add(G3,'fail','Bảng 5.1 thiếu dòng "Tổng cộng"'); else { const tv=['x','y','z','e'].map(k=>num(totalRow[ci[k]])); const diff=['x','y','z','e'].filter((k,i)=>!isNaN(tv[i])&&Math.abs(tv[i]-sum[k])>1e-9); if(diff.length) add(G3,'fail','Dòng Tổng cộng trong 5.1 không bằng tổng các buổi',`Dòng tổng ghi ${tv.map(v=>isNaN(v)?'?':fmt(v)).join(' / ')}, cộng thực ${fmt(sum.x)} / ${fmt(sum.y)} / ${fmt(sum.z)} / ${fmt(sum.e)}.`); else add(G3,'pass','Dòng Tổng cộng khớp tổng các buổi'); }
       if(!isNaN(tc)){ if(Math.abs(T-50*tc)>1e-9) add(G3,'fail',`Tổng giờ ${fmt(T)} khác 50 × ${fmt(tc)} TC = ${fmt(50*tc)}`); else add(G3,'pass',`Tổng giờ bằng 50 × ${fmt(tc)} TC`); }

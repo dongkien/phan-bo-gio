@@ -28,8 +28,7 @@ File gốc: `HuongDan_XayDung_CDR_CTDT_HocPhan.docx` (cùng thư mục, bản l�
 - CLO của học phần cốt lõi đã phân nhiệm để đánh giá PLO/PI thì không tự ý sửa hằng năm (trừ khi Trường cải tiến PLO/PI).
 
 ## Liên hệ với ma trận 3.2 trong đề cương (thực tế, vd DTU301 KTĐN)
-- Cột PLO có hàng PI con (PI2.1, PI4.1…); ô CLO×PI ghi **mức 1/2/3** (tương ứng I/R/M) và **",A"** khi CLO đó dùng để đánh giá PI. Dòng cuối trong đề cương mẫu Khoa gọi là "Học phần" (KTĐN ghi "Tổng phân nhiệm").
-- Chưa có xác nhận chính thức 1=I, 2=R, 3=M; hỏi sếp khi cần suy diễn.
+- **Sếp chốt 8/9/2026: 1 = I, 2 = R, 3 = M.** Ô CLO×PLO CHỈ ghi 1, 2 hoặc 3. Dòng tổng "Học phần" (đúng tên, không "Tổng phân nhiệm") ghi 1, 2, 3 hoặc **"3,A"** khi học phần được dùng để đánh giá PLO đó. Ghi ",A" ở dòng CLO (như DTU301 bản KTĐN) là sai.
 
 ## Khung CTDH (tham khảo nhanh)
 - ĐH ≤ 130-140 TC tùy khối ngành; đại cương ≥ 25%; tự chọn 15-30%; học phần dự án ≥ 10% TC; TTGK 3 TC; học phần tốt nghiệp ≥ 9 TC (cử nhân) / 12 TC (kỹ sư). Khuyến khích mỗi học phần 3 TC.

@@ -122,6 +122,9 @@ table.g52 td textarea.zero{border-color:var(--red);background:var(--red-soft)}
 .ctdt-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
 .form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
 .form .wide{grid-column:1/-1}
+.panel.sub{background:var(--bg);margin:0 0 12px;padding:14px 16px}
+.panel.sub:last-child{margin-bottom:0}
+.subh{font-family:"Source Serif 4",Cambria,Georgia,serif;font-size:17px;font-weight:600;margin:0 0 10px}
 table.matrix{min-width:0;width:100%;table-layout:fixed}
 table.matrix th:first-child,table.matrix td:first-child{width:130px}
 table.matrix th,table.matrix td{text-align:center;padding:5px 8px}
@@ -158,9 +161,8 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
 
 <nav class="tabs" role="tablist">
   <button role="tab" data-tab="huong-dan" aria-selected="true">1. Hướng dẫn và checklist</button>
-  <button role="tab" data-tab="bang-51" aria-selected="false">2. Dựng bảng 5.1 và 5.2</button>
-  <button role="tab" data-tab="sinh-file" aria-selected="false">3. Sinh file đề cương</button>
-  <button role="tab" data-tab="nghiem-thu" aria-selected="false">4. Nghiệm thu file docx</button>
+  <button role="tab" data-tab="sinh-file" aria-selected="false">2. Sinh file đề cương</button>
+  <button role="tab" data-tab="nghiem-thu" aria-selected="false">3. Nghiệm thu file docx</button>
 </nav>
 
 <!-- ============ TAB 1 ============ -->
@@ -169,7 +171,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
     <h2>Tải mẫu và bắt đầu</h2>
     <div class="prose">
       <p>Đề cương phải được điền vào đúng file mẫu 2025 của Trường. Không tự vẽ lại bảng, không đổi thứ tự bảy mục. Mẫu gốc là bản song ngữ, nửa tiếng Việt trước, nửa tiếng Anh sau; khi nộp bản một thứ tiếng thì tách nửa còn lại ra.</p>
-      <p>Hai đường đi: soạn trong Word rồi dùng phần 4 để nghiệm thu (nhận cả bản tiếng Việt và tiếng Anh, kiểm được nhiều file một lúc, đối chiếu được với Bản mô tả CTĐT); hoặc điền nội dung ở phần 2 và phần 3 để trang sinh thẳng file .docx đúng mẫu, đã dọn sạch chữ mẫu và tự nghiệm thu.</p>
+      <p>Hai đường đi: soạn trong Word rồi dùng phần 3 để nghiệm thu (nhận cả bản tiếng Việt và tiếng Anh, kiểm được nhiều file một lúc, đối chiếu được với Bản mô tả CTĐT); hoặc điền biểu mẫu ở phần 2 để trang sinh thẳng file .docx đúng mẫu, đã dọn sạch chữ mẫu và tự nghiệm thu.</p>
     </div>
     <div class="actions">
       <a class="btn" href="Mau_de_cuong_2025.docx" download>Tải mẫu đề cương 2025 (.docx)</a>
@@ -189,7 +191,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
           <li><b>Chuẩn hóa học liệu</b> theo ngôn ngữ giảng dạy. Tài liệu khác ngôn ngữ đẩy xuống mục tự chọn.</li>
           <li><b>Điền vào mẫu.</b> Tách nửa song ngữ trước khi điền. Thứ tự: đầu đề, mô tả, CLO, học liệu, các bảng 5.1, 5.2, đánh giá, ma trận 3.2.</li>
           <li><b>Dọn.</b> Xóa chữ đỏ và chú thích chân trang của mẫu, giữ dòng "Kèm theo QĐ". Bỏ ảnh tiêu đề thư, bỏ ngắt trang thủ công, gộp đoạn trống.</li>
-          <li><b>Nghiệm thu.</b> Đọc lại file thật, dùng phần 4 của trang này, rồi liệt kê các điểm cần tác giả quyết.</li>
+          <li><b>Nghiệm thu.</b> Đọc lại file thật, dùng phần 3 của trang này, rồi liệt kê các điểm cần tác giả quyết.</li>
         </ol>
       </div>
     </div>
@@ -236,10 +238,32 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
   </div>
 </section>
 
-<!-- ============ TAB 2 ============ -->
-<section id="tab-bang-51" role="tabpanel" hidden>
+<!-- ============ TAB 3: sinh file ============ -->
+<section id="tab-sinh-file" role="tabpanel" hidden>
   <div class="panel">
-    <h2>Phân bổ giờ của học phần</h2>
+    <h2>Sinh file đề cương theo mẫu 2025</h2>
+    <div class="prose"><p>Điền nội dung bên dưới theo thứ tự các mục của đề cương. Trang điền vào đúng file mẫu 2025 của Trường ngay trên trình duyệt, cho tải về file .docx đã dọn sạch chữ mẫu, rồi tự chạy nghiệm thu trên file vừa sinh. Mỗi ô "một dòng một mục" nhập bằng cách xuống dòng.</p></div>
+    <div class="form">
+      <div class="wide"><label class="chk"><input type="checkbox" id="g-khoa"> <b>Quy ước riêng của Khoa Kinh tế liên ngành.</b>&nbsp;Bật thì tự điền theo ngôn ngữ đề cương: Khoa phụ trách = Khoa Kinh tế liên ngành, đơn vị quản lý = Trường Kinh tế và Quản lý công, khối ký TS. Đỗ Ngọc Kiên (Trưởng Khoa) và PGS. TS. Bùi Thị Lý (Hiệu trưởng). Tắt thì tự điền các ô đó.</label></div>
+      <div><label for="g-lang">Ngôn ngữ đề cương</label><select id="g-lang"><option value="vn">Tiếng Việt</option><option value="en">Tiếng Anh</option></select></div>
+      <div><label for="g-ten">Tên học phần (tiếng Việt)</label><input type="text" id="g-ten"></div>
+      <div><label for="g-tenEn">Tên tiếng Anh</label><input type="text" id="g-tenEn"></div>
+      <div><label for="g-ma">Mã học phần</label><input type="text" id="g-ma"><small id="g-ma-hint">3 chữ cái lĩnh vực + 3 chữ số (tiêu chuẩn), H+3 số (CLC dạy tiếng Việt), E+3 số (CLC dạy tiếng Anh), 3 số+E (tiên tiến)</small></div>
+      <div><label for="g-bomon">Khoa phụ trách</label><input type="text" id="g-bomon"><small>Trường đã bỏ Bộ môn; ghi tên Khoa.</small></div>
+      <div><label for="g-vk">Tên đơn vị quản lý học phần</label><input type="text" id="g-vk" placeholder="Trường Kinh tế và Quản lý công"><small>Gõ đủ tên, ví dụ "Trường Kinh tế và Quản lý công" hoặc "Khoa Tài chính Ngân hàng"; tiếng Anh: College … hoặc Faculty …. Nhãn Trường/Khoa trong file tự lấy theo chữ đầu.</small></div>
+      <div><label for="g-tq">Điều kiện tiên quyết</label><input type="text" id="g-tq" placeholder="Không"></div>
+      <div class="wide"><label for="g-gv">Giảng viên, mỗi dòng một người: Họ tên | Email FTU | Điện thoại | Trụ sở</label><textarea id="g-gv"></textarea></div>
+      <div class="wide"><label for="g-mota">Mô tả học phần (chép nguyên văn CTĐT; cách đoạn bằng một dòng trống; mục tiêu nếu muốn ghi thì viết luôn trong mô tả)</label><textarea id="g-mota" class="tall"></textarea></div>
+      <div class="wide"><label for="g-clo">Chuẩn đầu ra học phần, mỗi dòng một CLO (không cần ghi "CLO1:")</label><textarea id="g-clo" class="tall"></textarea></div>
+      <div><label for="g-nplo">Số PLO của chương trình</label><input type="number" id="g-nplo" min="1" max="20" step="1"></div>
+      <div class="wide"><label>Ma trận 3.2: ô giao CLO và PLO ghi mức đóng góp 1, 2 hoặc 3; nếu CLO đó dùng để đánh giá PLO thì chọn mức kèm ",A" (ví dụ "3,A"). Dòng "Học phần" ghi mức của cả học phần cho từng PLO theo CTĐT. Để trống ô không đóng góp.</label><div class="tablewrap"><table class="grid matrix" id="g-matrix"></table></div><small>Bảng tự dựng theo số CLO ở ô trên và số PLO. Thêm bớt CLO hoặc đổi số PLO thì bảng cập nhật, dấu đã đánh vẫn giữ.</small><input type="hidden" id="g-cloplo"><input type="hidden" id="g-hocphan"></div>
+      <div class="wide"><label for="g-gt">Giáo trình, mỗi dòng một cuốn (để trống nếu chưa có, mục 4 sẽ tự đánh số lại)</label><textarea id="g-gt"></textarea></div>
+      <div class="wide"><label for="g-bb">Tài liệu tham khảo bắt buộc, mỗi dòng một tài liệu, cùng ngôn ngữ đề cương</label><textarea id="g-bb"></textarea></div>
+      <div class="wide"><label for="g-tuchon">Tài liệu tham khảo tự chọn, mỗi dòng một tài liệu</label><textarea id="g-tuchon"></textarea></div>
+      <div class="wide"><label for="g-web">Website, mỗi dòng một địa chỉ (để trống thì bỏ mục)</label><textarea id="g-web" style="min-height:44px"></textarea></div>
+      <div class="wide" id="khoi-5"><label>Mục 5. Nội dung, phương pháp và kế hoạch giảng dạy</label>
+<div class="panel sub">
+    <h3 class="subh">Phân bổ giờ của học phần</h3>
     <div class="fields">
       <div class="field"><label for="b-tc">Số tín chỉ</label><input id="b-tc" type="number" min="1" step="1" value="3"></div>
       <div class="field"><label for="b-x">Lý thuyết (x)</label><input id="b-x" type="number" min="0" step="1" value="24"></div>
@@ -256,8 +280,8 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
     </div>
   </div>
 
-  <div class="panel">
-    <h2>Bảng 5.1 Nội dung học phần</h2>
+  <div class="panel sub">
+    <h3 class="subh">Bảng 5.1 Nội dung học phần</h3>
     <div class="tablewrap">
       <table class="grid" id="b-table">
         <thead><tr><th>Buổi</th><th>Nội dung</th><th>Hình thức</th><th>Lý thuyết</th><th>Thực hành, thảo luận</th><th>Tiểu luận, BTL, thực tế</th><th>Tự học có HD</th><th>CLO</th><th></th></tr></thead>
@@ -276,8 +300,8 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
     <p class="note">Sao chép rồi dán vào Word: bảng dán thành bảng Word, giữ ô gộp. Số liệu được lưu trên trình duyệt này.</p>
   </div>
 
-  <div class="panel">
-    <h2>Bảng 5.2 Phương pháp và kế hoạch giảng dạy</h2>
+  <div class="panel sub">
+    <h3 class="subh">Bảng 5.2 Phương pháp và kế hoạch giảng dạy</h3>
     <p class="note" style="margin:0 0 6px">Mỗi buổi năm dòng hoạt động. Số giờ bốn dòng đầu và CLO lấy từ bảng 5.1. Dòng <b>Kiểm tra, đánh giá không ghi giờ</b>: ô nội dung chỉ ghi nội dung buổi này sẽ được dùng để đánh giá ở hình thức nào (Chuyên cần, Giữa kỳ, Cuối kỳ), không ghi câu hỏi hay nội dung ôn tập. Bốn dòng còn lại ghi nội dung riêng: Lý thuyết là nội dung giảng, Thảo luận là chủ đề thảo luận, Tiểu luận là bài tập, Tự học là tài liệu đọc.</p>
     <div class="tablewrap">
       <table class="grid g52" id="t52">
@@ -292,32 +316,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
     </div>
     <p class="note">Sau bảng 5.2 trong đề cương nhớ thêm dòng in nghiêng: "Lưu ý: Các hoạt động kết nối thực tiễn và phương pháp kiểm tra đánh giá có thể linh hoạt theo điều kiện thực tế và quyết định của Khoa."</p>
   </div>
-</section>
-
-<!-- ============ TAB 3: sinh file ============ -->
-<section id="tab-sinh-file" role="tabpanel" hidden>
-  <div class="panel">
-    <h2>Sinh file đề cương theo mẫu 2025</h2>
-    <div class="prose"><p>Điền nội dung bên dưới, bảng 5.1 và 5.2 lấy từ phần 2. Trang điền vào đúng file mẫu 2025 của Trường ngay trên trình duyệt, cho tải về file .docx đã dọn sạch chữ mẫu, rồi tự chạy nghiệm thu trên file vừa sinh. Mỗi ô "một dòng một mục" nhập bằng cách xuống dòng.</p></div>
-    <div class="form">
-      <div class="wide"><label class="chk"><input type="checkbox" id="g-khoa"> <b>Quy ước riêng của Khoa Kinh tế liên ngành.</b>&nbsp;Bật thì tự điền theo ngôn ngữ đề cương: Khoa phụ trách = Khoa Kinh tế liên ngành, đơn vị quản lý = Trường Kinh tế và Quản lý công, khối ký TS. Đỗ Ngọc Kiên (Trưởng Khoa) và PGS. TS. Bùi Thị Lý (Hiệu trưởng). Tắt thì tự điền các ô đó.</label></div>
-      <div><label for="g-lang">Ngôn ngữ đề cương</label><select id="g-lang"><option value="vn">Tiếng Việt</option><option value="en">Tiếng Anh</option></select></div>
-      <div><label for="g-ten">Tên học phần (tiếng Việt)</label><input type="text" id="g-ten"></div>
-      <div><label for="g-tenEn">Tên tiếng Anh</label><input type="text" id="g-tenEn"></div>
-      <div><label for="g-ma">Mã học phần</label><input type="text" id="g-ma"><small id="g-ma-hint">3 chữ cái lĩnh vực + 3 chữ số (tiêu chuẩn), H+3 số (CLC dạy tiếng Việt), E+3 số (CLC dạy tiếng Anh), 3 số+E (tiên tiến)</small></div>
-      <div><label for="g-tc">Số tín chỉ</label><input type="number" id="g-tc" min="1" step="1"><small>Lấy theo phần 2; đổi ở đây sẽ đổi cả phần 2.</small></div>
-      <div><label for="g-bomon">Khoa phụ trách</label><input type="text" id="g-bomon"><small>Trường đã bỏ Bộ môn; ghi tên Khoa.</small></div>
-      <div><label for="g-vk">Tên đơn vị quản lý học phần</label><input type="text" id="g-vk" placeholder="Trường Kinh tế và Quản lý công"><small>Gõ đủ tên, ví dụ "Trường Kinh tế và Quản lý công" hoặc "Khoa Tài chính Ngân hàng"; tiếng Anh: College … hoặc Faculty …. Nhãn Trường/Khoa trong file tự lấy theo chữ đầu.</small></div>
-      <div><label for="g-tq">Điều kiện tiên quyết</label><input type="text" id="g-tq" placeholder="Không"></div>
-      <div class="wide"><label for="g-gv">Giảng viên, mỗi dòng một người: Họ tên | Email FTU | Điện thoại | Trụ sở</label><textarea id="g-gv"></textarea></div>
-      <div class="wide"><label for="g-mota">Mô tả học phần (chép nguyên văn CTĐT; cách đoạn bằng một dòng trống; mục tiêu nếu muốn ghi thì viết luôn trong mô tả)</label><textarea id="g-mota" class="tall"></textarea></div>
-      <div class="wide"><label for="g-clo">Chuẩn đầu ra học phần, mỗi dòng một CLO (không cần ghi "CLO1:")</label><textarea id="g-clo" class="tall"></textarea></div>
-      <div><label for="g-nplo">Số PLO của chương trình</label><input type="number" id="g-nplo" min="1" max="20" step="1"></div>
-      <div class="wide"><label>Ma trận 3.2: ô giao CLO và PLO ghi mức đóng góp 1, 2 hoặc 3; nếu CLO đó dùng để đánh giá PLO thì chọn mức kèm ",A" (ví dụ "3,A"). Dòng "Học phần" ghi mức của cả học phần cho từng PLO theo CTĐT. Để trống ô không đóng góp.</label><div class="tablewrap"><table class="grid matrix" id="g-matrix"></table></div><small>Bảng tự dựng theo số CLO ở ô trên và số PLO. Thêm bớt CLO hoặc đổi số PLO thì bảng cập nhật, dấu đã đánh vẫn giữ.</small><input type="hidden" id="g-cloplo"><input type="hidden" id="g-hocphan"></div>
-      <div class="wide"><label for="g-gt">Giáo trình, mỗi dòng một cuốn (để trống nếu chưa có, mục 4 sẽ tự đánh số lại)</label><textarea id="g-gt"></textarea></div>
-      <div class="wide"><label for="g-bb">Tài liệu tham khảo bắt buộc, mỗi dòng một tài liệu, cùng ngôn ngữ đề cương</label><textarea id="g-bb"></textarea></div>
-      <div class="wide"><label for="g-tuchon">Tài liệu tham khảo tự chọn, mỗi dòng một tài liệu</label><textarea id="g-tuchon"></textarea></div>
-      <div class="wide"><label for="g-web">Website, mỗi dòng một địa chỉ (để trống thì bỏ mục)</label><textarea id="g-web" style="min-height:44px"></textarea></div>
+      </div>
       <div><label for="g-q61">Yêu cầu riêng với sinh viên (6.1), mỗi dòng một ý</label><textarea id="g-q61"></textarea></div>
       <div><label for="g-q62">Quy định thi cử riêng (6.2), mỗi dòng một ý</label><textarea id="g-q62"></textarea></div>
       <div class="wide"><label for="g-dg">Đánh giá, mỗi dòng: Nhóm | Hình thức | Nội dung | Công cụ và tiêu chí | CLO | Trọng số</label><textarea id="g-dg" class="tall"></textarea><small>Chuyên cần 10%, cuối kỳ ít nhất 50%, tổng 100%. Nhóm giống nhau ở các dòng liền nhau sẽ được gộp ô.</small></div>
@@ -343,7 +342,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
     <h2>Nghiệm thu file đề cương</h2>
     <div class="prose"><p>Chọn file .docx đã điền theo mẫu 2025 (bản tiếng Việt). Trang đọc file ngay trên máy của bạn, không gửi đi đâu, và đối chiếu với các nguyên tắc ở phần 1.</p></div>
     <label class="drop" id="drop"><input type="file" id="file" accept=".docx" multiple><b>Chọn một hoặc nhiều file .docx</b> hoặc kéo thả vào đây</label>
-    <div class="opts-row"><label class="chk"><input type="checkbox" id="c-bomon" checked> Quy ước riêng của Khoa Kinh tế liên ngành (dòng lưu ý linh hoạt cuối mục 5.2; ở phần 3 tự điền đơn vị và người ký)</label></div>
+    <div class="opts-row"><label class="chk"><input type="checkbox" id="c-bomon" checked> Quy ước riêng của Khoa Kinh tế liên ngành (dòng lưu ý linh hoạt cuối mục 5.2; ở phần 2 tự điền đơn vị và người ký)</label></div>
     <div class="ctdt-row"><label class="btn ghost small" for="ctdt">Nạp Bản mô tả CTĐT (.docx) để đối chiếu</label><input type="file" id="ctdt" accept=".docx" hidden><button type="button" class="btn ghost small" id="ctdt-clear">Bỏ CTĐT</button><span class="toast" id="ctdt-name"></span></div>
     <div class="fields" style="margin-top:14px">
       <div class="field"><label for="c-x">Phân bổ CTĐT: lý thuyết</label><input id="c-x" type="number" min="0" placeholder="vd 24"></div>
@@ -367,7 +366,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
   </div>
 </section>
 
-<footer>Tiêu chí gắn nhãn <span class="src truong">Trường</span> lấy từ mẫu 2025 và quy định chung; tiêu chí gắn nhãn <span class="src bomon">Khoa</span> là quy ước riêng của Khoa Kinh tế liên ngành (hiện chỉ có dòng lưu ý linh hoạt cuối mục 5.2), tắt được ở phần 4. Mọi xử lý chạy trên trình duyệt, không có máy chủ.<br>Phiên bản <span id="ver"></span> · <a href="https://github.com/dongkien/phan-bo-gio/issues">Báo lỗi hoặc góp ý</a> · <a href="https://github.com/dongkien/phan-bo-gio">Mã nguồn</a></footer>
+<footer>Tiêu chí gắn nhãn <span class="src truong">Trường</span> lấy từ mẫu 2025 và quy định chung; tiêu chí gắn nhãn <span class="src bomon">Khoa</span> là quy ước riêng của Khoa Kinh tế liên ngành (hiện chỉ có dòng lưu ý linh hoạt cuối mục 5.2), tắt được ở phần 3. Mọi xử lý chạy trên trình duyệt, không có máy chủ.<br>Phiên bản <span id="ver"></span> · <a href="https://github.com/dongkien/phan-bo-gio/issues">Báo lỗi hoặc góp ý</a> · <a href="https://github.com/dongkien/phan-bo-gio">Mã nguồn</a></footer>
 </div>
 
 <script>
@@ -392,11 +391,11 @@ const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>
 const tabs=[...document.querySelectorAll('nav.tabs button')];
 function show(name){
   tabs.forEach(b=>b.setAttribute('aria-selected',String(b.dataset.tab===name)));
-  ['huong-dan','bang-51','nghiem-thu','sinh-file'].forEach(t=>$('tab-'+t).hidden=(t!==name));
+  ['huong-dan','nghiem-thu','sinh-file'].forEach(t=>$('tab-'+t).hidden=(t!==name));
   if(location.hash!=='#'+name) history.replaceState(null,'','#'+name);
 }
 tabs.forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
-const h=location.hash.slice(1); show(['huong-dan','bang-51','nghiem-thu','sinh-file'].includes(h)?h:'huong-dan');
+const h=location.hash.slice(1); show(h==='bang-51'?'sinh-file':(['huong-dan','nghiem-thu','sinh-file'].includes(h)?h:'huong-dan'));
 
 /* ---------- TAB 2: bảng 5.1 ---------- */
 const B={rows:[]};
@@ -420,7 +419,7 @@ function renderB(){
     const tr=document.createElement('tr');
     tr.innerHTML=`<td class="b">${i+1}</td><td><input type="text" data-k="nd" placeholder="Chương / chủ đề buổi ${i+1}" value="${esc(r.nd)}"></td><td class="ht"><input type="text" data-k="ht" value="${esc(r.ht)}"></td>`+
       ['x','y','z','e'].map(k=>`<td class="n"><input type="number" min="0" step="0.5" data-k="${k}" value="${r[k]}"></td>`).join('')+
-      `<td class="clo"><input type="text" data-k="clo" class="${cloBad(r.clo)?'bad':''}" title="${cloBad(r.clo)?'Tham chiếu CLO không có trong danh sách CLO ở phần 3':''}" placeholder="1, 2" value="${esc(r.clo)}"></td><td class="x"><button type="button" title="Xóa buổi" data-del="${i}">×</button></td>`;
+      `<td class="clo"><input type="text" data-k="clo" class="${cloBad(r.clo)?'bad':''}" title="${cloBad(r.clo)?'Tham chiếu CLO không có trong danh sách CLO ở trên':''}" placeholder="1, 2" value="${esc(r.clo)}"></td><td class="x"><button type="button" title="Xóa buổi" data-del="${i}">×</button></td>`;
     tb.appendChild(tr);
   });
   const s={x:0,y:0,z:0,e:0}; B.rows.forEach(r=>{ for(const k in s) s[k]+=num(r[k])||0; });
@@ -442,7 +441,7 @@ function render52(){
       const hrs=src?(num(r[src])||0):0; const zero=k!=='kt'&&hrs===0&&(r.c52[k]||'').trim();
       if(k==='kt'){ const cur=String(r.c52.kt||'').split(/\s*,\s*/); html+=`<td class="ktcell">${['Chuyên cần','Giữa kỳ','Cuối kỳ'].map(f=>`<label><input type="checkbox" data-i="${i}" data-kt="${f}" ${cur.includes(f)?'checked':''}> ${f}</label>`).join('')}<small>Nội dung buổi này được dùng để đánh giá ở hình thức nào</small></td>`; }
       else html+=`<td><textarea class="${zero?'zero':''}" title="${zero?'Dòng này 0 giờ nhưng có nội dung':''}" data-i="${i}" data-k="${k}" placeholder="${({lt:'Nội dung giảng',th:'Chủ đề thảo luận, bài thực hành',tl:'Bài tập lớn, tiểu luận, thực tế',tu:'Tài liệu đọc, việc chuẩn bị'})[k]}">${esc(r.c52[k])}</textarea></td>`;
-      if(j===0) html+=`<td class="rs" rowspan="5"><input type="text" data-i="${i}" data-k="clo" class="${cloBad(r.clo)?'bad':''}" value="${esc(r.clo)}" placeholder="1, 2" title="${cloBad(r.clo)?'Tham chiếu CLO không có trong danh sách CLO ở phần 3':'Dùng chung với cột CLO của bảng 5.1'}"></td>`;
+      if(j===0) html+=`<td class="rs" rowspan="5"><input type="text" data-i="${i}" data-k="clo" class="${cloBad(r.clo)?'bad':''}" value="${esc(r.clo)}" placeholder="1, 2" title="${cloBad(r.clo)?'Tham chiếu CLO không có trong danh sách CLO ở trên':'Dùng chung với cột CLO của bảng 5.1'}"></td>`;
       tr.innerHTML=html; tb.appendChild(tr);
     });
   });
@@ -536,7 +535,7 @@ $('b-import').addEventListener('change',async e=>{ const f=e.target.files[0]; if
 
 /* ---------- TAB 4: sinh file docx ---------- */
 (function(){
-const F=['lang','ten','tenEn','ma','tc','bomon','vk','tq','gv','mota','clo','nplo','cloplo','hocphan','gt','bb','tuchon','web','q61','q62','dg','kytrai','kyphai','kytraiten','kyphaiten'];
+const F=['lang','ten','tenEn','ma','bomon','vk','tq','gv','mota','clo','nplo','cloplo','hocphan','gt','bb','tuchon','web','q61','q62','dg','kytrai','kyphai','kytraiten','kyphaiten'];
 const MAT_OPTS=['','1','2','3','1,A','2,A','3,A'];
 function matJson(v,fallback){ try{ const x=JSON.parse(v||''); return Array.isArray(x)?x:fallback; }catch(_){ return fallback; } }
 function matSel(attrs,val){ return `<select ${attrs}>`+MAT_OPTS.map(o=>`<option value="${o}" ${o===val?'selected':''}>${o||'–'}</option>`).join('')+'</select>'; }
@@ -574,17 +573,16 @@ function read(){ const o={}; F.forEach(k=>o[k]=$('g-'+k).value); return o; }
 function write(o){ F.forEach(k=>{ if(o[k]!=null) $('g-'+k).value=o[k]; }); }
 function save(){ try{ localStorage.setItem('dc_gen',JSON.stringify(read())); }catch(_){} }
 F.forEach(k=>$('g-'+k).addEventListener('input',save)); $('g-clo').addEventListener('input',()=>renderB());
-$('g-tc').addEventListener('change',()=>{ $('b-tc').value=$('g-tc').value; renderB(); });
-$('g-sample').addEventListener('click',()=>{ write(SAMPLE); save(); renderMatrix(); applyKhoa(); if(!B.rows.some(r=>r.nd)){ $('b-tc').value=3; $('b-x').value=24; $('b-y').value=6; B.rows=Array.from({length:10},(_,i)=>({nd:`Chương ${i+1}`,ht:'Trực tiếp',x:0,y:0,z:0,e:0,clo:String(1+(i%5)),c52:{lt:`Nội dung chương ${i+1}`,th:'',tl:`Bài tập chương ${i+1}`,tu:'Đọc giáo trình [1], chương '+(i+1),kt:i<5?'Chuyên cần, Giữa kỳ, Cuối kỳ':'Chuyên cần, Cuối kỳ'},kth:0})); even(); B.rows.forEach(r=>{ if(r.y>0&&!r.c52.th) r.c52.th='Thảo luận tình huống'; if(r.y===0) r.c52.th=''; }); renderB(); } toast('g-toast','Đã nạp ví dụ. Bảng 5.1 và 5.2 ở phần 2.'); });
+$('g-sample').addEventListener('click',()=>{ write(SAMPLE); save(); renderMatrix(); applyKhoa(); if(!B.rows.some(r=>r.nd)){ $('b-tc').value=3; $('b-x').value=24; $('b-y').value=6; B.rows=Array.from({length:10},(_,i)=>({nd:`Chương ${i+1}`,ht:'Trực tiếp',x:0,y:0,z:0,e:0,clo:String(1+(i%5)),c52:{lt:`Nội dung chương ${i+1}`,th:'',tl:`Bài tập chương ${i+1}`,tu:'Đọc giáo trình [1], chương '+(i+1),kt:i<5?'Chuyên cần, Giữa kỳ, Cuối kỳ':'Chuyên cần, Cuối kỳ'},kth:0})); even(); B.rows.forEach(r=>{ if(r.y>0&&!r.c52.th) r.c52.th='Thảo luận tình huống'; if(r.y===0) r.c52.th=''; }); renderB(); } toast('g-toast','Đã nạp ví dụ, kể cả bảng 5.1 và 5.2 bên dưới.'); });
 $('g-clear').addEventListener('click',()=>{ F.forEach(k=>$('g-'+k).value=''); $('g-lang').value='vn'; save(); renderMatrix(); });
-(function init(){ let o=null; try{ o=JSON.parse(localStorage.getItem('dc_gen')||'null'); }catch(_){} if(o) write(o); else write(SAMPLE); $('g-tc').value=$('b-tc').value||3; try{ $('g-khoa').checked=localStorage.getItem('dc_bomon')!=='0'; }catch(_){ $('g-khoa').checked=true; } maHint(); renderMatrix(); applyKhoa(); })();
+(function init(){ let o=null; try{ o=JSON.parse(localStorage.getItem('dc_gen')||'null'); }catch(_){} if(o) write(o); else write(SAMPLE); try{ $('g-khoa').checked=localStorage.getItem('dc_bomon')!=='0'; }catch(_){ $('g-khoa').checked=true; } maHint(); renderMatrix(); applyKhoa(); })();
 function collect(){ const o=read(); const d={lang:o.lang,ten:o.ten.trim(),tenEn:o.tenEn.trim(),ma:o.ma.trim(),bomon:o.bomon.trim(),vkLabel:vkLabelOf(o.vk,o.lang==='en'?'en':'vn'),vk:o.vk.trim(),tc:num($('b-tc').value)||3,tienquyet:o.tq.trim(),
     gv:lines(o.gv).map(l=>{ const p=l.split('|').map(x=>x.trim()); return {ten:p[0]||'',email:p[1]||'',dt:p[2]||'',truso:p[3]||''}; }),
     mota:String(o.mota||'').split(/\n\s*\n/).map(x=>x.replace(/\s*\n\s*/g,' ').trim()).filter(Boolean), muctieu:[], clo:lines(o.clo).map(c=>c.replace(/^-?\s*CLO\s*\d+\s*:\s*/i,'')),
     nPLO:Math.max(1,parseInt(o.nplo,10)||7), cloPlo:matJson(o.cloplo,[]), hocphanRow:matJson(o.hocphan,[]),
     giaotrinh:lines(o.gt),batbuoc:lines(o.bb),tuchon:lines(o.tuchon),web:lines(o.web),rows:B.rows.map(r=>norm(r)),quydinh61:lines(o.q61),quydinh62:lines(o.q62),
     danhgia:lines(o.dg).map(l=>{ const p=l.split('|').map(x=>x.trim()); return {nhom:p[0]||'',hinhthuc:p[1]||'',noidung:p[2]||'',congcu:p[3]||'',clo:p[4]||'',trongso:p[5]||''}; }), kyTrai:o.kytrai.trim(), kyPhai:o.kyphai.trim(), kyTraiTen:o.kytraiten.trim(), kyPhaiTen:o.kyphaiten.trim(), dacThu:$('g-dacthu').checked};
-  const miss=[]; if(!d.ten) miss.push('tên học phần'); if(!d.ma) miss.push('mã học phần'); else { const info=NT.maHocPhan(d.ma); if(!info) miss.push(`mã học phần "${d.ma}" sai định dạng`); else if(info.lang!==(d.lang==='en'?'en':'vn')) miss.push(`mã ${d.ma.toUpperCase()} là ${info.mota}, không khớp ngôn ngữ đề cương đang chọn (bản ${d.lang==='en'?'tiếng Anh':'tiếng Việt'} dùng ${NT.maTheoNgonNgu(d.ma,d.lang==='en'?'en':'vn')})`); } if(!d.clo.length) miss.push('CLO'); if(!d.rows.length) miss.push('bảng 5.1 (phần 2)'); if(!d.danhgia.length) miss.push('đánh giá');
+  const miss=[]; if(!d.ten) miss.push('tên học phần'); if(!d.ma) miss.push('mã học phần'); else { const info=NT.maHocPhan(d.ma); if(!info) miss.push(`mã học phần "${d.ma}" sai định dạng`); else if(info.lang!==(d.lang==='en'?'en':'vn')) miss.push(`mã ${d.ma.toUpperCase()} là ${info.mota}, không khớp ngôn ngữ đề cương đang chọn (bản ${d.lang==='en'?'tiếng Anh':'tiếng Việt'} dùng ${NT.maTheoNgonNgu(d.ma,d.lang==='en'?'en':'vn')})`); } if(!d.clo.length) miss.push('CLO'); if(!d.rows.length) miss.push('bảng 5.1'); if(!d.danhgia.length) miss.push('đánh giá');
   if(d.cloPlo.length&&d.cloPlo.length!==d.clo.length) miss.push(`ma trận có ${d.cloPlo.length} dòng, CLO có ${d.clo.length}`);
   const badRows=d.rows.map((r,i)=>cloRefs(r.clo).some(k=>k>d.clo.length)?i+1:0).filter(Boolean); if(badRows.length) miss.push(`buổi ${badRows.join(', ')} ghi CLO không có trong danh sách ${d.clo.length} CLO`);
   const badDG=d.danhgia.filter(x=>cloRefs(x.clo).some(k=>k>d.clo.length)).map(x=>x.hinhthuc); if(badDG.length) miss.push(`đánh giá (${badDG.join(', ')}) ghi CLO không tồn tại`);
@@ -598,7 +596,7 @@ $('g-build').addEventListener('click',async()=>{ const st=$('g-status'); st.text
     const blob=await SinhDeCuong.build(d,await getTpl()); const name=`DeCuong_${(d.ma||'HP').replace(/[^\w]/g,'')}_${d.lang==='en'?'EN':'VN'}.docx`;
     const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove();
     const file=new File([blob],name); const r=await NT.checkFile(file,{expect:null,bomon:bomonOn()}); const n={fail:0,warn:0}; r.findings.forEach(f=>n[f.status]!==undefined&&n[f.status]++);
-    st.innerHTML=`Đã tải về <b>${esc(name)}</b>. Nghiệm thu file vừa sinh: <b>${n.fail} lỗi</b>, ${n.warn} cảnh báo. ${n.fail?'Xem chi tiết ở phần 4.':'Kiểm lại nội dung rồi nộp.'}`;
+    st.innerHTML=`Đã tải về <b>${esc(name)}</b>. Nghiệm thu file vừa sinh: <b>${n.fail} lỗi</b>, ${n.warn} cảnh báo. ${n.fail?'Xem chi tiết ở phần 3.':'Kiểm lại nội dung rồi nộp.'}`;
     renderOne(r); lastFiles=[file]; results=[r]; if(n.fail){ show('nghiem-thu'); }
   }catch(err){ st.textContent='Lỗi: '+(err.message||err); console.error(err); } });
 })();

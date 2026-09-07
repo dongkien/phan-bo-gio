@@ -5,7 +5,7 @@
    Finding: {g: nhóm, status: fail|warn|pass, t: tiêu đề, d: chi tiết, src: 'truong'|'bomon'} */
 (function(global){
 'use strict';
-const VERSION='3.1 (8/9/2026)';
+const VERSION='3.2 (8/9/2026)';
 function maTheoNgonNgu(code,lang){ const info=maHocPhan(code); if(!info) return null; const m=String(code).trim().toUpperCase().match(/^([A-Z]{3})E?(\d{3})E?$/); if(!m) return null; return lang==='en'?(info.dang==='dddE'?m[1]+m[2]+'E':m[1]+'E'+m[2]):m[1]+m[2]; }
 /* Mã học phần: 3 chữ cái lĩnh vực + (ddd | Hddd | Eddd | dddE) */
 function bacHocPhan(t){ const d=parseInt(t.replace(/\D/g,'').charAt(0),10); return d<6?{bac:'ĐH',ten:'cử nhân',maxPLO:12}:d===6?{bac:'ThS',ten:'thạc sĩ',maxPLO:10}:{bac:'TS',ten:'tiến sĩ',maxPLO:8}; }
@@ -310,28 +310,46 @@ function check(blocks,opts){
 }
 
 /* ---------- Bản mô tả CTĐT ---------- */
+const CODE_RE=/^[A-Z]{3}\s?[EH]?\d{3}E?$/;
+function normCode(c){ return String(c||'').toUpperCase().replace(/\s+/g,'').trim(); }
+function splitName(t){ // "Tên tiếng Việt (English name)" | "Tên VN\nEnglish" | "Tên VN / English"
+  t=String(t||'').replace(/\s+/g,' ').trim(); if(!t) return {vn:'',en:''};
+  const looksEn=x=>!isVietnamese(x)&&/^[A-Za-z][A-Za-z0-9 ,.&'’\-:()\/]+$/.test(x)&&x.trim().split(/\s+/).length>=2;
+  let m=t.match(/^(.*?)\s*\(([^()]{6,})\)\s*$/); if(m&&looksEn(m[2])) return {vn:m[1].trim(),en:m[2].trim()};
+  const parts=t.split(/\s*[\/|]\s*|\s*\n\s*/).map(x=>x.trim()).filter(Boolean); if(parts.length===2&&!isVietnamese(parts[1])&&isVietnamese(parts[0])) return {vn:parts[0],en:parts[1]};
+  return isVietnamese(t)||!isEnglish(t)?{vn:t,en:''}:{vn:'',en:t};
+}
+function rowCode(r){ // mã ở một ô, hoặc tách "Phần chữ | Phần số"
+  for(let i=0;i<r.length;i++){ const c=(r[i]||'').trim(); if(CODE_RE.test(c.toUpperCase())) return {code:normCode(c),i}; if(/^[A-Z]{3}$/.test(c)&&i+1<r.length&&/^[EH]?\d{3}E?$/.test((r[i+1]||'').trim())) return {code:normCode(c+r[i+1]),i:i+1}; }
+  return null;
+}
 function parseCtdt(blocks){
   const paras=blocks.filter(b=>b.type==='p'); const tables=blocks.filter(b=>b.type==='t');
-  const out={matrix:{},hours:{},desc:{},ploCount:0,found:[]};
-  // ma trận: cột đầu Mã học phần, header PLO
-  for(const t of tables){ const g=t.grid; const hi=g.findIndex(r=>r.filter(c=>/PLO\s*\d/i.test(c)).length>=3); if(hi<0) continue; const hdr=g[hi]; const cols=[]; hdr.forEach((c,i)=>{ const m=c.match(/PLO\s*(\d+)/i); if(m) cols.push([i,'PLO'+m[1]]); });
-    if(!/mã/i.test(g[0][0]||'')&&!/mã/i.test(hdr[0]||'')) { if(!g.slice(hi+1).some(r=>/^[A-Z]{2,4}\d{3}/.test((r[0]||'').trim()))) continue; }
-    let n=0; g.slice(hi+1).forEach(r=>{ const code=(r.find(c=>/^[A-Z]{2,4}\d{3}/.test((c||'').trim()))||'').trim().match(/[A-Z]{2,4}\d{3}/); if(!code) return; const row={}; cols.forEach(([i,p])=>row[p]=(r[i]||'').trim()); out.matrix[code[0]]=row; n++; });
-    if(n){ out.ploCount=Math.max(out.ploCount,new Set(cols.map(c=>c[1])).size); out.found.push('ma trận ('+n+' học phần)'); break; } }
-  // khung: Mã học phần | Tên | Số tín chỉ | giờ (LT, TH, TT, tự học)
-  for(const t of tables){ const g=t.grid; const hi=g.findIndex(r=>r.some(c=>/số tín chỉ|số tc/i.test(c))&&r.some(c=>/lý thuyết|số giờ/i.test(c))); if(hi<0) continue;
-    const hdrs=g.slice(0,hi+2); const ncol=Math.max(...g.map(r=>r.length)); const ci={};
-    const fc=kw=>{ for(let c=0;c<ncol;c++){ for(const h of hdrs){ const tt=lower(h[c]); if(kw.some(k=>tt.includes(k))) return c; } } return -1; };
-    ci.tc=fc(['số tín chỉ','số tc']); ci.name=fc(['tên học phần']);
-    // 4 nhóm giờ: cột đầu tiên của từng nhóm (ô gộp ngang lặp lại)
-    const groups=[['x',['lý thuyết']],['y',['thực hành']],['z',['thực tập','tiểu luận','bài tập']],['e',['tự học']]];
-    groups.forEach(([k,kw])=>{ ci[k]=fc(kw); });
+  const out={matrix:{},hours:{},desc:{},ploCount:0,found:[],names:{}};
+  // 1. ma trận học phần → PLO: header có "PLO" (cột ghi PLO1… hoặc dòng dưới ghi 1,2,3…)
+  for(const t of tables){ const g=t.grid; let hi=-1,cols=[];
+    for(let r=0;r<Math.min(4,g.length)&&hi<0;r++){ const row=g[r]; const direct=[]; row.forEach((c,i)=>{ const m=(c||'').match(/PLO\s*(\d+)/i); if(m) direct.push([i,'PLO'+parseInt(m[1],10)]); });
+      if(direct.length>=3){ hi=r; cols=direct; break; }
+      const ploCells=row.map((c,i)=>/PLO|chuẩn đầu ra/i.test(c||'')?i:-1).filter(i=>i>=0); if(ploCells.length>=3&&r+1<g.length){ const nx=g[r+1]; const nums=[]; ploCells.forEach(i=>{ const m=(nx[i]||'').trim().match(/^(\d{1,2})$/); if(m) nums.push([i,'PLO'+parseInt(m[1],10)]); }); if(nums.length>=3){ hi=r+1; cols=nums; break; } } }
+    if(hi<0) continue; const seen=new Set(cols.map(c=>c[1])); let n=0;
+    g.slice(hi+1).forEach(r=>{ const rc=rowCode(r); if(!rc) return; const row={}; cols.forEach(([i,p])=>row[p]=(r[i]||'').trim()); out.matrix[rc.code]=row; n++; });
+    if(n){ out.ploCount=Math.max(out.ploCount,seen.size); out.found.push('ma trận ('+n+' học phần)'); break; } }
+  // 2. danh mục học phần: mã, tên (VN/EN), số TC, 4 nhóm giờ, tiên quyết, đơn vị
+  for(const t of tables){ const g=t.grid; const nh=Math.min(4,g.length); const hdrs=g.slice(0,nh); const ncol=Math.max(...g.map(r=>r.length));
+    const fc=kw=>{ for(const k of kw){ for(let c=0;c<ncol;c++){ for(const h of hdrs){ if(lower(h[c]).includes(k)) return c; } } } return -1; };
+    const ci={tc:fc(['số tín chỉ','số tc','tín chỉ']),name:fc(['tên học phần','tên môn','học phần']),x:fc(['lý thuyết']),y:fc(['thực hành']),z:fc(['thực tập','tiểu luận','bài tập']),e:fc(['tự học']),tq:fc(['tiên quyết']),unit:fc(['bộ môn','khoa/','đơn vị'])};
     if(ci.tc<0||ci.x<0) continue;
-    let n=0; g.slice(hi+1).forEach(r=>{ const code=(r.find(c=>/^[A-Z]{2,4}\d{3}$/.test((c||'').trim()))||'').trim(); if(!code) return; const h={tc:num(r[ci.tc]),x:num(r[ci.x]),y:num(r[ci.y]),z:num(r[ci.z]),e:num(r[ci.e]),name:(r[ci.name]||'').trim()}; if(isNaN(h.x)) return; out.hours[code]=h; n++; });
-    if(n){ out.found.push('khung giờ ('+n+' học phần)'); break; } }
-  // tóm tắt: "(n) Tên (English) – k tín chỉ" rồi mô tả
-  const hi=paras.findIndex(p=>/tóm tắt nội dung.*học phần|mô tả (tóm tắt )?(các )?học phần/i.test(p.text)); 
-  if(hi>=0){ let cur=null; let n=0; for(let i=hi+1;i<paras.length;i++){ const t=paras[i].text; if(!t) continue; if(/^(PHẦN|CHƯƠNG|[IVX]+\.)\s/.test(t)&&cur) break; const m=t.match(/^\(?\d+[\).]\s*(.+?)(?:\s*[–\-]\s*\d+\s*tín chỉ)?\s*$/); if(m&&t.length<160){ cur=m[1].trim(); out.desc[normTitle(cur)]={title:cur,text:''}; n++; continue; } if(cur){ const d=out.desc[normTitle(cur)]; d.text+=(d.text?' ':'')+t; } } if(n) out.found.push('tóm tắt học phần ('+n+' mục)'); }
+    if(ci.name>=0&&hdrs.some(h=>/^mã/i.test((h[ci.name]||'').trim()))) ci.name=-1;
+    let n=0; g.slice(1).forEach(r=>{ const rc=rowCode(r); if(!rc) return; const h={tc:num(r[ci.tc]),x:num(r[ci.x]),y:num(r[ci.y]),z:num(r[ci.z]),e:num(r[ci.e])}; if(isNaN(h.tc)) return;
+      let nameCell=ci.name>=0?r[ci.name]:''; if(ci.name<0||!String(nameCell||'').trim()||CODE_RE.test(String(nameCell).toUpperCase().replace(/\s/g,''))){ const cands=r.map((c,i)=>({c:(c||'').trim(),i})).filter(o=>o.i!==rc.i&&o.i!==ci.tc&&![ci.x,ci.y,ci.z,ci.e,ci.tq,ci.unit].includes(o.i)&&o.c&&!/^\d+([.,]\d+)?$/.test(o.c)&&!CODE_RE.test(o.c.toUpperCase().replace(/\s/g,''))); if(cands.length) nameCell=cands.sort((a,b)=>b.c.length-a.c.length)[0].c; }
+      const nm=splitName(nameCell); h.name=nm.vn||nm.en; h.nameVn=nm.vn; h.nameEn=nm.en; h.prereq=ci.tq>=0?(r[ci.tq]||'').split(/\n+/).map(x=>x.trim()).filter(Boolean).join(', '):''; h.unit=ci.unit>=0?(r[ci.unit]||'').replace(/\s+/g,' ').trim():'';
+      out.hours[rc.code]=h; out.names[rc.code]=nm; n++; });
+    if(n){ out.found.push('danh mục học phần ('+n+' học phần, có giờ)'); break; } }
+  // 2b. bảng chỉ có mã + tên (không giờ) để lấy tên VN/EN
+  if(!Object.keys(out.names).length){ for(const t of tables){ const g=t.grid; const hdr=g[0]||[]; const ncol=Math.max(...g.map(r=>r.length)); let nameCol=-1; for(let c=0;c<ncol;c++){ if(/tên học phần|học phần/i.test(hdr[c]||'')){ nameCol=c; break; } } if(nameCol<0) continue; let n=0; g.slice(1).forEach(r=>{ const rc=rowCode(r); if(!rc) return; const nm=splitName(r[nameCol]); if(nm.vn||nm.en){ out.names[rc.code]=nm; n++; } }); if(n){ out.found.push('tên học phần ('+n+')'); break; } } }
+  // 3. tóm tắt học phần: "(n) Tên (English) – k tín chỉ" rồi mô tả; hoặc "Mã: ..."
+  const hi=paras.findIndex(p=>/tóm tắt nội dung.*học phần|mô tả (tóm tắt )?(các )?học phần/i.test(p.text));
+  if(hi>=0){ let cur=null; let n=0; for(let i=hi+1;i<paras.length;i++){ const t=paras[i].text; if(!t) continue; if(/^(PHẦN|CHƯƠNG|[IVX]+\.)\s/.test(t)&&cur) break; const m=t.match(/^\(?\d+[\).]\s*(.+?)(?:\s*[–\-]\s*\d+\s*tín chỉ)?\s*$/)||t.match(/^(?:Mã(?: học phần)?:?\s*[A-Z]{3}\s?[EH]?\d{3}E?[\s\-–:]+)(.+)$/); if(m&&t.length<200){ cur=m[1].trim(); out.desc[normTitle(cur)]={title:cur,text:'',code:(t.match(/[A-Z]{3}\s?[EH]?\d{3}E?/)||[''])[0].replace(/\s/g,'')}; n++; continue; } if(cur){ const d=out.desc[normTitle(cur)]; d.text+=(d.text?' ':'')+t; } } if(n) out.found.push('tóm tắt học phần ('+n+' mục)'); }
   return out;
 }
 function normTitle(s){ return lower(s).replace(/\(.*?\)/g,' ').replace(/[^\p{L}\p{N}]+/gu,' ').trim(); }

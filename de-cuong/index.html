@@ -570,11 +570,12 @@ $('g-ma').addEventListener('input',()=>{ maHint(); applyCtdt(true); });
 let gCtdt=null;
 function applyCtdt(announce){ if(!gCtdt) return; const done=[]; const code=(($('g-ma').value||'').toUpperCase().match(/[A-Z]{3}E?\d{3}E?/)||[''])[0]; const base=code.replace(/^([A-Z]{3})E(\d{3})$/,'$1$2');
   if(gCtdt.ploCount){ $('g-nplo').value=gCtdt.ploCount; done.push(`${gCtdt.ploCount} PLO`); }
+  const nmk=gCtdt.names&&(gCtdt.names[code]?code:(gCtdt.names[base]?base:null)); if(nmk&&!gCtdt.hours[code]&&!gCtdt.hours[base]){ const nm=gCtdt.names[nmk]; if(nm.vn) $('g-ten').value=nm.vn; if(nm.en) $('g-tenEn').value=nm.en; done.push('tên học phần'); }
   const key=gCtdt.matrix[code]?code:(gCtdt.matrix[base]?base:null);
   if(key){ const row=gCtdt.matrix[key]; const n=gCtdt.ploCount||Object.keys(row).length; $('g-hocphan').value=JSON.stringify(Array.from({length:n},(_,j)=>(row['PLO'+(j+1)]||'').trim())); done.push('dòng Học phần của ma trận'); }
   const hk=gCtdt.hours[code]?code:(gCtdt.hours[base]?base:null);
   const warn=[];
-  if(hk){ const h=gCtdt.hours[hk]; if(!isNaN(h.tc)) $('b-tc').value=h.tc; if(!isNaN(h.x)) $('b-x').value=h.x; if(!isNaN(h.y)) $('b-y').value=h.y; done.push(`${NT.fmt(h.tc)} tín chỉ, phân bổ ${NT.fmt(h.x)}/${NT.fmt(h.y)}/${NT.fmt(h.z)}/${NT.fmt(h.e)} giờ`); if(h.name) $('g-ten').value=h.name; renderB();
+  if(hk){ const h=gCtdt.hours[hk]; if(!isNaN(h.tc)) $('b-tc').value=h.tc; if(!isNaN(h.x)) $('b-x').value=h.x; if(!isNaN(h.y)) $('b-y').value=h.y; done.push(`${NT.fmt(h.tc)} tín chỉ, phân bổ ${NT.fmt(h.x)}/${NT.fmt(h.y)}/${NT.fmt(h.z)}/${NT.fmt(h.e)} giờ`); if(h.nameVn||h.name) $('g-ten').value=h.nameVn||h.name; if(h.nameEn) $('g-tenEn').value=h.nameEn; if(h.prereq&&!/^(-|–|không|none)?$/i.test(h.prereq)) $('g-tq').value=h.prereq; renderB();
     const tot=[h.x,h.y,h.z,h.e].reduce((a,v)=>a+(isNaN(v)?0:v),0); if(!isNaN(h.tc)&&Math.abs(tot-50*h.tc)>1e-9) warn.push(`CTĐT ghi tổng ${NT.fmt(tot)} giờ, không bằng 50 × ${NT.fmt(h.tc)} TC = ${NT.fmt(50*h.tc)}; kiểm lại CTĐT`); const zf=50*(h.tc-h.x/15-h.y/30), ef=50*h.tc-(h.x+h.y+zf); if(!isNaN(h.z)&&!isNaN(h.e)&&(Math.abs(zf-h.z)>1e-9||Math.abs(ef-h.e)>1e-9)) warn.push(`CTĐT ghi thực tế/tự học ${NT.fmt(h.z)}/${NT.fmt(h.e)}, bảng tính theo quy đổi tín chỉ là ${NT.fmt(zf)}/${NT.fmt(ef)}`); }
   { const title=($('g-ten').value||'').toLowerCase().replace(/\(.*?\)/g,' ').replace(/[^\p{L}\p{N}]+/gu,' ').trim(); const keys=Object.keys(gCtdt.desc); const hit=keys.find(k=>k===title)||keys.find(k=>title&&(k.includes(title)||title.includes(k))); if(hit&&gCtdt.desc[hit].text){ $('g-mota').value=gCtdt.desc[hit].text; done.push('mô tả học phần (nguyên văn CTĐT, có thể sửa)'); } }
   renderMatrix(); save();

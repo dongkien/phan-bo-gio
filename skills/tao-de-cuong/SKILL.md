@@ -52,6 +52,7 @@ Mục tiêu: ra đề cương **đúng format chuẩn 2025** + **đúng nội du
 - `assets/Mau_de_cuong_2025.docx` — mẫu chuẩn 2025 (đóng gói để di động).
 - `assets/fill_de_cuong_example.py` — **script python-docx mẫu (worked example QLY801, 8 PLO, song ngữ)**: minh họa điền header/CLO/học liệu, dựng 5.1, dựng 5.2 đa-dòng gộp dọc, ma trận 3.2 + dòng học phần, tách song ngữ, strip chữ đỏ giữ dòng QĐ.
 - `references/don_vi_glossary.md` — tên đơn vị VN-EN, nguồn lấy PLO từ CTĐT, bản dịch giáo trình đã xác minh.
+- `references/huong_dan_cdr_clo_plo.md` — tóm tắt Hướng dẫn xây dựng CĐR CTĐT và học phần của FTU (PLO/PI/CLO, mức I-R-M + A, số lượng, quy tắc mỗi CLO một PLO); đọc khi viết/rà CLO và ma trận 3.2.
 
 ## Định nghĩa "xong"
 Đúng template gốc · đủ 7 mục + ma trận 3.2 (có dòng học phần khớp CTĐT) + **khối ký (Trưởng Bộ môn + Viện trưởng)** · giữ dòng QĐ · **mô tả NGUYÊN VĂN CTĐT** · số tín chỉ ghi gọn · **5.1 có cột Hình thức** / **5.2 nội dung tách theo từng hoạt động (chỉ gộp Buổi+CLO)** + xuống dòng từng ý + **dòng lưu ý cuối 5.2** · **tổng giờ khớp chính xác CTĐT** · học liệu đúng ngôn ngữ + ấn bản thật · 0 placeholder/0 chữ đỏ chú thích · đã liệt kê điểm chờ quyết.

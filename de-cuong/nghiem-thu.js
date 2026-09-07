@@ -5,7 +5,7 @@
    Finding: {g: nhóm, status: fail|warn|pass, t: tiêu đề, d: chi tiết, src: 'truong'|'bomon'} */
 (function(global){
 'use strict';
-const VERSION='1.4 (8/9/2026)';
+const VERSION='1.5 (8/9/2026)';
 const W='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const lower=s=>String(s||'').normalize('NFC').toLowerCase();
 const num=s=>{ if(s==null) return NaN; s=String(s).trim().replace(/\s+/g,''); if(!s) return NaN; if(/^-?\d+,\d+$/.test(s)) s=s.replace(',','.'); const v=parseFloat(s); return isNaN(v)?NaN:v; };
@@ -67,7 +67,7 @@ const CFG={
     sec4:{gt:'giáo trình',bb:'tài liệu tham khảo bắt buộc',tc:'tài liệu tham khảo tự chọn',web:'website',bbShort:/^4\.\d\.?\s+Tài liệu\s+(bắt buộc|tự chọn)/i,shortFix:'"Tài liệu tham khảo bắt buộc" / "Tài liệu tham khảo tự chọn"'},
     gtGuide:/đề nghị sử dụng giáo trình/i, matGuide:/Xem Bảng phân nhiệm/i, descGuide:/Bao gồm mục tiêu đào tạo/i,
     clo:/^-?\s*CLO\s*\d+/i, cloEmpty:/^-?\s*CLO\s*\d+\s*:?\s*$/i, dots:/^…$|^\.\.\.$/, starLabel:/^\*\s/,
-    tbl:{instr:/họ và tên/i,t51:/phân bổ thời gian|lý thuyết/i,t52:/hoạt động dạy và học/i,assess:/trọng số/i,sig:/trưởng bộ môn|trưởng khoa|viện trưởng|hiệu trưởng/i,matRow:/^(học phần|tổng phân nhiệm|tổng hợp)/i},
+    tbl:{instr:/họ và tên/i,t51:/phân bổ thời gian|lý thuyết/i,t52:/hoạt động dạy và học/i,assess:/trọng số/i,sig:/trưởng bộ môn|trưởng khoa|viện trưởng|hiệu trưởng/i,matRow:/^(học phần|tổng phân nhiệm|tổng hợp)/i}, special:/khóa luận|đề án tốt nghiệp|luận văn|luận án|thực tập tốt nghiệp/i,
     instrName:1,
     cols51:{ht:['hình thức'],x:['lý thuyết'],y:['thực hành'],z:['tiểu luận','bài tập lớn'],e:['tự học'],clo:['clo'],onclass:'giảng dạy trên lớp'},
     buoi:/buổi/i, totalRow:/^tổng/i, tiet:/\btiết\b/i,
@@ -83,23 +83,23 @@ const CFG={
   en:{
     name:'tiếng Anh', title:/^SYLLABUS$/m, otherTitle:/ĐỀ CƯƠNG CHI TIẾT HỌC PHẦN/, otherName:'tiếng Việt',
     decision:/Attached to Decision/, decisionKeep:/Attached to|QD-ĐHNT|QĐ-ĐHNT|President|Kèm theo/, decisionLabel:'"Attached to Decision No. … /QD-ĐHNT"',
-    fields:[['Course title',['course title'],'english (vietnamese)'],['Course code',['course code'],''],['Faculty in charge',['faculty in charge','faculty'],''],['School/Faculty',['school/faculty','school'],''],['Credit hours',['credit hours','credits'],'']],
-    oldFields:[['department','"Department:" là nhãn cũ (Trường đã bỏ Bộ môn), đổi thành "Faculty in charge:".'],['faculty/school','"Faculty/School:" là nhãn cũ, đổi thành "School/Faculty:" (ghi "School:" hoặc "Faculty:" theo đơn vị quản lý học phần).']],
-    vkMissing:'Thiếu dòng "School:" hoặc "Faculty:"', bmMissing:'Thiếu dòng "Faculty in charge:"', prereq:['prerequisite',/^$/],
+    fields:[['Course title',['course title'],'english (vietnamese)'],['Course code',['course code'],''],['Department',['department'],''],['Faculty/College',['faculty/college','college','faculty'],''],['Credit hours',['credit hours','credits'],'']],
+    oldFields:[['faculty/school','"Faculty/School:" là nhãn cũ, đổi thành "Faculty/College:" (ghi "College:" cho trường thuộc hoặc "Faculty:" cho khoa độc lập).'],['school','"School:" là nhãn cũ, trường thuộc ghi "College:".']],
+    vkMissing:'Thiếu dòng "Faculty/College:" (ghi "College:" cho trường thuộc hoặc "Faculty:" cho khoa độc lập)', bmMissing:'Thiếu dòng "Department:" (Khoa chuyên môn)', prereq:['prerequisite',/^$/],
     headings:[['1.','INSTRUCTOR'],['2.','COURSE DESCRIPTION'],['3.','COURSE LEARNING OUTCOMES'],['3.1.','Course learning outcomes'],['3.2.','Matrix'],['4.','READING MATERIALS'],['5.','COURSE CONTENTS'],['5.1.','Course contents'],['5.2.','Teaching method'],['6.','COURSE POLICY'],['6.1.','Student Responsibilities'],['6.2.','Regulations on examination'],['7.','COURSE ASSESSMENT']],
     sec4:{gt:'textbook',bb:'compulsory reading',tc:'optional reading',web:'website',bbShort:/^$/,shortFix:''},
     gtGuide:/It is required to use textbooks/i, matGuide:/See the Guidance/i, descGuide:/Include Course Objectives/i,
     clo:/^-?\s*CLO\s*\d+/i, cloEmpty:/^-?\s*CLO\s*\d+\s*:?\s*$/i, dots:/^…$|^\.\.\.$/, starLabel:/^\*\s/,
-    tbl:{instr:/full name/i,t51:/time allocation|lecture/i,t52:/teaching and learning activit/i,assess:/proportion/i,sig:/head of department|dean|president|rector/i,matRow:/^(course|total)/i},
+    tbl:{instr:/full name/i,t51:/time allocation|lecture/i,t52:/teaching and learning activit/i,assess:/proportion/i,sig:/head of department|dean|president|rector/i,matRow:/^(course|total)/i}, special:/thesis|dissertation|graduation project|capstone|internship report/i,
     instrName:1,
     cols51:{ht:['mode','format','delivery'],x:['lecture'],y:['practice','seminar'],z:['essay','assignment','exercise'],e:['self-study','self study'],clo:['clo'],onclass:'hour(s) on the class'},
     buoi:/no\.?|session|week/i, totalRow:/^total/i, tiet:/\bperiods?\b/i,
     acts:[['lt','Lecture',/lecture/],['th','Practice, seminar',/practice|seminar|discussion/],['tl','Essays, assignments',/essay|assignment|exercise|project|field/],['tu','Self-study',/self.study/],['kt','Assessment',/assessment|test|exam|quiz/]],
-    note52:/^Note:.*(flexib|adjust)/im, note52Old:/decision of the Department/i, note52Text:'"Note: Practical activities and assessment methods may be adjusted according to actual conditions and the decision of the Faculty."',
+    note52:/^Note:.*(flexib|adjust)/im, note52Old:/^$/, note52Text:'"Note: Practical activities and assessment methods may be adjusted according to actual conditions and the decision of the Department."',
     assess:{cc:/attendance/i,ck:/final/i,total:/^total/i,example:/for example:/i},
-    oldUnit:/\bDepartment\b/, oldUnitMsg:'Còn chữ "Department" trong văn bản. Trường đã bỏ Bộ môn, thay bằng "Faculty".',
+    oldUnit:/^$/, oldUnitMsg:'',
     ph:/\(describe the details\)|For example:|…{1,}%|\.{4,}\s*%|^…$|1,2,\.\.\.|5,6,\.\.\.|\(if any\)|^Note: Please list all/, phSkip:/Attached to/,
-    sig:{bm:/dean/i,vk:/president|rector/i,old:/head of department/i,gv:/prepared by|compiled by/i,bmName:'Dean (of Faculty)',vkName:'President',oldMsg:'Khối ký còn chức danh cũ (Head of Department). Trường đã bỏ Bộ môn: ô trái DEAN OF FACULTY, ô phải PRESIDENT.'},
+    sig:{bm:/head of department/i,vk:/\bdean\b/i,old:/president|rector|vice dean/i,gv:/prepared by|compiled by/i,bmName:'Head of Department (Trưởng Khoa)',vkName:'Dean (Hiệu trưởng trường thuộc)',oldMsg:'Khối ký bản tiếng Anh: ô trái HEAD OF DEPARTMENT (Trưởng Khoa), ô phải DEAN (Hiệu trưởng trường thuộc). Không dùng President.'},
     otherLang:isVietnamese, otherLangName:'tiếng Việt', leftover:/^(Tên học phần|Mã học phần|Số tín chỉ|MÔ TẢ HỌC PHẦN|HỌC LIỆU)/,
     unit:'giờ'
   }
@@ -130,7 +130,7 @@ function check(blocks,opts){
   // đầu đề
   const field=(labels)=>{ const p=paras.find(p=>{ const t=lower(p.text); return labels.some(a=>t.startsWith(a)&&/^\s*:/.test(t.slice(a.length))); }); if(!p) return null; return p.text.slice(p.text.indexOf(':')+1).trim(); };
   (C.oldFields||[]).forEach(([lab,msg])=>{ if(field([lab])!=null) add(G1,'fail',msg.split('.')[0],msg,'truong'); });
-  C.fields.forEach(([name,labels,ph])=>{ const v=field(labels); if(v==null){ const isVK=/^(Trường\/Khoa|School\/Faculty)$/.test(name), isBM=/^(Khoa phụ trách|Faculty in charge)$/.test(name); if((isVK&&field(['viện/khoa','viện','faculty/school']))||(isBM&&field(['bộ môn phụ trách','bộ môn','department']))) return; add(G1,'fail',isVK?C.vkMissing:isBM?C.bmMissing:`Thiếu dòng "${name}:"`); return; } else if(!v||lower(v)===ph) add(G2,'fail',`"${name}:" chưa điền`); else { add(G2,'pass',`${name}: ${v.length>90?v.slice(0,90)+'…':v}`); if(name==='Tên học phần'||name==='Course title') meta.title=v; if(/^(Khoa phụ trách|Faculty in charge)$/.test(name)&&C.oldUnit.test(v)) add(G2,'fail','Tên đơn vị phụ trách còn "Bộ môn"',`"${v}". Ghi tên Khoa.`); if(name==='Mã học phần'||name==='Course code') meta.code=v; if(name==='Số tín chỉ'||name==='Credit hours'){ meta.tc=num((v.match(/\d+([.,]\d+)?/)||[''])[0]); if(vn&&/\(/.test(v)) add(G2,'warn','Số tín chỉ ghi kèm ngoặc phân bổ giờ',`"${v}". Quy ước ghi gọn, ví dụ "03"; phân bổ giờ đã có ở bảng 5.1.`,BM); } } });
+  C.fields.forEach(([name,labels,ph])=>{ const v=field(labels); if(v==null){ const isVK=/^(Trường\/Khoa|Faculty\/College)$/.test(name), isBM=/^(Khoa phụ trách|Department)$/.test(name); if((isVK&&field(['viện/khoa','viện','faculty/school','school']))||(isBM&&field(['bộ môn phụ trách','bộ môn']))) return; add(G1,'fail',isVK?C.vkMissing:isBM?C.bmMissing:`Thiếu dòng "${name}:"`); return; } else if(!v||lower(v)===ph) add(G2,'fail',`"${name}:" chưa điền`); else { add(G2,'pass',`${name}: ${v.length>90?v.slice(0,90)+'…':v}`); if(name==='Tên học phần'||name==='Course title') meta.title=v; if(/^(Khoa phụ trách)$/.test(name)&&C.oldUnit.test(v)) add(G2,'fail','Tên đơn vị phụ trách còn "Bộ môn"',`"${v}". Ghi tên Khoa.`); if(name==='Mã học phần'||name==='Course code') meta.code=v; if(name==='Số tín chỉ'||name==='Credit hours'){ meta.tc=num((v.match(/\d+([.,]\d+)?/)||[''])[0]); if(vn&&/\(/.test(v)) add(G2,'warn','Số tín chỉ ghi kèm ngoặc phân bổ giờ',`"${v}". Quy ước ghi gọn, ví dụ "03"; phân bổ giờ đã có ở bảng 5.1.`,BM); } } });
   const tq=field([C.prereq[0]]); if(tq&&C.prereq[1].source!=='^$'&&C.prereq[1].test(tq)) add(G2,'fail','"Điều kiện tiên quyết" còn nguyên chữ mẫu','Ghi tên và mã học phần tiên quyết, hoặc "Không".');
   const tc=meta.tc;
 
@@ -232,8 +232,8 @@ function check(blocks,opts){
     if(ktWithContent.length) add(G3,'warn','Dòng Kiểm tra, đánh giá có nội dung nhưng không ghi giờ',ktWithContent.join('\n')+'\nNếu kiểm tra chiếm giờ trên lớp thì ghi giờ, không thì để trống nội dung hoặc ghi rõ ngoài giờ.');
     if(noContent.length) add(G3,'warn','Dòng hoạt động trong 5.2 chưa có "Nội dung chính"',noContent.slice(0,8).join('; ')+(noContent.length>8?'…':'')+'\nMỗi dòng hoạt động ghi nội dung riêng; chỉ gộp dọc ô Buổi và ô CLO.',BM);
   }
-  if(C.note52.test(allText)){ if(C.note52Old.test(allText)) add(G3,'fail','Dòng lưu ý cuối 5.2 còn "quyết định của Bộ môn"','Đổi thành: '+C.note52Text); else add(G3,'pass','Có dòng lưu ý linh hoạt cuối mục 5.2',null,BM); } else add(G3,'warn','Thiếu dòng lưu ý cuối mục 5.2',C.note52Text,BM);
-  { const hits=[]; paras.forEach(p=>{ if(C.oldUnit.test(p.text)&&!C.decisionKeep.test(p.text)) hits.push(p.text.slice(0,70)); }); tables.forEach(t=>t.grid.forEach(r=>r.forEach(c=>{ if(C.oldUnit.test(c)) hits.push(c.slice(0,70)); }))); const u=[...new Set(hits)]; if(u.length) add(G5,'fail',`Còn ${u.length} chỗ nhắc "${vn?'Bộ môn':'Department'}"`,C.oldUnitMsg+'\n'+u.slice(0,6).map(x=>'"'+x+'"').join('\n')); }
+  if(C.note52.test(allText)){ if(C.note52Old.source!=='^$'&&C.note52Old.test(allText)) add(G3,'fail','Dòng lưu ý cuối 5.2 còn "quyết định của Bộ môn"','Đổi thành: '+C.note52Text); else add(G3,'pass','Có dòng lưu ý linh hoạt cuối mục 5.2',null,BM); } else add(G3,'warn','Thiếu dòng lưu ý cuối mục 5.2',C.note52Text,BM);
+  { const hits=[]; if(C.oldUnit.source!=='^$'){ paras.forEach(p=>{ if(C.oldUnit.test(p.text)&&!C.decisionKeep.test(p.text)) hits.push(p.text.slice(0,70)); }); tables.forEach(t=>t.grid.forEach(r=>r.forEach(c=>{ if(C.oldUnit.test(c)) hits.push(c.slice(0,70)); }))); } const u=[...new Set(hits)]; if(u.length) add(G5,'fail',`Còn ${u.length} chỗ nhắc "${vn?'Bộ môn':'Department'}"`,C.oldUnitMsg+'\n'+u.slice(0,6).map(x=>'"'+x+'"').join('\n')); }
 
   // đánh giá
   const ta=findTable(tables,g=>C.tbl.assess.test(g[0].join(' ')));
@@ -253,7 +253,9 @@ function check(blocks,opts){
   if(!sig) add(G1,'fail',`Thiếu khối ký (${C.sig.bmName} bên trái, ${C.sig.vkName} bên phải)`);
   else { const s=sig.grid.map(r=>r.join(' | ')).join(' '); const names=sig.grid[0].map(c=>c.replace(/\s+/g,' ').trim()).filter(Boolean).join(' | ');
     if(C.sig.gv.test(s)) add(G1,'warn','Khối ký có "Giảng viên biên soạn"','Chỉ cần '+C.sig.bmName+' và '+C.sig.vkName+'.',BM);
+    const special=C.special.test(meta.title||'');
     if(C.sig.old.test(s)) add(G1,'fail','Khối ký còn chức danh cũ',C.sig.oldMsg+' Hiện có: '+names);
+    else if(special){ if(!C.sig.vk.test(s)) add(G1,'fail','Đề cương đặc thù: khối ký phải có '+C.sig.vkName,names); else if(C.sig.bm.test(s)) add(G1,'warn','Đề cương đặc thù (khóa luận, đề án, luận văn) chỉ một chữ ký '+C.sig.vkName,'Bỏ ô '+C.sig.bmName+'. Hiện có: '+names); else add(G1,'pass','Khối ký đề cương đặc thù: '+names); }
     else if(!C.sig.bm.test(s)) add(G1,'fail','Khối ký thiếu '+C.sig.bmName,names); else if(!C.sig.vk.test(s)) add(G1,'fail','Khối ký thiếu '+C.sig.vkName,names); else add(G1,'pass','Khối ký: '+names); }
 
   // hình thức

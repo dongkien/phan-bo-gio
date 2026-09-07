@@ -26,4 +26,10 @@ def zero_with_content(x):
 mutate(V,os.path.join(FX,'loi_52_khong_gio_co_noi_dung.docx'),zero_with_content)
 mutate(V,os.path.join(FX,'loi_cuoi_ky_40.docx'),lambda x: first_t(first_t(x,'>30%<','>50%<'),'>60%<','>40%<'))
 mutate(E,os.path.join(FX,'loi_en_tai_lieu_tieng_viet.docx'),lambda x: first_t(x,'[2] Mankiw, N. G. (2021). Principles of Economics (9th ed.). Boston: Cengage.','[2] Nguyễn Văn B (2020). Quản lý nhà nước về kinh tế. Hà Nội: Nhà xuất bản Kinh tế quốc dân.'))
+def dac_thu(x):
+    x=x.replace('Nguyên lý quản lý kinh tế','Luận văn thạc sĩ').replace('NGUYÊN LÝ QUẢN LÝ KINH TẾ','LUẬN VĂN THẠC SĨ')
+    return x.replace('<w:t xml:space="preserve">TRƯỞNG KHOA</w:t>','<w:t xml:space="preserve"></w:t>')
+mutate(V,os.path.join(FX,'dac_thu_luan_van.docx'),dac_thu)   # đặc thù, chỉ Hiệu trưởng: phải đạt
+mutate(V,os.path.join(FX,'loi_dac_thu_hai_chu_ky.docx'),lambda x: x.replace('Nguyên lý quản lý kinh tế','Khóa luận tốt nghiệp').replace('NGUYÊN LÝ QUẢN LÝ KINH TẾ','KHÓA LUẬN TỐT NGHIỆP'))
+mutate(E,os.path.join(FX,'loi_en_nhan_cu_school.docx'),lambda x: first_t(x,'>College:<','>Faculty/School:<'))
 print('xong')

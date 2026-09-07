@@ -197,7 +197,7 @@ function check(blocks,opts){
     const ci={ht:colIndex(hdr,ncol,C.cols51.ht),x:colIndex(hdr,ncol,C.cols51.x),y:colIndex(hdr,ncol,C.cols51.y),z:colIndex(hdr,ncol,C.cols51.z),e:colIndex(hdr,ncol,C.cols51.e),clo:colIndex(hdr,ncol,C.cols51.clo)};
     if(ci.x<0||ci.y<0){ const gd=[]; for(let c=0;c<ncol;c++){ if(hdr.some(r=>lower(r[c]).includes(C.cols51.onclass))) gd.push(c); } if(gd.length>=2){ ci.x=gd[0]; ci.y=gd[1]; } }
     const tietRows=[...hdr,...g.filter(r=>C.totalRow.test((r.find(c=>(c||'').trim())||'').trim()))]; if(tietRows.some(r=>r.some(c=>C.tiet.test(c||'')))) add(G3,'fail','Bảng 5.1 dùng đơn vị "tiết"','Không dùng tiết nữa. Quy đổi sang giờ chuẩn: 1 tín chỉ = 15 giờ lý thuyết = 30 giờ thực hành, thảo luận = 50 giờ thực tế, bài tập lớn = 50 giờ tự học. Tổng bốn cột = 50 giờ × số tín chỉ.');
-    if(ci.ht<0) add(G3,bomon?'fail':'warn','Bảng 5.1 thiếu cột "Hình thức"','Cột này đứng ngay sau cột Nội dung (Trực tiếp / Trực tuyến).',BM); else add(G3,'pass','Bảng 5.1 có cột Hình thức',null,BM);
+    if(ci.ht<0) add(G3,'fail','Bảng 5.1 thiếu cột "Hình thức"','Quy ước chung của Trường: cột này đứng ngay sau cột Nội dung (Trực tiếp / Trực tuyến).'); else add(G3,'pass','Bảng 5.1 có cột Hình thức');
     if(ci.x<0||ci.y<0||ci.z<0||ci.e<0) add(G3,'fail','Bảng 5.1 không nhận ra đủ 4 cột giờ (lý thuyết, thực hành, tiểu luận, tự học)');
     else { const body=g.slice(hdr.length); const isBuoi=r=>{ const c=(r[0]||'').trim(); return (/^\d+/.test(c)||new RegExp('^'+C.buoi.source+'\\s*\\d+','i').test(c))&&!C.totalRow.test(c); };
       rows51=body.filter(isBuoi);
@@ -212,7 +212,7 @@ function check(blocks,opts){
       const ex=expect||null;
       if(ex){ const d=['x','y','z','e'].filter(k=>!isNaN(ex[k])&&Math.abs(ex[k]-sum[k])>1e-9); const srcName=expect?'đã nhập':'trong CTĐT'; if(d.length) add(expect?G3:G6,'fail','Tổng 5.1 lệch phân bổ CTĐT '+srcName,`CTĐT: ${['x','y','z','e'].map(k=>isNaN(ex[k])?'–':fmt(ex[k])).join(' / ')}; bảng: ${fmt(sum.x)} / ${fmt(sum.y)} / ${fmt(sum.z)} / ${fmt(sum.e)}.`); else add(expect?G3:G6,'pass','Tổng 5.1 khớp phân bổ CTĐT '+srcName); }
       else if(!isNaN(tc)&&!special){ const h=sum.x/15+sum.y/30, z=50*(tc-h), e=50*tc-(sum.x+sum.y+z); if(Math.abs(z-sum.z)>1e-9||Math.abs(e-sum.e)>1e-9) add(G3,'warn','Cột z và tự học không theo công thức quy đổi tín chỉ',`Theo x=${fmt(sum.x)}, y=${fmt(sum.y)}, ${fmt(tc)} TC thì z=${fmt(z)}, tự học=${fmt(e)}. Chỉ chấp nhận nếu CTĐT quy định khác.`); }
-      const htEmpty=ci.ht>=0?rows51.filter(r=>!(r[ci.ht]||'').trim()).length:0; if(htEmpty) add(G3,'warn',`${htEmpty} buổi chưa ghi Hình thức`,null,BM);
+      const htEmpty=ci.ht>=0?rows51.filter(r=>!(r[ci.ht]||'').trim()).length:0; if(htEmpty) add(G3,'warn',`${htEmpty} buổi chưa ghi Hình thức`);
       const cloEmpty=ci.clo>=0?rows51.filter(r=>!(r[ci.clo]||'').trim()).length:0; if(cloEmpty) add(G3,'warn',`${cloEmpty} buổi trong 5.1 chưa ghi CLO`);
       if(ci.clo>=0){ meta.clo51=rows51.map(r=>({n:r[0].replace(C.buoi,'').replace(/\s+/g,'').trim(),refs:cloRefs(r[ci.clo])})); }
       rows51=rows51.map(r=>({n:r[0].replace(C.buoi,'').replace(/\s+/g,'').trim(),x:num(r[ci.x]),y:num(r[ci.y]),z:num(r[ci.z]),e:num(r[ci.e])}));

@@ -129,7 +129,8 @@ async function build(data,tplBuf){
     rows.push({cells:[{t:c.total,span:3,b:true},{t:fmt(s.x),jc:'center',b:true},{t:fmt(s.y),jc:'center',b:true},{t:fmt(s.z),jc:'center',b:true},{t:fmt(s.e),jc:'center',b:true},{t:''}]});
     t51.parentNode.replaceChild(frag(doc,mkTable([720,2480,1100,1000,1000,1100,1100,1015],rows))[0],t51);
     const c2=S.t52; const rows2=[{h:true,cells:c2.head.map(t=>({t}))}];
-    data.rows.forEach((r,i)=>{ const acts=[['lt',r.x],['th',r.y],['tl',r.z],['tu',r.e],['kt',r.kth||0]]; acts.forEach(([k,h],j)=>rows2.push({cells:[{t:j===0?String(i+1):'',vm:j===0?'restart':'cont',jc:'center'},{t:c2.acts[j]},{t:k==='kt'&&!(Number(h)>0)?'':fmt(h),jc:'center'},{t:(r.c52&&r.c52[k])||''},{t:j===0?r.clo:'',vm:j===0?'restart':'cont',jc:'center'}]})); });
+    const ktMap={'Chuyên cần':'Attendance','Giữa kỳ':'Mid-term','Cuối kỳ':'Final exam'}; const ktText=t=>L==='en'?String(t||'').split(/\s*,\s*/).map(x=>ktMap[x]||x).filter(Boolean).join(', '):(t||'');
+    data.rows.forEach((r,i)=>{ const acts=[['lt',r.x],['th',r.y],['tl',r.z],['tu',r.e],['kt',null]]; acts.forEach(([k,h],j)=>rows2.push({cells:[{t:j===0?String(i+1):'',vm:j===0?'restart':'cont',jc:'center'},{t:c2.acts[j]},{t:k==='kt'?'':fmt(h),jc:'center'},{t:k==='kt'?ktText(r.c52&&r.c52.kt):((r.c52&&r.c52[k])||'')},{t:j===0?r.clo:'',vm:j===0?'restart':'cont',jc:'center'}]})); });
     const nt52=frag(doc,mkTable([700,2300,800,4515,1200],rows2))[0]; t52.parentNode.replaceChild(nt52,t52);
     insAfter(nt52,frag(doc,P(S.note52,{i:true,before:120}))); }
   // 10. quy định 6.1 / 6.2

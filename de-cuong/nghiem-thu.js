@@ -5,7 +5,7 @@
    Finding: {g: nhóm, status: fail|warn|pass, t: tiêu đề, d: chi tiết, src: 'truong'|'bomon'} */
 (function(global){
 'use strict';
-const VERSION='1.7 (8/9/2026)';
+const VERSION='1.8 (8/9/2026)';
 const W='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const lower=s=>String(s||'').normalize('NFC').toLowerCase();
 const num=s=>{ if(s==null) return NaN; s=String(s).trim().replace(/\s+/g,''); if(!s) return NaN; if(/^-?\d+,\d+$/.test(s)) s=s.replace(',','.'); const v=parseFloat(s); return isNaN(v)?NaN:v; };
@@ -74,6 +74,7 @@ const CFG={
     acts:[['lt','Lý thuyết',/lý thuyết/],['th','Thực hành thảo luận',/thực hành|thảo luận/],['tl','Tiểu luận BTL',/tiểu luận|bài tập|thực tế/],['tu','Tự học',/tự học/],['kt','Kiểm tra đánh giá',/kiểm tra|đánh giá/]],
     note52:/Lưu ý:\s*Các hoạt động kết nối thực tiễn/i, note52Old:/quyết định của Bộ môn/i, note52Text:'"Lưu ý: Các hoạt động kết nối thực tiễn và phương pháp kiểm tra đánh giá có thể linh hoạt theo điều kiện thực tế và quyết định của Khoa."',
     assess:{cc:/chuyên cần/i,ck:/cuối kỳ|kết thúc học phần|tổng kết/i,total:/^tổng/i,example:/ví dụ:/i},
+    ktForm:/chuyên cần|giữa kỳ|cuối kỳ|thường xuyên|kết thúc học phần|tổng kết|bài tập lớn|tiểu luận|thuyết trình/i, ktHint:'Dòng "Kiểm tra, đánh giá" không ghi giờ; ô Nội dung chính ghi tên hình thức đánh giá sẽ dùng nội dung của buổi này (Chuyên cần, Giữa kỳ, Cuối kỳ), không ghi câu hỏi hay nội dung ôn tập.',
     oldUnit:/\bBộ môn\b/, oldUnitMsg:'Còn chữ "Bộ môn" trong văn bản. Trường đã bỏ Bộ môn, thay bằng "Khoa".',
     ph:/\(mô tả chi tiết\)|Ví dụ:|…{1,}%|\.{4,}\s*%|^…$|1,2,\.\.\.|5,6,\.\.\.|\(nếu có\)/, phSkip:/Kèm theo/,
     sig:{bm:/trưởng khoa/i,vk:/hiệu trưởng/i,old:/trưởng bộ môn|viện trưởng/i,gv:/giảng viên biên soạn/i,bmName:'Trưởng Khoa',vkName:'Hiệu trưởng',oldMsg:'Khối ký còn chức danh cũ (Trưởng Bộ môn / Viện trưởng). Trường đã bỏ Bộ môn: ô trái TRƯỞNG KHOA, ô phải HIỆU TRƯỞNG.'},
@@ -97,6 +98,7 @@ const CFG={
     acts:[['lt','Lecture',/lecture/],['th','Practice, seminar',/practice|seminar|discussion/],['tl','Essays, assignments',/essay|assignment|exercise|project|field/],['tu','Self-study',/self.study/],['kt','Assessment',/assessment|test|exam|quiz/]],
     note52:/^Note:.*(flexib|adjust)/im, note52Old:/^$/, note52Text:'"Note: Practical activities and assessment methods may be adjusted according to actual conditions and the decision of the Department."',
     assess:{cc:/attendance/i,ck:/final/i,total:/^total/i,example:/for example:/i},
+    ktForm:/attendance|mid-?term|final|quiz|test|exam|assignment|project|presentation/i, ktHint:'The "Assessment" row has no hours; its Content names the assessment form(s) that use this session (Attendance, Mid-term, Final exam), not review questions.',
     oldUnit:/^$/, oldUnitMsg:'',
     ph:/\(describe the details\)|For example:|…{1,}%|\.{4,}\s*%|^…$|1,2,\.\.\.|5,6,\.\.\.|\(if any\)|^Note: Please list all/, phSkip:/Attached to/,
     sig:{bm:/head of department/i,vk:/\bdean\b/i,old:/president|rector|vice dean/i,gv:/prepared by|compiled by/i,bmName:'Head of Department (Trưởng Khoa)',vkName:'Dean (Hiệu trưởng trường thuộc)',oldMsg:'Khối ký bản tiếng Anh: ô trái HEAD OF DEPARTMENT (Trưởng Khoa), ô phải DEAN (Hiệu trưởng trường thuộc). Không dùng President.'},
@@ -218,19 +220,22 @@ function check(blocks,opts){
   if(!t52) add(G3,'fail','Không tìm thấy bảng 5.2 (đầu bảng "Buổi | Hoạt động dạy và học | Số giờ…")');
   else { const g=t52.grid.slice(1); const by={}; let cur=null; const order=[];
     g.forEach(r=>{ const b=(r[0]||'').replace(C.buoi,'').replace(/\s+/g,'').trim(); if(b){ cur=b; if(!by[cur]){ by[cur]=[]; order.push(cur);} } if(cur==null) return; by[cur].push({act:lower(r[1]),h:num(r[2]),nd:(r[3]||'').trim()}); });
-    const short=[],mism=[],noContent=[],zeroWithContent=[],ktWithContent=[];
+    const short=[],mism=[],noContent=[],zeroWithContent=[],ktHours=[],ktBad=[],ktEmpty=[];
     order.forEach(b=>{ const acts=by[b]; const have=C.acts.map(a=>acts.some(x=>a[2].test(x.act))); if(have.some(v=>!v)) short.push(`buổi ${b} thiếu ${C.acts.filter((a,i)=>!have[i]).map(a=>a[1]).join(', ')}`);
       const r51=rows51.find(r=>r.n===b);
       if(r51){ const s=k=>acts.filter(x=>C.acts.find(a=>a[0]===k)[2].test(x.act)&&!(k!=='kt'&&C.acts[4][2].test(x.act)&&!C.acts.slice(0,4).some(a=>a[2].test(x.act)))).reduce((t,x)=>t+(isNaN(x.h)?0:x.h),0);
         const d=[['x','lt'],['y','th'],['z','tl'],['e','tu']].filter(([k5,k])=>!isNaN(r51[k5])&&Math.abs(s(k)-r51[k5])>1e-9); if(d.length) mism.push(`buổi ${b} (${d.map(([k5,k])=>`${k}: 5.2=${fmt(s(k))} vs 5.1=${fmt(r51[k5])}`).join('; ')})`); }
       const empties=acts.filter(x=>!C.acts[4][2].test(x.act)&&!x.nd&&!(x.h===0)).length; if(empties) noContent.push(`buổi ${b}: ${empties} dòng`);
-      acts.forEach(x=>{ if(!x.nd) return; const zero=isNaN(x.h)||x.h===0; if(!zero) return; const name=x.act.replace(/\s+/g,' ').trim(); if(C.acts[4][2].test(x.act)&&!C.acts.slice(0,4).some(a=>a[2].test(x.act))) ktWithContent.push(`buổi ${b}: "${x.nd.slice(0,50)}"`); else zeroWithContent.push(`buổi ${b}, dòng ${name.slice(0,30)}: "${x.nd.slice(0,50)}"`); }); });
+      acts.forEach(x=>{ const isKT=C.acts[4][2].test(x.act)&&!C.acts.slice(0,4).some(a=>a[2].test(x.act)); if(isKT){ if(!isNaN(x.h)&&x.h>0) ktHours.push(`buổi ${b}: ${fmt(x.h)} giờ`); if(!x.nd) ktEmpty.push(b); else if(!C.ktForm.test(x.nd)) ktBad.push(`buổi ${b}: "${x.nd.slice(0,60)}"`); return; } if(!x.nd) return; const zero=isNaN(x.h)||x.h===0; if(!zero) return; const name=x.act.replace(/\s+/g,' ').trim(); zeroWithContent.push(`buổi ${b}, dòng ${name.slice(0,30)}: "${x.nd.slice(0,50)}"`); }); });
     add(G3,'pass',`Bảng 5.2: ${order.length} buổi, ${g.length} dòng hoạt động`);
     if(rows51.length&&order.length!==rows51.length) add(G3,'fail',`Số buổi trong 5.2 (${order.length}) khác 5.1 (${rows51.length})`);
     if(short.length) add(G3,'fail','Buổi trong 5.2 chưa đủ 5 dòng hoạt động',short.join('\n')); else if(order.length) add(G3,'pass','Mỗi buổi trong 5.2 đủ 5 dòng hoạt động');
     if(mism.length) add(G3,'fail','Giờ trong 5.2 lệch 5.1',mism.join('\n')); else if(rows51.length&&order.length) add(G3,'pass','Giờ từng buổi trong 5.2 khớp 5.1');
     if(zeroWithContent.length) add(G3,'fail','Dòng trong 5.2 có nội dung hoạt động nhưng không phân bổ giờ',zeroWithContent.join('\n')+'\nHoặc phân bổ giờ cho hoạt động đó (và sửa 5.1 cho khớp), hoặc bỏ nội dung.');
-    if(ktWithContent.length) add(G3,'warn','Dòng Kiểm tra, đánh giá có nội dung nhưng không ghi giờ',ktWithContent.join('\n')+'\nNếu kiểm tra chiếm giờ trên lớp thì ghi giờ, không thì để trống nội dung hoặc ghi rõ ngoài giờ.');
+    if(ktHours.length) add(G3,'warn','Dòng Kiểm tra, đánh giá có ghi giờ',ktHours.join('; ')+'\n'+C.ktHint);
+    if(ktBad.length) add(G3,'fail','Dòng Kiểm tra, đánh giá ghi sai ý nghĩa',ktBad.join('\n')+'\n'+C.ktHint);
+    if(ktEmpty.length&&!special) add(G3,'warn',`${ktEmpty.length} buổi chưa ghi hình thức đánh giá ở dòng Kiểm tra, đánh giá`,'Buổi '+ktEmpty.join(', ')+'. '+C.ktHint,BM);
+    if(!ktHours.length&&!ktBad.length&&!ktEmpty.length&&order.length) add(G3,'pass','Dòng Kiểm tra, đánh giá ghi hình thức đánh giá, không ghi giờ');
     if(noContent.length) add(G3,'warn','Dòng hoạt động trong 5.2 chưa có "Nội dung chính"',noContent.slice(0,8).join('; ')+(noContent.length>8?'…':'')+'\nMỗi dòng hoạt động ghi nội dung riêng; chỉ gộp dọc ô Buổi và ô CLO.',BM);
   }
   if(C.note52.test(allText)){ if(C.note52Old.source!=='^$'&&C.note52Old.test(allText)) add(G3,'fail','Dòng lưu ý cuối 5.2 còn "quyết định của Bộ môn"','Đổi thành: '+C.note52Text); else add(G3,'pass','Có dòng lưu ý linh hoạt cuối mục 5.2',null,BM); } else if(!special) add(G3,'warn','Thiếu dòng lưu ý cuối mục 5.2',C.note52Text,BM);

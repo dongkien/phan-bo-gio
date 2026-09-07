@@ -87,6 +87,8 @@ table.grid{width:100%;border-collapse:collapse;font-size:14px;min-width:760px}
 table.g52 td.act{white-space:nowrap;color:var(--ink);font-weight:500;width:230px}
 table.g52 td.h{width:70px;text-align:right;font-weight:600}
 table.g52 td.h input{text-align:right}
+table.g52 td.ktcell label{display:inline-flex;align-items:center;gap:5px;margin-right:14px;font-size:13.5px;cursor:pointer}
+table.g52 td.ktcell small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
 table.g52 td.rs{vertical-align:top;font-weight:600;text-align:center;background:var(--bg)}
 table.g52 td textarea{font:inherit;font-size:13.5px;width:100%;min-height:34px;padding:5px 7px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);resize:vertical}
 table.g52 tr.first td{border-top:2px solid var(--line)}
@@ -192,7 +194,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
           <li><b>Học liệu cùng ngôn ngữ giảng dạy.</b> Giáo trình và tài liệu tham khảo bắt buộc phải cùng ngôn ngữ với đề cương; tài liệu khác ngôn ngữ đưa xuống mục tự chọn. Chương trình tiếng Việt chưa có bản dịch thì ghi "Tập bài giảng do giảng viên biên soạn (trên cơ sở …)".</li>
           <li><b>Chưa có giáo trình thì bỏ mục 4.1 Giáo trình</b> và đánh số lại từ 4.1 Tài liệu tham khảo bắt buộc, 4.2 Tài liệu tham khảo tự chọn, 4.3 Website.</li>
           <li><b>Bảng 5.1</b> có cột "Hình thức" ngay sau cột Nội dung (mặc định Trực tiếp). Tổng bốn cột giờ khớp chính xác phân bổ của CTĐT.</li>
-          <li><b>Bảng 5.2</b> mỗi buổi đủ năm dòng hoạt động: Lý thuyết, Thực hành thảo luận, Tiểu luận và bài tập lớn, Tự học có hướng dẫn, Kiểm tra đánh giá. Chỉ gộp dọc ô Buổi và ô CLO; ô Nội dung chính mỗi dòng riêng.</li>
+          <li><b>Bảng 5.2</b> mỗi buổi đủ năm dòng hoạt động: Lý thuyết, Thực hành thảo luận, Tiểu luận và bài tập lớn, Tự học có hướng dẫn, Kiểm tra đánh giá. Chỉ gộp dọc ô Buổi và ô CLO; ô Nội dung chính mỗi dòng riêng. <b>Dòng Kiểm tra đánh giá không ghi giờ</b>; nội dung của dòng này là tên hình thức đánh giá sẽ dùng nội dung buổi đó (Chuyên cần, Giữa kỳ, Cuối kỳ), không phải câu hỏi ôn tập.</li>
           <li><b>Cuối mục 5.2</b> có dòng in nghiêng: "Lưu ý: Các hoạt động kết nối thực tiễn và phương pháp kiểm tra đánh giá có thể linh hoạt theo điều kiện thực tế và quyết định của Khoa."</li>
           <li><b>Đánh giá:</b> chuyên cần 10%, cuối kỳ ít nhất 50%, tổng đúng 100%. Cuối kỳ thi viết hoặc vấn đáp.</li>
           <li><b>Số tín chỉ ghi gọn</b>, ví dụ "03", không kèm ngoặc phân bổ giờ.</li>
@@ -267,7 +269,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
 
   <div class="panel">
     <h2>Bảng 5.2 Phương pháp và kế hoạch giảng dạy</h2>
-    <p class="note" style="margin:0 0 6px">Mỗi buổi năm dòng hoạt động. Số giờ bốn dòng đầu và CLO lấy từ bảng 5.1; dòng Kiểm tra, đánh giá tự ghi giờ (thường 0, buổi thi giữa kỳ thì ghi giờ thi). Mỗi dòng ghi nội dung riêng: dòng Lý thuyết là nội dung giảng, dòng Thảo luận là chủ đề thảo luận, dòng Tiểu luận là bài tập, dòng Tự học là tài liệu đọc.</p>
+    <p class="note" style="margin:0 0 6px">Mỗi buổi năm dòng hoạt động. Số giờ bốn dòng đầu và CLO lấy từ bảng 5.1. Dòng <b>Kiểm tra, đánh giá không ghi giờ</b>: ô nội dung chỉ ghi nội dung buổi này sẽ được dùng để đánh giá ở hình thức nào (Chuyên cần, Giữa kỳ, Cuối kỳ), không ghi câu hỏi hay nội dung ôn tập. Bốn dòng còn lại ghi nội dung riêng: Lý thuyết là nội dung giảng, Thảo luận là chủ đề thảo luận, Tiểu luận là bài tập, Tự học là tài liệu đọc.</p>
     <div class="tablewrap">
       <table class="grid g52" id="t52">
         <thead><tr><th>Buổi</th><th>Hoạt động dạy và học</th><th>Số giờ</th><th>Nội dung chính</th><th>CLO</th></tr></thead>
@@ -391,7 +393,7 @@ const h=location.hash.slice(1); show(['huong-dan','bang-51','nghiem-thu','sinh-f
 const B={rows:[]};
 function alloc(){ const tc=Math.max(1,num($('b-tc').value)||3), x=Math.max(0,num($('b-x').value)||0), y=Math.max(0,num($('b-y').value)||0);
   const z=50*(tc-x/15-y/30), e=50*tc-(x+y+z); $('b-z').value=fmt(z).replace(',','.'); $('b-e').value=fmt(e).replace(',','.'); return {tc,x,y,z,e}; }
-function newRow(i){ return {nd:'',ht:'Trực tiếp',x:0,y:0,z:0,e:0,clo:'',c52:{lt:'',th:'',tl:'',tu:'',kt:''},kth:0}; }
+function newRow(i){ return {nd:'',ht:'Trực tiếp',x:0,y:0,z:0,e:0,clo:'',c52:{lt:'',th:'',tl:'',tu:'',kt:'Chuyên cần, Cuối kỳ'},kth:0}; }
 function norm(r){ if(!r.c52) r.c52={lt:'',th:'',tl:'',tu:'',kt:''}; if(r.kth==null) r.kth=0; return r; }
 const ACTS=[['lt','Lý thuyết','x'],['th','Thực hành, thảo luận','y'],['tl','Tiểu luận, bài tập lớn, thực tế','z'],['tu','Tự học, chuẩn bị có hướng dẫn','e'],['kt','Kiểm tra, đánh giá',null]];
 function spread(total,n){ // chia total cho n buổi, ưu tiên số nguyên, dư dồn về buổi đầu
@@ -424,9 +426,10 @@ function render52(){
       let html='';
       if(j===0) html+=`<td class="rs" rowspan="5">${i+1}</td>`;
       html+=`<td class="act">${name}</td>`;
-      html+=src?`<td class="h">${fmt(num(r[src])||0)}</td>`:`<td class="h"><input type="number" min="0" step="0.5" data-i="${i}" data-k="kth" value="${r.kth}"></td>`;
-      const hrs=src?(num(r[src])||0):(r.kth||0); const zero=k!=='kt'&&hrs===0&&(r.c52[k]||'').trim();
-      html+=`<td><textarea class="${zero?'zero':''}" title="${zero?'Dòng này 0 giờ nhưng có nội dung':''}" data-i="${i}" data-k="${k}" placeholder="${({lt:'Nội dung giảng',th:'Chủ đề thảo luận, bài thực hành',tl:'Bài tập lớn, tiểu luận, thực tế',tu:'Tài liệu đọc, việc chuẩn bị',kt:'Hình thức kiểm tra (nếu có)'})[k]}">${esc(r.c52[k])}</textarea></td>`;
+      html+=src?`<td class="h">${fmt(num(r[src])||0)}</td>`:`<td class="h"></td>`;
+      const hrs=src?(num(r[src])||0):0; const zero=k!=='kt'&&hrs===0&&(r.c52[k]||'').trim();
+      if(k==='kt'){ const cur=String(r.c52.kt||'').split(/\s*,\s*/); html+=`<td class="ktcell">${['Chuyên cần','Giữa kỳ','Cuối kỳ'].map(f=>`<label><input type="checkbox" data-i="${i}" data-kt="${f}" ${cur.includes(f)?'checked':''}> ${f}</label>`).join('')}<small>Nội dung buổi này được dùng để đánh giá ở hình thức nào</small></td>`; }
+      else html+=`<td><textarea class="${zero?'zero':''}" title="${zero?'Dòng này 0 giờ nhưng có nội dung':''}" data-i="${i}" data-k="${k}" placeholder="${({lt:'Nội dung giảng',th:'Chủ đề thảo luận, bài thực hành',tl:'Bài tập lớn, tiểu luận, thực tế',tu:'Tài liệu đọc, việc chuẩn bị'})[k]}">${esc(r.c52[k])}</textarea></td>`;
       if(j===0) html+=`<td class="rs" rowspan="5">${esc(r.clo)}</td>`;
       tr.innerHTML=html; tb.appendChild(tr);
     });
@@ -441,6 +444,7 @@ function even(){
 function setN(){ const n=Math.max(1,Math.min(30,parseInt($('b-n').value,10)||1)); while(B.rows.length<n) B.rows.push(newRow()); B.rows.length=n; renderB(); }
 $('b-body').addEventListener('input',e=>{ const tr=e.target.closest('tr'); const i=[...$('b-body').children].indexOf(tr); const k=e.target.dataset.k; if(i<0||!k) return; B.rows[i][k]=e.target.type==='number'?(num(e.target.value)||0):e.target.value; renderB(); e.target.focus&&null; });
 $('b-body').addEventListener('click',e=>{ const d=e.target.dataset.del; if(d!=null){ B.rows.splice(+d,1); renderB(); } });
+$('b52').addEventListener('change',e=>{ const f=e.target.dataset.kt; if(!f) return; const i=+e.target.dataset.i; const r=norm(B.rows[i]); const set=new Set(String(r.c52.kt||'').split(/\s*,\s*/).filter(Boolean)); if(e.target.checked) set.add(f); else set.delete(f); r.c52.kt=['Chuyên cần','Giữa kỳ','Cuối kỳ'].filter(x=>set.has(x)).join(', '); try{ const a=alloc(); localStorage.setItem('dc51',JSON.stringify({tc:a.tc,x:a.x,y:a.y,rows:B.rows})); }catch(_){} });
 $('b52').addEventListener('input',e=>{ const i=+e.target.dataset.i, k=e.target.dataset.k; if(isNaN(i)||!k) return; const r=norm(B.rows[i]); if(k==='kth') r.kth=num(e.target.value)||0; else r.c52[k]=e.target.value; if(k!=='kth'&&k!=='kt'){ const src=ACTS.find(a=>a[0]===k)[2]; const z=(num(r[src])||0)===0&&e.target.value.trim(); e.target.classList.toggle('zero',!!z); const nz=$('b52').querySelectorAll('textarea.zero').length; const note=$('g52note'); if(note){ note.textContent=nz?`${nz} dòng có nội dung nhưng 0 giờ (ô đỏ): phân bổ giờ ở bảng 5.1 hoặc bỏ nội dung.`:''; note.hidden=!nz; } } try{ const a=alloc(); localStorage.setItem('dc51',JSON.stringify({tc:a.tc,x:a.x,y:a.y,rows:B.rows})); }catch(_){} });
 $('b-fill52').addEventListener('click',()=>{ B.rows.forEach(r=>{ norm(r); if(!r.c52.lt&&r.nd) r.c52.lt=r.nd; }); render52(); toast('b-toast2','Đã điền nội dung lý thuyết từ cột Nội dung của 5.1'); });
 ['b-tc','b-x','b-y'].forEach(id=>$(id).addEventListener('input',renderB));
@@ -458,7 +462,7 @@ function table51(){
 function table52(){
   const head=['Buổi','Hoạt động dạy và học','Số giờ','Nội dung chính','Đóng góp vào CLOs'];
   const rows=[]; const spans=[];
-  B.rows.forEach((r,i)=>{ norm(r); ACTS.forEach(([k,name,src],j)=>{ rows.push([j===0?String(i+1):'',name,src?fmt(num(r[src])||0):fmt(r.kth||0),r.c52[k]||'',j===0?r.clo:'']); spans.push(j===0?5:0); }); });
+  B.rows.forEach((r,i)=>{ norm(r); ACTS.forEach(([k,name,src],j)=>{ rows.push([j===0?String(i+1):'',name,src?fmt(num(r[src])||0):'',r.c52[k]||'',j===0?r.clo:'']); spans.push(j===0?5:0); }); });
   return {head,rows,spans};
 }
 function toHtml(t){ const cell=c=>esc(c).replace(/\n/g,'<br>');
@@ -541,7 +545,7 @@ function write(o){ F.forEach(k=>{ if(o[k]!=null) $('g-'+k).value=o[k]; }); }
 function save(){ try{ localStorage.setItem('dc_gen',JSON.stringify(read())); }catch(_){} }
 F.forEach(k=>$('g-'+k).addEventListener('input',save));
 $('g-tc').addEventListener('change',()=>{ $('b-tc').value=$('g-tc').value; renderB(); });
-$('g-sample').addEventListener('click',()=>{ write(SAMPLE); save(); if(!B.rows.some(r=>r.nd)){ $('b-tc').value=3; $('b-x').value=24; $('b-y').value=6; B.rows=Array.from({length:10},(_,i)=>({nd:`Chương ${i+1}`,ht:'Trực tiếp',x:0,y:0,z:0,e:0,clo:String(1+(i%5)),c52:{lt:`Nội dung chương ${i+1}`,th:'',tl:`Bài tập chương ${i+1}`,tu:'Đọc giáo trình [1], chương '+(i+1),kt:''},kth:0})); even(); B.rows.forEach(r=>{ if(r.y>0&&!r.c52.th) r.c52.th='Thảo luận tình huống'; if(r.y===0) r.c52.th=''; }); renderB(); } toast('g-toast','Đã nạp ví dụ. Bảng 5.1 và 5.2 ở phần 2.'); });
+$('g-sample').addEventListener('click',()=>{ write(SAMPLE); save(); if(!B.rows.some(r=>r.nd)){ $('b-tc').value=3; $('b-x').value=24; $('b-y').value=6; B.rows=Array.from({length:10},(_,i)=>({nd:`Chương ${i+1}`,ht:'Trực tiếp',x:0,y:0,z:0,e:0,clo:String(1+(i%5)),c52:{lt:`Nội dung chương ${i+1}`,th:'',tl:`Bài tập chương ${i+1}`,tu:'Đọc giáo trình [1], chương '+(i+1),kt:i<5?'Chuyên cần, Giữa kỳ, Cuối kỳ':'Chuyên cần, Cuối kỳ'},kth:0})); even(); B.rows.forEach(r=>{ if(r.y>0&&!r.c52.th) r.c52.th='Thảo luận tình huống'; if(r.y===0) r.c52.th=''; }); renderB(); } toast('g-toast','Đã nạp ví dụ. Bảng 5.1 và 5.2 ở phần 2.'); });
 $('g-clear').addEventListener('click',()=>{ F.forEach(k=>$('g-'+k).value=''); $('g-lang').value='vn'; $('g-vkLabel').value='Trường'; save(); });
 (function init(){ let o=null; try{ o=JSON.parse(localStorage.getItem('dc_gen')||'null'); }catch(_){} if(o) write(o); else write(SAMPLE); $('g-tc').value=$('b-tc').value||3; })();
 function collect(){ const o=read(); const d={lang:o.lang,ten:o.ten.trim(),tenEn:o.tenEn.trim(),ma:o.ma.trim(),bomon:o.bomon.trim(),vkLabel:o.vkLabel,vk:o.vk.trim(),tc:num($('b-tc').value)||3,tienquyet:o.tq.trim(),

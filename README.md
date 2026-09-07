@@ -5,7 +5,7 @@ Hai trang web chạy hoàn toàn trên trình duyệt, không cần cài đặt,
 | Trang | Link | Làm gì |
 |---|---|---|
 | Phân bổ giờ tín chỉ | https://dongkien.github.io/phan-bo-gio/ | Nhập số tín chỉ, giờ lý thuyết, giờ thảo luận; ra giờ thực tế/bài tập lớn, giờ tự học, số buổi, dòng ghi đề cương |
-| Bộ công cụ đề cương | https://dongkien.github.io/phan-bo-gio/de-cuong/ | Hướng dẫn và checklist theo mẫu 2025, dựng bảng 5.1 có kiểm tổng giờ, nghiệm thu file .docx đã điền |
+| Bộ công cụ đề cương | https://dongkien.github.io/phan-bo-gio/de-cuong/ | Hướng dẫn và checklist theo mẫu 2025; dựng bảng 5.1 và 5.2 (nạp được từ file cũ); nghiệm thu file .docx (tiếng Việt và tiếng Anh, nhiều file một lúc, đối chiếu Bản mô tả CTĐT, xuất CSV); sinh file đề cương .docx điền vào đúng mẫu 2025 |
 
 ## Quy ước phân bổ giờ (1 tín chỉ = 50 giờ học tập)
 
@@ -25,6 +25,17 @@ Hợp lệ khi z > 0
 ## Bộ nghiệm thu đề cương kiểm những gì
 
 Đọc file .docx ngay trên máy và đối chiếu: đủ 7 mục và tiểu mục theo mẫu; các ô đầu đề đã điền; mô tả học phần; CLO; ma trận 3.2 có dòng "Học phần"; bảng giảng viên; giáo trình và tài liệu bắt buộc cùng ngôn ngữ giảng dạy (không có giáo trình thì mục 4 đánh số lại từ 4.1); bảng 5.1 có cột Hình thức, dòng tổng, tổng bằng 50 × TC và khớp phân bổ CTĐT; bảng 5.2 mỗi buổi đủ 5 dòng hoạt động và giờ khớp 5.1; dòng lưu ý cuối 5.2; bảng đánh giá tổng 100%, chuyên cần 10%, cuối kỳ ít nhất 50%; khối ký; chữ đỏ, chú thích chân trang, chỗ giữ chỗ, ảnh, ngắt trang, đoạn trống còn sót của mẫu.
+
+Mỗi tiêu chí nghiệm thu gắn nhãn **Trường** (mẫu 2025, quy định chung) hoặc **Bộ môn** (quy ước Bộ môn Kinh tế và Quản lý, tắt được bằng một ô chọn).
+
+## Kiểm thử tự động
+
+`tests/fixtures/` gồm hai file chuẩn do chính trang sinh ra (tiếng Việt, tiếng Anh) và các biến thể mỗi file một lỗi cố ý (sinh bằng `tests/make_fixtures.py`). `tests/run_tests.py` chạy bộ nghiệm thu trên từng file bằng Playwright và so với `tests/expect.json`; GitHub Actions chạy mỗi lần push.
+
+```bash
+pip install playwright && python -m playwright install chromium
+python3 tests/run_tests.py
+```
 
 ## Skill cho Claude (thư mục `skills/`)
 

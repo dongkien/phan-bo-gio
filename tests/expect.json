@@ -1,0 +1,13 @@
+{
+  "chuan_vn.docx":                    {"fail": 0, "warn": 0},
+  "chuan_en.docx":                    {"fail": 0, "warn": 0},
+  "loi_khoa_thay_vien.docx":          {"fail": 0, "warn": 0},
+  "loi_thieu_khoi_ky.docx":           {"fail": 1, "must": ["Khối ký thiếu Trưởng Bộ môn"]},
+  "loi_tai_lieu_thieu_tham_khao.docx":{"fail": 1, "must": ["Tên mục viết \"Tài liệu\""]},
+  "loi_tong_gio.docx":                {"fail": 1, "must": ["đơn vị \"tiết\""]},
+  "loi_tai_lieu_tieng_anh.docx":      {"fail": 1, "must": ["tài liệu bắt buộc bằng tiếng Anh"]},
+  "loi_52_khong_gio_co_noi_dung.docx":{"fail": 2, "must": ["không phân bổ giờ", "Giờ trong 5.2 lệch 5.1"]},
+  "loi_cuoi_ky_40.docx":              {"fail": 1, "must": ["Cuối kỳ 40%"]},
+  "loi_en_tai_lieu_tieng_viet.docx":  {"fail": 1, "must": ["tiếng Việt trong đề cương tiếng Anh"]},
+  "Mau_de_cuong_2025.docx":           {"fail_min": 15}
+}

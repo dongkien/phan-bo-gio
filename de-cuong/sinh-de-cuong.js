@@ -9,26 +9,26 @@ const W='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const fmt=v=>{ v=Number(v)||0; return Math.abs(v-Math.round(v))<1e-9?String(Math.round(v)):String(v).replace('.',','); };
 const T={
-  vn:{ title:'ĐỀ CƯƠNG CHI TIẾT HỌC PHẦN', split:'SYLLABUS', tenLabel:'Tên học phần:', maLabel:'Mã học phần:', bmLabel:'Bộ môn phụ trách:', vkLabel:'Viện/Khoa:', tcLabel:'Số tín chỉ:', tqLabel:'Điều kiện tiên quyết:',
+  vn:{ title:'ĐỀ CƯƠNG CHI TIẾT HỌC PHẦN', split:'SYLLABUS', tenLabel:'Tên học phần:', maLabel:'Mã học phần:', bmLabel:'Khoa phụ trách:', vkLabel:'Trường/Khoa:', tcLabel:'Số tín chỉ:', tqLabel:'Điều kiện tiên quyết:',
     h2:'2. MÔ TẢ HỌC PHẦN', descGuide:/^\(Bao gồm mục tiêu/, muctieu:'Mục tiêu đào tạo:', h31:'3.1.', cloPrefix:'CLO', dots:/^…$/, h32:'3.2.', h32Text:'3.2. Ma trận đóng góp của chuẩn đầu ra học phần tới chuẩn đầu ra của Chương trình đào tạo',
     h4:{gt:['4.1.','Giáo trình'],bb:['4.2.','Tài liệu tham khảo bắt buộc'],tc:['4.3.','Tài liệu tham khảo tự chọn'],web:['4.4.','Website']}, star:/^\*\s/,
     h51:'5.1.', h52:'5.2.', h6:'6.', h61:'6.1.', h62:'6.2.', h7:'7.', moTaKT:/^-\s*Mô tả kiểm tra/, chiTiet:/\(mô tả chi tiết\)/,
-    note52:'Lưu ý: Các hoạt động kết nối thực tiễn và phương pháp kiểm tra đánh giá có thể linh hoạt theo điều kiện thực tế và quyết định của Bộ môn.',
+    note52:'Lưu ý: Các hoạt động kết nối thực tiễn và phương pháp kiểm tra đánh giá có thể linh hoạt theo điều kiện thực tế và quyết định của Khoa.',
     gvHead:['Stt','Họ và tên giảng viên','Email FTU','Điện thoại','Trụ sở chính HN/CSII/CSQN'], matHead:'CĐR học phần', matCourse:'Học phần',
     t51:{buoi:'Buổi',nd:'Nội dung (có thể cụ thể đến mục)',ht:'Hình thức',pb:'Phân bổ thời gian',onclass:'Giảng dạy trên lớp',lt:'Lý thuyết (thuyết giảng) (1)',th:'Thực hành, thảo luận (2)',tl:'Tiểu luận, bài tập lớn, thực tế (3)',tu:'Tự học, chuẩn bị có hướng dẫn (4)',clo:'Đóng góp vào CLOs',total:'Tổng cộng (giờ)'},
     t52:{head:['Buổi','Hoạt động dạy và học','Số giờ','Nội dung chính','Đóng góp vào CLOs'],acts:['Lý thuyết','Thực hành, thảo luận','Tiểu luận, bài tập lớn, thực tế','Tự học, chuẩn bị có hướng dẫn','Kiểm tra, đánh giá']},
     dg:{head:['Hình thức','Hình thức','Nội dung kiểm tra, đánh giá','Công cụ và tiêu chí kiểm tra, đánh giá','Kiểm tra, đánh giá mức độ đạt CLOs','Trọng số'],total:'Tổng'},
-    kyTrai:'TRƯỞNG BỘ MÔN', kyPhai:'VIỆN TRƯỞNG', qdKeep:/Kèm theo|QĐ-ĐHNT|Hiệu trưởng/ },
-  en:{ title:'SYLLABUS', split:'ĐỀ CƯƠNG CHI TIẾT HỌC PHẦN', tenLabel:'Course title:', maLabel:'Course code:', bmLabel:'Department:', vkLabel:'Faculty/School:', tcLabel:'Credit hours:', tqLabel:'Prerequisite(s):',
+    kyTrai:'TRƯỞNG KHOA', kyPhai:'HIỆU TRƯỞNG', qdKeep:/Kèm theo|QĐ-ĐHNT|Hiệu trưởng/ },
+  en:{ title:'SYLLABUS', split:'ĐỀ CƯƠNG CHI TIẾT HỌC PHẦN', tenLabel:'Course title:', maLabel:'Course code:', bmLabel:'Faculty in charge:', vkLabel:'School/Faculty:', tcLabel:'Credit hours:', tqLabel:'Prerequisite(s):',
     h2:'2. COURSE DESCRIPTION', descGuide:/^\(Include Course Objectives/, muctieu:'Course objectives:', h31:'3.1.', cloPrefix:'CLO', dots:/^…$/, h32:'3.2.', h32Text:'3.2. Matrix of the contribution of Course learning outcomes to Program learning outcomes',
     h4:{gt:['4.1.','Textbook(s)'],bb:['4.2.','Compulsory reading(s)'],tc:['4.3.','Optional reading(s)'],web:['4.4.','Websites']}, star:/^\*\s/,
     h51:'5.1.', h52:'5.2.', h6:'6.', h61:'6.1.', h62:'6.2.', h7:'7.', moTaKT:/^-\s*Description of assessment/, chiTiet:/\(describe the details\)/,
-    note52:'Note: Practical activities and assessment methods may be adjusted according to actual conditions and the decision of the Department.',
+    note52:'Note: Practical activities and assessment methods may be adjusted according to actual conditions and the decision of the Faculty.',
     gvHead:['No.','Full name','Email FTU','Phone number','Office'], matHead:'CLO', matCourse:'Course',
     t51:{buoi:'No.',nd:'Contents (can be specified down to sections)',ht:'Mode',pb:'Time Allocation',onclass:'Hour(s) on the class',lt:'Lecture (1)',th:'Practice, Seminar (2)',tl:'Essays, exercise, Assignments (3)',tu:"Self-study with teacher's tutorials (4)",clo:'Contribution to CLOs',total:'Total (hours)'},
     t52:{head:['No.','Teaching and learning activities','Hour(s)','Content','Contribution to CLOs'],acts:['Lecture','Practice, Seminar','Essays, exercise, Assignments','Self-study with teacher\'s tutorials','Assessment']},
     dg:{head:['Form','Form','Assessed content','Assessment methods and criteria','Assessment for course learning outcomes','Proportion'],total:'Total'},
-    kyTrai:'HEAD OF DEPARTMENT', kyPhai:'DEAN OF FACULTY', qdKeep:/Attached to|QD-ĐHNT|President/ }
+    kyTrai:'DEAN OF FACULTY', kyPhai:'PRESIDENT', qdKeep:/Attached to|QD-ĐHNT|President/ }
 };
 
 function pText(p){ let s=''; const walk=n=>{ for(const c of n.childNodes){ if(c.nodeType!==1) continue; if(c.localName==='t') s+=c.textContent; else if(c.localName==='tab') s+='\t'; else if(c.localName!=='footnoteReference'&&c.localName!=='drawing') walk(c); } }; walk(p); return s.normalize('NFC').trim(); }
@@ -85,8 +85,9 @@ async function build(data,tplBuf){
   const pTitle2=paras().find(p=>{ const t=pText(p); return t===(L==='vn'?'TÊN HỌC PHẦN':'COURSE TITLE'); }); if(pTitle2) setText(pTitle2,(L==='vn'?data.ten:(data.tenEn||data.ten)).toUpperCase(),{b:true});
   const lbl=(label,value)=>{ const p=findP(t=>t.toLowerCase().startsWith(label.toLowerCase().replace(/:$/,'').split('/')[0])&&/:/.test(t)); if(p) setLabel(p,label,value); };
   lbl(S.tenLabel,L==='vn'?`${data.ten}${data.tenEn?' ('+data.tenEn+')':''}`:`${data.tenEn||data.ten}${data.ten&&data.tenEn?' ('+data.ten+')':''}`);
-  lbl(S.maLabel,data.ma); lbl(S.bmLabel,data.bomon);
-  { const p=findP(t=>/^(viện\/khoa|faculty\/school)\s*:/i.test(t)); if(p) setLabel(p,(L==='vn'?(data.vkLabel||'Viện'):(data.vkLabel==='Khoa'?'Faculty':'School'))+':',data.vk); }
+  lbl(S.maLabel,data.ma);
+  { const p=findP(t=>/^(bộ môn phụ trách|department)\s*:/i.test(t)); if(p) setLabel(p,S.bmLabel,data.bomon); }
+  { const p=findP(t=>/^(viện\/khoa|faculty\/school)\s*:/i.test(t)); if(p) setLabel(p,(L==='vn'?(data.vkLabel||'Trường'):(data.vkLabel==='Khoa'?'Faculty':'School'))+':',data.vk); }
   lbl(S.tcLabel,String(data.tc).padStart(2,'0')); lbl(S.tqLabel,data.tienquyet||(L==='vn'?'Không':'None'));
   // 4. giảng viên
   { const tbl=kids().find(n=>n.localName==='tbl'); const rows=[{h:true,cells:S.gvHead.map(t=>({t}))}]; (data.gv.length?data.gv:[{ten:'',email:'',dt:'',truso:''}]).forEach((g,i)=>rows.push({cells:[{t:String(i+1),jc:'center'},{t:g.ten},{t:g.email},{t:g.dt},{t:g.truso,jc:'center'}]}));
@@ -142,7 +143,7 @@ async function build(data,tplBuf){
     rows.push({cells:[{t:c.total,span:5,b:true,jc:'right'},{t:fmt(tot)+'%',b:true,jc:'center'}]});
     tbl.parentNode.replaceChild(frag(doc,mkTable([1300,1500,2200,2200,1315,1000],rows))[0],tbl); }
   // 12. khối ký (bỏ bảng ký sẵn của mẫu nếu còn, rồi dựng lại)
-  { kids().filter(n=>n.localName==='tbl').filter(t=>/DEAN OF|HEAD OF DEPARTMENT|TRƯỞNG/i.test(t.textContent)).forEach(rm); const sig=mkTable([4757,4758],[{cells:[{lines:[data.kyTrai||S.kyTrai,'','',''],b:true,jc:'center'},{lines:[data.kyPhai||S.kyPhai,'','',''],b:true,jc:'center'}]}],{noBorder:true});
+  { kids().filter(n=>n.localName==='tbl').filter(t=>/DEAN OF|HEAD OF DEPARTMENT|PRESIDENT|TRƯỞNG/i.test(t.textContent)).forEach(rm); const sig=mkTable([4757,4758],[{cells:[{lines:[data.kyTrai||S.kyTrai,'','',''],b:true,jc:'center'},{lines:[data.kyPhai||S.kyPhai,'','',''],b:true,jc:'center'}]}],{noBorder:true});
     insBefore(sect,frag(doc,P('',{after:0})).concat(frag(doc,sig))); }
   // 13. gộp đoạn trống liên tiếp
   { let prevEmpty=false; for(const n of kids()){ if(n.localName!=='p'){ prevEmpty=false; continue; } const e=!pText(n); if(e&&prevEmpty) rm(n); prevEmpty=e; } }

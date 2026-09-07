@@ -13,9 +13,11 @@ def mutate(src,dst,fn):
 def first_t(x,old,new): 
     assert old in x, old; return x.replace(old,new,1)
 V=os.path.join(FX,'chuan_vn.docx'); E=os.path.join(FX,'chuan_en.docx')
-mutate(V,os.path.join(FX,'loi_thieu_khoi_ky.docx'),lambda x: x.replace('TRƯỞNG BỘ MÔN','GIẢNG VIÊN BIÊN SOẠN'))
+mutate(V,os.path.join(FX,'loi_thieu_khoi_ky.docx'),lambda x: x.replace('TRƯỞNG KHOA','GIẢNG VIÊN BIÊN SOẠN'))
+mutate(V,os.path.join(FX,'loi_khoi_ky_cu.docx'),lambda x: x.replace('TRƯỞNG KHOA','TRƯỞNG BỘ MÔN').replace('HIỆU TRƯỞNG','VIỆN TRƯỞNG VIỆN KINH TẾ VÀ KINH DOANH QUỐC TẾ'))
+mutate(V,os.path.join(FX,'loi_nhan_cu_bo_mon.docx'),lambda x: first_t(x,'>Khoa phụ trách:<','>Bộ môn phụ trách:<'))
 mutate(V,os.path.join(FX,'loi_tai_lieu_thieu_tham_khao.docx'),lambda x: x.replace('Tài liệu tham khảo bắt buộc','Tài liệu bắt buộc'))
-mutate(V,os.path.join(FX,'loi_khoa_thay_vien.docx'),lambda x: first_t(x,'>Viện:<','>Khoa:<'))   # KHÔNG phải lỗi: phải vẫn đạt
+mutate(V,os.path.join(FX,'loi_khoa_thay_vien.docx'),lambda x: first_t(x,'>Trường:<','>Khoa:<'))   # KHÔNG phải lỗi: phải vẫn đạt
 mutate(V,os.path.join(FX,'loi_tong_gio.docx'),lambda x: first_t(x,'>Tổng cộng (giờ)<','>Tổng cộng (tiết)<'))
 mutate(V,os.path.join(FX,'loi_tai_lieu_tieng_anh.docx'),lambda x: first_t(x,'[2] Nguyễn Văn B (2020). Quản lý nhà nước về kinh tế. Hà Nội: Nhà xuất bản Kinh tế quốc dân.','[2] Mankiw, N. G. (2019). Macroeconomics, 10th edition. New York: Worth Publishers.'))
 def zero_with_content(x):

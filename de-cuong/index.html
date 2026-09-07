@@ -200,7 +200,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
       <h2>Nguyên tắc cứng</h2>
       <div class="prose">
         <ul>
-          <li><b>Mô tả học phần chép nguyên văn</b> từ Bản mô tả CTĐT. Không diễn đạt lại, không rút gọn.</li>
+          <li><b>Mô tả học phần chép nguyên văn</b> từ Bản mô tả CTĐT. Không diễn đạt lại, không rút gọn. Ở phần 2, nạp file CTĐT thì trang tự lấy số PLO, dòng "Học phần" của ma trận, số tín chỉ, phân bổ giờ và mô tả theo mã học phần.</li>
           <li><b>Mục 3.2</b> gồm các dòng CLO tới PLO và dòng cuối tên đúng là "Học phần" (không ghi "Tổng phân nhiệm"). Ô giao CLO và PLO chỉ ghi mức đóng góp 1 (I, giới thiệu), 2 (R, nâng cao) hoặc 3 (M, thành thạo), không đánh "X". Dòng "Học phần" lấy từ ma trận CTĐT: 1, 2, 3, hoặc "3,A" khi học phần được dùng để đánh giá PLO đó.</li>
           <li><b>Học liệu cùng ngôn ngữ giảng dạy.</b> Giáo trình và tài liệu tham khảo bắt buộc phải cùng ngôn ngữ với đề cương; tài liệu khác ngôn ngữ đưa xuống mục tự chọn. Chương trình tiếng Việt chưa có bản dịch thì ghi "Tập bài giảng do giảng viên biên soạn (trên cơ sở …)".</li>
           <li><b>Chưa có giáo trình thì bỏ mục 4.1 Giáo trình</b> và đánh số lại từ 4.1 Tài liệu tham khảo bắt buộc, 4.2 Tài liệu tham khảo tự chọn, 4.3 Website.</li>
@@ -246,6 +246,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
     <div class="prose"><p>Điền nội dung bên dưới theo thứ tự các mục của đề cương. Trang điền vào đúng file mẫu 2025 của Trường ngay trên trình duyệt, cho tải về file .docx đã dọn sạch chữ mẫu, rồi tự chạy nghiệm thu trên file vừa sinh. Mỗi ô "một dòng một mục" nhập bằng cách xuống dòng.</p></div>
     <div class="form">
       <div class="wide"><label class="chk"><input type="checkbox" id="g-khoa"> <b>Quy ước riêng của Khoa Kinh tế liên ngành.</b>&nbsp;Bật thì tự điền theo ngôn ngữ đề cương: Khoa phụ trách = Khoa Kinh tế liên ngành, đơn vị quản lý = Trường Kinh tế và Quản lý công, khối ký TS. Đỗ Ngọc Kiên (Trưởng Khoa) và PGS. TS. Bùi Thị Lý (Hiệu trưởng). Tắt thì tự điền các ô đó.</label></div>
+      <div class="wide ctdt-row"><label class="btn ghost small" for="g-ctdt">Nạp Bản mô tả CTĐT (.docx)</label><input type="file" id="g-ctdt" accept=".docx" hidden><button type="button" class="btn ghost small" id="g-ctdt-clear">Bỏ CTĐT</button><span class="toast" id="g-ctdt-name">Có CTĐT thì trang lấy số PLO, dòng "Học phần" của ma trận, số tín chỉ, phân bổ giờ và mô tả học phần theo mã học phần.</span></div>
       <div><label for="g-lang">Ngôn ngữ đề cương</label><select id="g-lang"><option value="vn">Tiếng Việt</option><option value="en">Tiếng Anh</option></select></div>
       <div><label for="g-ten">Tên học phần (tiếng Việt)</label><input type="text" id="g-ten"></div>
       <div><label for="g-tenEn">Tên tiếng Anh</label><input type="text" id="g-tenEn"></div>
@@ -555,7 +556,19 @@ function vkLabelOf(name,lang){ const t=String(name||'').trim().toLowerCase(); if
 $('g-khoa').addEventListener('change',()=>{ try{ localStorage.setItem('dc_bomon',$('g-khoa').checked?'1':'0'); }catch(_){} $('c-bomon').checked=$('g-khoa').checked; applyKhoa(); });
 $('c-bomon').addEventListener('change',()=>{ $('g-khoa').checked=$('c-bomon').checked; });
 function maHint(){ const info=NT.maHocPhan?NT.maHocPhan($('g-ma').value):null; const h=$('g-ma-hint'); const v=$('g-ma').value.trim(); if(!v){ h.textContent='3 chữ cái lĩnh vực + 3 chữ số (tiêu chuẩn), H+3 số (CLC dạy tiếng Việt), E+3 số (CLC dạy tiếng Anh), 3 số+E (tiên tiến)'; h.style.color=''; return; } if(!info){ h.textContent='Mã sai định dạng: cần 3 chữ cái rồi 3 chữ số, H+3 số, E+3 số hoặc 3 số+E.'; h.style.color='var(--red)'; return; } const L=$('g-lang').value==='en'?'en':'vn'; const mis=info.lang!==L; h.textContent=(info.mota.charAt(0).toUpperCase()+info.mota.slice(1))+(mis?`. Không khớp ngôn ngữ đề cương đang chọn, bản ${L==='en'?'tiếng Anh':'tiếng Việt'} dùng mã ${NT.maTheoNgonNgu(v,L)}.`:''); h.style.color=mis?'var(--red)':'var(--ok)'; }
-$('g-ma').addEventListener('input',maHint);
+$('g-ma').addEventListener('input',()=>{ maHint(); applyCtdt(false); });
+let gCtdt=null;
+function applyCtdt(announce){ if(!gCtdt) return; const done=[]; const code=(($('g-ma').value||'').toUpperCase().match(/[A-Z]{3}E?\d{3}E?/)||[''])[0]; const base=code.replace(/^([A-Z]{3})E(\d{3})$/,'$1$2');
+  if(gCtdt.ploCount){ $('g-nplo').value=gCtdt.ploCount; done.push(`${gCtdt.ploCount} PLO`); }
+  const key=gCtdt.matrix[code]?code:(gCtdt.matrix[base]?base:null);
+  if(key){ const row=gCtdt.matrix[key]; const n=gCtdt.ploCount||Object.keys(row).length; $('g-hocphan').value=JSON.stringify(Array.from({length:n},(_,j)=>(row['PLO'+(j+1)]||'').trim())); done.push('dòng Học phần của ma trận'); }
+  const hk=gCtdt.hours[code]?code:(gCtdt.hours[base]?base:null);
+  if(hk){ const h=gCtdt.hours[hk]; if(!isNaN(h.tc)) $('b-tc').value=h.tc; if(!isNaN(h.x)) $('b-x').value=h.x; if(!isNaN(h.y)) $('b-y').value=h.y; done.push(`${NT.fmt(h.tc)} tín chỉ, ${NT.fmt(h.x)}/${NT.fmt(h.y)}/${NT.fmt(h.z)}/${NT.fmt(h.e)} giờ`); if(!$('g-ten').value.trim()&&h.name) $('g-ten').value=h.name; renderB(); }
+  if(!$('g-mota').value.trim()){ const title=($('g-ten').value||'').toLowerCase().replace(/\(.*?\)/g,' ').replace(/[^\p{L}\p{N}]+/gu,' ').trim(); const keys=Object.keys(gCtdt.desc); const hit=keys.find(k=>k===title)||keys.find(k=>title&&(k.includes(title)||title.includes(k))); if(hit&&gCtdt.desc[hit].text){ $('g-mota').value=gCtdt.desc[hit].text; done.push('mô tả học phần'); } }
+  renderMatrix(); save();
+  if(announce||done.length) $('g-ctdt-name').textContent=(gCtdt._name||'CTĐT')+' · '+(done.length?'đã lấy: '+done.join('; '):'không tìm thấy mã '+(code||'(chưa nhập)')+' trong CTĐT; đã lấy '+(gCtdt.ploCount||'?')+' PLO'); }
+$('g-ctdt').addEventListener('change',async e=>{ const f=e.target.files[0]; if(!f) return; try{ gCtdt=await NT.loadCtdt(f); gCtdt._name=f.name; ctdt=gCtdt; $('ctdt-name').textContent=f.name+' · '+(gCtdt.found.join(', ')||'không nhận ra bảng nào'); applyCtdt(true); }catch(err){ gCtdt=null; $('g-ctdt-name').textContent='Không đọc được: '+(err.message||err); } });
+$('g-ctdt-clear').addEventListener('click',()=>{ gCtdt=null; ctdt=null; $('g-ctdt').value=''; $('ctdt').value=''; $('ctdt-name').textContent=''; $('g-ctdt-name').textContent='Đã bỏ CTĐT.'; });
 $('g-dacthu').addEventListener('change',()=>{ try{ localStorage.setItem('dc_gen_dacthu',$('g-dacthu').checked?'1':'0'); }catch(_){} }); try{ $('g-dacthu').checked=localStorage.getItem('dc_gen_dacthu')==='1'; }catch(_){}
 $('g-lang').addEventListener('change',()=>{ const en=$('g-lang').value==='en'; const kt=$('g-kytrai'), kp=$('g-kyphai'); if(en){ if(/TRƯỞNG KHOA/i.test(kt.value)) kt.value='HEAD OF DEPARTMENT'; if(/HIỆU TRƯỞNG/i.test(kp.value)) kp.value='DEAN OF COLLEGE'; } else { if(/HEAD OF DEPARTMENT/i.test(kt.value)) kt.value='TRƯỞNG KHOA'; if(/^DEAN/i.test(kp.value)) kp.value='HIỆU TRƯỞNG'; } const L=en?'en':'vn'; const nm=NT.maTheoNgonNgu($('g-ma').value,L); if(nm&&nm!==$('g-ma').value.trim().toUpperCase()){ $('g-ma').value=nm; save(); } applyKhoa(); maHint(); });
 const lines=v=>String(v||'').split('\n').map(x=>x.trim()).filter(Boolean);

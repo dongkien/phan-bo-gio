@@ -30,7 +30,8 @@ Mục tiêu: ra đề cương **đúng format chuẩn 2025** + **đúng nội du
 11. **Cấu trúc buổi (5.1/5.2) theo LOGIC của môn**, KHÔNG map máy móc Buổi = Chương giáo trình (thứ tự chương sách thường không tối ưu sư phạm); giáo trình chỉ là chỗ dựa cho phần lõi. Tổng giờ các buổi phải khớp **chính xác** phân bổ CTĐT (vd 24/6/60/60). Chưa có dòng phân bổ thì tính bằng skill `phan-bo-gio-tin-chi` (script `phan_bo_gio.py --tc N --lt x --th y`). Nếu môn phủ 2 mảng (vd "nền tảng và thị trường số") thì một giáo trình thường không đủ — ghép nguồn cho mảng còn lại.
 12. **Cuối mục 5.2 thêm 1 dòng lưu ý NGOÀI bảng (in nghiêng):** "Lưu ý: Các hoạt động kết nối thực tiễn và phương pháp kiểm tra đánh giá có thể linh hoạt theo điều kiện thực tế và quyết định của Bộ môn."
 13. **Đánh giá:** chuyên cần 10% + cuối kỳ ≥50%. Nhiều bộ môn ưu tiên **thi viết / vấn đáp** và HẠN CHẾ tiểu luận/paper (vd 10% chuyên cần + 30% giữa kỳ + 60% cuối kỳ) — theo yêu cầu tác giả/bộ môn. **Giữa kỳ:** cho phép chọn **thi viết HOẶC bài tập nhóm kèm báo cáo**. **Cuối kỳ:** thi viết hoặc vấn đáp.
-14. **Khối ký cuối đề cương:** hai ô **TRƯỞNG BỘ MÔN** (trái) và **VIỆN TRƯỞNG VIỆN KINH TẾ VÀ KINH DOANH QUỐC TẾ** (phải) — KHÔNG ghi "Giảng viên biên soạn" (trừ khi tác giả yêu cầu khác cho đơn vị khác).
+14. **Khối ký cuối đề cương:** hai ô **TRƯỞNG BỘ MÔN** (trái) và **VIỆN TRƯỞNG** hoặc **TRƯỞNG KHOA** (phải, một trong hai là đủ, ghi kèm tên đơn vị, vd VIỆN TRƯỞNG VIỆN KINH TẾ VÀ KINH DOANH QUỐC TẾ) — KHÔNG ghi "Giảng viên biên soạn".
+15. **Mẫu là mẫu chung:** dòng "Viện/Khoa:" đổi thành "Viện:" hoặc "Khoa:" theo đơn vị phụ trách chuyên môn. Tên mục 4 giữ ĐỦ chữ "Tài liệu tham khảo bắt buộc" / "Tài liệu tham khảo tự chọn"; nếu bản cũ ghi "Tài liệu bắt buộc" thì sửa lại.
 
 ## Quy trình (các bước)
 - **B0. Khảo sát:** tìm file mẫu chuẩn (mục 2 trên) + 1 bản đã điền làm ví dụ. Xác định đề cương thuộc CTĐT nào.

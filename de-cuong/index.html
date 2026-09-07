@@ -179,7 +179,8 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
           <li><b>Đánh giá:</b> chuyên cần 10%, cuối kỳ ít nhất 50%, tổng đúng 100%. Cuối kỳ thi viết hoặc vấn đáp.</li>
           <li><b>Số tín chỉ ghi gọn</b>, ví dụ "03", không kèm ngoặc phân bổ giờ.</li>
           <li><b>Cấu trúc buổi theo logic môn</b>, không máy móc một buổi bằng một chương sách.</li>
-          <li><b>Khối ký</b> hai ô: Trưởng Bộ môn bên trái, Viện trưởng hoặc Trưởng khoa bên phải. Không ghi "Giảng viên biên soạn".</li>
+          <li><b>Khối ký</b> hai ô: Trưởng Bộ môn bên trái, Viện trưởng hoặc Trưởng khoa bên phải, một trong hai là đủ. Không ghi "Giảng viên biên soạn".</li>
+          <li><b>Mẫu là mẫu chung</b>, nên dòng "Viện/Khoa:" ghi thành "Viện:" hoặc "Khoa:" theo đơn vị mình. Tên mục 4 giữ đủ chữ "Tài liệu tham khảo bắt buộc", "Tài liệu tham khảo tự chọn", không rút thành "Tài liệu".</li>
         </ul>
       </div>
     </div>
@@ -189,7 +190,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
     <h2>Checklist trước khi nộp</h2>
     <ul class="check prose">
       <li>Đúng file mẫu 2025, còn dòng "Kèm theo QĐ số … /QĐ-ĐHNT".</li>
-      <li>Đủ bảy mục và các tiểu mục 3.1, 3.2, 4.1 đến 4.4, 5.1, 5.2, 6.1, 6.2.</li>
+      <li>Đủ bảy mục và các tiểu mục 3.1, 3.2, 4.1 đến 4.4, 5.1, 5.2, 6.1, 6.2. Tên mục 4 đủ chữ "Tài liệu tham khảo". Dòng "Viện/Khoa:" đã đổi thành "Viện:" hoặc "Khoa:".</li>
       <li>Mô tả học phần nguyên văn CTĐT. CLO đánh số liền, không còn dấu "…" của mẫu.</li>
       <li>Ma trận 3.2 có đủ dòng CLO và dòng "Học phần".</li>
       <li>Giáo trình và tài liệu bắt buộc cùng ngôn ngữ giảng dạy, đúng nhà xuất bản, năm, ấn bản thật. Không có giáo trình thì mục 4 đánh số lại từ 4.1 Tài liệu tham khảo bắt buộc.</li>
@@ -197,7 +198,7 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:72ch}
       <li>Bảng 5.2 mỗi buổi năm dòng hoạt động, giờ từng buổi khớp 5.1, có dòng lưu ý cuối bảng.</li>
       <li>Bảng đánh giá: chuyên cần 10%, cuối kỳ ít nhất 50%, tổng 100%.</li>
       <li>Không còn chữ đỏ chú thích, chú thích chân trang, chỗ giữ chỗ "Ví dụ:", "(mô tả chi tiết)", "……%".</li>
-      <li>Không còn ảnh tiêu đề thư, ngắt trang thủ công, đoạn trống liên tiếp. Khối ký không bị đẩy sang trang riêng.</li>
+      <li>Không còn ảnh tiêu đề thư, ngắt trang thủ công, đoạn trống liên tiếp. Khối ký gồm Trưởng Bộ môn và Viện trưởng hoặc Trưởng khoa, không bị đẩy sang trang riêng.</li>
       <li>Đã tách bản tiếng Việt và tiếng Anh nếu nộp riêng.</li>
     </ul>
   </div>
@@ -457,9 +458,9 @@ function check(blocks,expect){
   if(/Kèm theo QĐ/.test(allText)) add(G1,'pass','Còn dòng "Kèm theo QĐ số … /QĐ-ĐHNT"'); else add(G1,'fail','Mất dòng "Kèm theo QĐ số … /QĐ-ĐHNT"','Đây là cấu phần chính thức, không phải chú thích. Khôi phục từ mẫu.');
 
   // Header fields
-  const field=lbl=>{ const p=paras.find(p=>lower(p.text).startsWith(lower(lbl))); if(!p) return null; return p.text.slice(p.text.indexOf(':')+1).trim(); };
+  const field=lbl=>{ const alts=lbl==='Viện/Khoa'?['viện/khoa','viện','khoa']:[lower(lbl)]; const p=paras.find(p=>{ const t=lower(p.text); return alts.some(a=>t.startsWith(a)&&/^\s*:/.test(t.slice(a.length))); }); if(!p) return null; return p.text.slice(p.text.indexOf(':')+1).trim(); };
   const placeholders={'Tên học phần':'tiếng Việt (tiếng Anh)','Mã học phần':'','Bộ môn phụ trách':'','Viện/Khoa':'','Số tín chỉ':''};
-  for(const lbl in placeholders){ const v=field(lbl); if(v==null) add(G1,'fail',`Thiếu dòng "${lbl}:"`); else if(!v||v===placeholders[lbl]) add(G2,'fail',`"${lbl}:" chưa điền`); else add(G2,'pass',`${lbl}: ${v.length>90?v.slice(0,90)+'…':v}`); }
+  for(const lbl in placeholders){ const v=field(lbl); if(v==null) add(G1,'fail',lbl==='Viện/Khoa'?'Thiếu dòng "Viện:" hoặc "Khoa:"':`Thiếu dòng "${lbl}:"`); else if(!v||v===placeholders[lbl]) add(G2,'fail',`"${lbl}:" chưa điền`); else add(G2,'pass',`${lbl}: ${v.length>90?v.slice(0,90)+'…':v}`); }
   const tq=field('Điều kiện tiên quyết'); if(tq&&/Tên học phần \(Mã học phần tiên quyết\)/.test(tq)) add(G2,'fail','"Điều kiện tiên quyết" còn nguyên chữ mẫu','Ghi tên và mã học phần tiên quyết, hoặc "Không".');
   const tcText=field('Số tín chỉ'); const tc=tcText?num((tcText.match(/\d+([.,]\d+)?/)||[''])[0]):NaN;
   if(tcText&&/\(/.test(tcText)) add(G2,'warn','Số tín chỉ ghi kèm ngoặc phân bổ giờ',`"${tcText}". Quy ước ghi gọn, ví dụ "03"; phân bổ giờ đã có ở bảng 5.1.`);
@@ -470,10 +471,11 @@ function check(blocks,expect){
   H.forEach(([n,name])=>{ const i=paras.findIndex(p=>p.text.startsWith(n)&&lower(p.text).includes(lower(name).slice(0,18))); if(i<0) missing.push(n+' '+name); else idx[n]=i; });
   // Mục 4: có giáo trình thì 4.1 Giáo trình / 4.2 bắt buộc / 4.3 tự chọn / 4.4 Website; không có giáo trình thì đánh số lại từ 4.1 Tài liệu tham khảo bắt buộc
   const find4=(n,name)=>paras.findIndex(p=>new RegExp('^'+n.replace('.','\\.')+'\\.?\\s').test(p.text)&&lower(p.text).includes(lower(name)));
+  const shortTL=paras.filter(p=>/^4\.\d\.?\s+Tài liệu\s+(bắt buộc|tự chọn)/i.test(p.text)); if(shortTL.length) add(G5,'fail','Tên mục viết "Tài liệu" thay vì "Tài liệu tham khảo"',shortTL.map(p=>'"'+p.text.slice(0,60)+'"').join('\n')+'\nSửa thành "Tài liệu tham khảo bắt buộc" / "Tài liệu tham khảo tự chọn" đúng mẫu.');
   const hasGT=find4('4.1','giáo trình')>=0;
   const L=hasGT?[['4.1','giáo trình'],['4.2','tài liệu tham khảo bắt buộc'],['4.3','tài liệu tham khảo tự chọn'],['4.4','website']]:[['4.1','tài liệu tham khảo bắt buộc'],['4.2','tài liệu tham khảo tự chọn'],['4.3','website']];
   const key4={'giáo trình':'GT','tài liệu tham khảo bắt buộc':'BB','tài liệu tham khảo tự chọn':'TC','website':'WEB'};
-  L.forEach(([n,name])=>{ const i=find4(n,name); if(i<0) missing.push(n+'. '+name.charAt(0).toUpperCase()+name.slice(1)+(hasGT?'':' (không có giáo trình thì đánh số lại từ 4.1)')); else idx[key4[name]]=i; });
+  L.forEach(([n,name])=>{ let i=find4(n,name); if(i<0&&/tài liệu tham khảo/.test(name)) i=find4(n,name.replace('tài liệu tham khảo','tài liệu')); if(i<0) missing.push(n+'. '+name.charAt(0).toUpperCase()+name.slice(1)+(hasGT?'':' (không có giáo trình thì đánh số lại từ 4.1)')); else idx[key4[name]]=i; });
   if(missing.length) add(G1,'fail','Thiếu mục của mẫu: '+missing.join('; ')); else add(G1,'pass',hasGT?'Đủ 7 mục và các tiểu mục theo mẫu':'Đủ 7 mục; mục 4 không có giáo trình, đánh số lại từ 4.1 Tài liệu tham khảo bắt buộc');
   if(idx.GT!=null){ const p=paras[idx.GT]; if(/đề nghị sử dụng giáo trình/i.test(p.text)) add(G5,'warn','Tiêu đề 4.1 còn nguyên câu hướng dẫn trong ngoặc của mẫu','Rút gọn thành "4.1. Giáo trình".'); }
   if(idx['3.2.']!=null){ const p=paras[idx['3.2.']]; if(/Xem Bảng phân nhiệm/i.test(p.text)) add(G5,'warn','Tiêu đề 3.2 còn câu hướng dẫn "(Xem Bảng phân nhiệm…)" của mẫu'); }
@@ -569,7 +571,7 @@ function check(blocks,expect){
 
   // Khối ký
   const sig=findTable(tables,g=>/trưởng bộ môn|trưởng khoa|viện trưởng/i.test(g.map(r=>r.join(' ')).join(' ')));
-  if(!sig) add(G1,'fail','Thiếu khối ký (Trưởng Bộ môn / Viện trưởng hoặc Trưởng khoa)'); else { const s=sig.grid.map(r=>r.join(' | ')).join(' '); if(/giảng viên biên soạn/i.test(s)) add(G1,'warn','Khối ký có "Giảng viên biên soạn"','Quy ước Bộ môn: chỉ Trưởng Bộ môn và Viện trưởng.'); else add(G1,'pass','Khối ký: '+sig.grid[0].map(c=>c.replace(/\s+/g,' ').trim()).filter(Boolean).join(' | ')); }
+  if(!sig) add(G1,'fail','Thiếu khối ký (Trưởng Bộ môn bên trái, Viện trưởng hoặc Trưởng khoa bên phải)'); else { const s=sig.grid.map(r=>r.join(' | ')).join(' '); const hasBM=/trưởng bộ môn/i.test(s), hasVK=/viện trưởng|trưởng khoa/i.test(s); const names=sig.grid[0].map(c=>c.replace(/\s+/g,' ').trim()).filter(Boolean).join(' | '); if(/giảng viên biên soạn/i.test(s)) add(G1,'warn','Khối ký có "Giảng viên biên soạn"','Chỉ cần Trưởng Bộ môn và Viện trưởng hoặc Trưởng khoa.'); if(!hasBM) add(G1,'fail','Khối ký thiếu Trưởng Bộ môn',names); else if(!hasVK) add(G1,'fail','Khối ký thiếu Viện trưởng hoặc Trưởng khoa','Một trong hai là đủ, tùy đơn vị. '+names); else add(G1,'pass','Khối ký: '+names); }
 
   // Hình thức: chữ đỏ, footnote, placeholder, ảnh, ngắt trang, đoạn trống
   const redP=paras.filter(p=>p.red.length&&!/Kèm theo|QĐ-ĐHNT|Hiệu trưởng|Attached to|President/.test(p.text)); const redT=tables.reduce((a,t)=>a+t.red.length,0);

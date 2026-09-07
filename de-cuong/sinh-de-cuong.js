@@ -52,7 +52,8 @@ function mkTable(widths,rows,o={}){
 }
 
 async function build(data,tplBuf){
-  const L=data.lang==='en'?'en':'vn'; const S=T[L];
+  const L=data.lang==='en'?'en':'vn'; const S0=T[L]; const moi=data.moi!==false;
+  const S=moi?S0:Object.assign({},S0,L==='vn'?{bmLabel:'Bộ môn phụ trách:',vkLabel:'Viện/Khoa:',note52:'Lưu ý: Các hoạt động kết nối thực tiễn và phương pháp kiểm tra đánh giá có thể linh hoạt theo điều kiện thực tế và quyết định của Bộ môn.',kyTrai:'TRƯỞNG BỘ MÔN',kyPhai:'VIỆN TRƯỞNG'}:{bmLabel:'Department:',vkLabel:'Faculty/School:',kyTrai:'HEAD OF DEPARTMENT',kyPhai:'DEAN'});
   const zip=await JSZip.loadAsync(tplBuf); const xml=await zip.file('word/document.xml').async('string');
   const doc=new DOMParser().parseFromString(xml,'application/xml'); const body=doc.getElementsByTagNameNS(W,'body')[0];
   const kids=()=>[...body.childNodes].filter(n=>n.nodeType===1);
@@ -87,7 +88,7 @@ async function build(data,tplBuf){
   lbl(S.tenLabel,L==='vn'?`${data.ten}${data.tenEn?' ('+data.tenEn+')':''}`:`${data.tenEn||data.ten}${data.ten&&data.tenEn?' ('+data.ten+')':''}`);
   lbl(S.maLabel,data.ma);
   { const p=findP(t=>/^(bộ môn phụ trách|department)\s*:/i.test(t)); if(p) setLabel(p,S.bmLabel,data.bomon); }
-  { const p=findP(t=>/^(viện\/khoa|faculty\/school)\s*:/i.test(t)); if(p) setLabel(p,(data.vkLabel||(L==='vn'?'Trường/Khoa':'Faculty/College'))+':',data.vk); }
+  { const p=findP(t=>/^(viện\/khoa|faculty\/school)\s*:/i.test(t)); if(p) setLabel(p,(data.vkLabel||S.vkLabel.replace(':',''))+':',data.vk); }
   lbl(S.tcLabel,String(data.tc).padStart(2,'0')); lbl(S.tqLabel,data.tienquyet||(L==='vn'?'Không':'None'));
   // 4. giảng viên
   { const tbl=kids().find(n=>n.localName==='tbl'); const rows=[{h:true,cells:S.gvHead.map(t=>({t}))}]; (data.gv.length?data.gv:[{ten:'',email:'',dt:'',truso:''}]).forEach((g,i)=>rows.push({cells:[{t:String(i+1),jc:'center'},{t:g.ten},{t:g.email},{t:g.dt},{t:g.truso,jc:'center'}]}));

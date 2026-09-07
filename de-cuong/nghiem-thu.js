@@ -5,7 +5,7 @@
    Finding: {g: nhóm, status: fail|warn|pass, t: tiêu đề, d: chi tiết, src: 'truong'|'bomon'} */
 (function(global){
 'use strict';
-const VERSION='3.0 (8/9/2026)';
+const VERSION='3.1 (8/9/2026)';
 function maTheoNgonNgu(code,lang){ const info=maHocPhan(code); if(!info) return null; const m=String(code).trim().toUpperCase().match(/^([A-Z]{3})E?(\d{3})E?$/); if(!m) return null; return lang==='en'?(info.dang==='dddE'?m[1]+m[2]+'E':m[1]+'E'+m[2]):m[1]+m[2]; }
 /* Mã học phần: 3 chữ cái lĩnh vực + (ddd | Hddd | Eddd | dddE) */
 function bacHocPhan(t){ const d=parseInt(t.replace(/\D/g,'').charAt(0),10); return d<6?{bac:'ĐH',ten:'cử nhân',maxPLO:12}:d===6?{bac:'ThS',ten:'thạc sĩ',maxPLO:10}:{bac:'TS',ten:'tiến sĩ',maxPLO:8}; }
@@ -89,7 +89,9 @@ const CFG={
     ph:/\((đề nghị )?mô tả chi tiết\)|Ví dụ:|…{1,}%|\.{4,}\s*%|^…$|1,2,\.\.\.|5,6,\.\.\.|\(nếu có\)/, phSkip:/Kèm theo/,
     sig:{bm:/trưởng khoa/i,vk:/hiệu trưởng/i,old:/trưởng bộ môn|viện trưởng/i,gv:/giảng viên biên soạn/i,bmName:'Trưởng Khoa',vkName:'Hiệu trưởng',oldMsg:'Khối ký còn chức danh cũ (Trưởng Bộ môn / Viện trưởng). Trường đã bỏ Bộ môn: ô trái TRƯỞNG KHOA, ô phải HIỆU TRƯỞNG.'},
     otherLang:isEnglish, otherLangName:'tiếng Anh', leftover:/^(Course title|Course code|Credit hours|COURSE DESCRIPTION|READING MATERIALS)/,
-    unit:'giờ'
+    unit:'giờ',
+    cu:{ fields:[['Tên học phần',['tên học phần'],'tiếng việt (tiếng anh)'],['Mã học phần',['mã học phần'],''],['Bộ môn phụ trách',['bộ môn phụ trách','bộ môn'],''],['Viện/Khoa',['viện/khoa','viện','khoa'],''],['Số tín chỉ',['số tín chỉ'],'']], oldFields:[], vkMissing:'Thiếu dòng "Viện:" hoặc "Khoa:"', bmMissing:'Thiếu dòng "Bộ môn phụ trách:"',
+      sig:{bm:/trưởng bộ môn/i,vk:/viện trưởng|trưởng khoa/i,old:/^$/,gv:/giảng viên biên soạn/i,bmName:'Trưởng Bộ môn',vkName:'Viện trưởng hoặc Trưởng khoa',oldMsg:''}, oldUnit:/^$/, oldUnitMsg:'', note52Old:/^$/, note52Text:'"Lưu ý: Các hoạt động kết nối thực tiễn và phương pháp kiểm tra đánh giá có thể linh hoạt theo điều kiện thực tế và quyết định của Bộ môn."' }
   },
   en:{
     name:'tiếng Anh', title:/^SYLLABUS$/m, otherTitle:/ĐỀ CƯƠNG CHI TIẾT HỌC PHẦN/, otherName:'tiếng Việt',
@@ -113,7 +115,9 @@ const CFG={
     ph:/\(describe the details\)|For example:|…{1,}%|\.{4,}\s*%|^…$|1,2,\.\.\.|5,6,\.\.\.|\(if any\)|^Note: Please list all/, phSkip:/Attached to/,
     sig:{bm:/head of department/i,vk:/\bdean\b/i,old:/president|rector|vice dean/i,gv:/prepared by|compiled by/i,bmName:'Head of Department (Trưởng Khoa)',vkName:'Dean (Hiệu trưởng trường thuộc)',oldMsg:'Khối ký bản tiếng Anh: ô trái HEAD OF DEPARTMENT (Trưởng Khoa), ô phải DEAN (Hiệu trưởng trường thuộc). Không dùng President.'},
     otherLang:isVietnamese, otherLangName:'tiếng Việt', leftover:/^(Tên học phần|Mã học phần|Số tín chỉ|MÔ TẢ HỌC PHẦN|HỌC LIỆU)/,
-    unit:'giờ'
+    unit:'giờ',
+    cu:{ fields:[['Course title',['course title'],'english (vietnamese)'],['Course code',['course code'],''],['Department',['department'],''],['Faculty/School',['faculty/school','school/faculty','school','faculty'],''],['Credit hours',['credit hours','credits'],'']], oldFields:[], vkMissing:'Thiếu dòng "Faculty/School:"', bmMissing:'Thiếu dòng "Department:"',
+      sig:{bm:/head of department/i,vk:/\bdean\b/i,old:/^$/,gv:/prepared by|compiled by/i,bmName:'Head of Department',vkName:'Dean',oldMsg:''} }
   }
 };
 
@@ -126,11 +130,11 @@ function colIndex(hdrRows,ncol,kw){ for(let c=0;c<ncol;c++){ for(let i=hdrRows.l
 function detectLang(paras){ const all=paras.map(p=>p.text).join('\n'); const vn=CFG.vn.title.test(all), en=CFG.en.title.test(all); return {vn,en,lang:vn?'vn':(en?'en':'vn')}; }
 
 function check(blocks,opts){
-  opts=opts||{}; const expect=opts.expect||null; const bomon=opts.bomon!==false;
+  opts=opts||{}; const expect=opts.expect||null; const bomon=opts.bomon!==false; const moi=opts.moi!==false;
   const R=[]; const add=(g,status,t,d,src)=>{ R.push({g,status,t,d:d||'',src:src||'truong'}); };
   const BM='bomon';
   const paras=blocks.filter(b=>b.type==='p'); const tables=blocks.filter(b=>b.type==='t');
-  const {vn,en,lang}=detectLang(paras); const C=CFG[lang];
+  const {vn,en,lang}=detectLang(paras); const C0=CFG[lang]; const C=moi?C0:Object.assign({},C0,C0.cu||{});
   const allText=paras.map(p=>p.text).join('\n');
   const G1='Cấu trúc',G2='Nội dung',G3='Giờ và bảng 5.1, 5.2',G4='Đánh giá',G5='Hình thức',G6='Đối chiếu CTĐT';
   const meta={lang,tc:NaN,title:'',code:'',tot51:null};
@@ -142,7 +146,7 @@ function check(blocks,opts){
   // đầu đề
   const field=(labels)=>{ const p=paras.find(p=>{ const t=lower(p.text); return labels.some(a=>t.startsWith(a)&&/^\s*:/.test(t.slice(a.length))); }); if(!p) return null; return p.text.slice(p.text.indexOf(':')+1).trim(); };
   (C.oldFields||[]).forEach(([lab,msg])=>{ if(field([lab])!=null) add(G1,'fail',msg.split('.')[0],msg,'truong'); });
-  C.fields.forEach(([name,labels,ph])=>{ const v=field(labels); if(v==null){ const isVK=/^(Trường\/Khoa|Faculty\/College)$/.test(name), isBM=/^(Khoa phụ trách|Department)$/.test(name); if((isVK&&field(['viện/khoa','viện','faculty/school','school']))||(isBM&&field(['bộ môn phụ trách','bộ môn']))) return; add(G1,'fail',isVK?C.vkMissing:isBM?C.bmMissing:`Thiếu dòng "${name}:"`); return; } else if(!v||lower(v)===ph) add(G2,'fail',`"${name}:" chưa điền`); else { add(G2,'pass',`${name}: ${v.length>90?v.slice(0,90)+'…':v}`); if(name==='Tên học phần'||name==='Course title') meta.title=v; if(/^(Khoa phụ trách)$/.test(name)&&C.oldUnit.test(v)) add(G2,'fail','Tên đơn vị phụ trách còn "Bộ môn"',`"${v}". Ghi tên Khoa.`); if(name==='Mã học phần'||name==='Course code') meta.code=v; if(name==='Số tín chỉ'||name==='Credit hours'){ meta.tc=num((v.match(/\d+([.,]\d+)?/)||[''])[0]); if(/\(/.test(v)) add(G2,'fail','Số tín chỉ ghi kèm ngoặc phân bổ giờ',`"${v}". Chỉ ghi số tín chỉ, ví dụ "03"; phân bổ giờ đã có ở bảng 5.1.`); } } });
+  C.fields.forEach(([name,labels,ph])=>{ const v=field(labels); if(v==null){ const isVK=/^(Trường\/Khoa|Faculty\/College|Viện\/Khoa|Faculty\/School)$/.test(name), isBM=/^(Khoa phụ trách|Department|Bộ môn phụ trách)$/.test(name); if((isVK&&field(['viện/khoa','viện','faculty/school','school']))||(isBM&&field(['bộ môn phụ trách','bộ môn']))) return; add(G1,'fail',isVK?C.vkMissing:isBM?C.bmMissing:`Thiếu dòng "${name}:"`); return; } else if(!v||lower(v)===ph) add(G2,'fail',`"${name}:" chưa điền`); else { add(G2,'pass',`${name}: ${v.length>90?v.slice(0,90)+'…':v}`); if(name==='Tên học phần'||name==='Course title') meta.title=v; if(/^(Khoa phụ trách)$/.test(name)&&C.oldUnit.test(v)) add(G2,'fail','Tên đơn vị phụ trách còn "Bộ môn"',`"${v}". Ghi tên Khoa.`); if(name==='Mã học phần'||name==='Course code') meta.code=v; if(name==='Số tín chỉ'||name==='Credit hours'){ meta.tc=num((v.match(/\d+([.,]\d+)?/)||[''])[0]); if(/\(/.test(v)) add(G2,'fail','Số tín chỉ ghi kèm ngoặc phân bổ giờ',`"${v}". Chỉ ghi số tín chỉ, ví dụ "03"; phân bổ giờ đã có ở bảng 5.1.`); } } });
   const tq=field([C.prereq[0]]); if(tq&&C.prereq[1].source!=='^$'&&C.prereq[1].test(tq)) add(G2,'fail','"Điều kiện tiên quyết" còn nguyên chữ mẫu','Ghi tên và mã học phần tiên quyết, hoặc "Không".');
   const tc=meta.tc; const special=C.special.test(meta.title||''); meta.special=special;
   if(meta.code){ const info=maHocPhan(meta.code); meta.codeInfo=info; if(!info) add(G2,'fail',`Mã học phần "${meta.code}" sai định dạng`,'Mã gồm 3 chữ cái lĩnh vực rồi 3 chữ số (tiêu chuẩn, tiếng Việt), H + 3 chữ số (CLC/ĐHNNQT/ĐHPTQT, học phần dạy tiếng Việt), E + 3 chữ số (CLC/ĐHNNQT/ĐHPTQT dạy tiếng Anh) hoặc 3 chữ số + E (chương trình tiên tiến, tiếng Anh).'); else { const want=info.lang; if(want!==lang) add(G2,'fail',`Mã ${meta.code.toUpperCase()} là ${info.mota}, nhưng đề cương này là bản ${C.name}`,lang==='en'?`Bản tiếng Anh dùng mã 3 chữ cái + E + 3 chữ số: đổi thành ${maTheoNgonNgu(meta.code,'en')}.`:`Bản tiếng Việt dùng mã 3 chữ cái + 3 chữ số (hoặc H + 3 chữ số): đổi thành ${maTheoNgonNgu(meta.code,'vn')}.`); else add(G2,'pass',`Mã ${meta.code.toUpperCase()}: ${info.mota}; khớp ngôn ngữ đề cương`); } }
@@ -284,7 +288,7 @@ function check(blocks,opts){
   if(!sig) add(G1,'fail',`Thiếu khối ký (${C.sig.bmName} bên trái, ${C.sig.vkName} bên phải)`);
   else { const s=sig.grid.map(r=>r.join(' | ')).join(' '); const names=sig.grid[0].map(c=>c.replace(/\s+/g,' ').trim()).filter(Boolean).join(' | ');
     if(C.sig.gv.test(s)) add(G1,'fail','Khối ký có "Giảng viên biên soạn"','Quy định chung: chỉ '+C.sig.bmName+' và '+C.sig.vkName+'.');
-    if(C.sig.old.test(s)) add(G1,'fail','Khối ký còn chức danh cũ',C.sig.oldMsg+' Hiện có: '+names);
+    if(C.sig.old.source!=='^$'&&C.sig.old.test(s)) add(G1,'fail','Khối ký còn chức danh cũ',C.sig.oldMsg+' Hiện có: '+names);
     else if(special){ if(!C.sig.vk.test(s)) add(G1,'fail','Đề cương đặc thù: khối ký phải có '+C.sig.vkName,names); else if(C.sig.bm.test(s)) add(G1,'warn','Đề cương đặc thù (khóa luận, đề án, luận văn) chỉ một chữ ký '+C.sig.vkName,'Bỏ ô '+C.sig.bmName+'. Hiện có: '+names); else add(G1,'pass','Khối ký đề cương đặc thù: '+names); }
     else if(!C.sig.bm.test(s)) add(G1,'fail','Khối ký thiếu '+C.sig.bmName,names); else if(!C.sig.vk.test(s)) add(G1,'fail','Khối ký thiếu '+C.sig.vkName,names); else add(G1,'pass','Khối ký: '+names); }
 

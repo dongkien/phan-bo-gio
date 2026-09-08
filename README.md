@@ -42,11 +42,16 @@ python3 tests/run_tests.py
 - `skills/phan-bo-gio-tin-chi/`: tính phân bổ giờ.
 - `skills/tao-va-hoan-thien-de-cuong/`: tạo (điền mẫu 2025) và hoàn thiện (rà ma trận 3.2, phương pháp dạy và đánh giá theo CLO, học liệu) đề cương FTU; kèm mẫu docx, script điền mẫu ví dụ, script trích đề cương để rà và rubric.
 
-Cách cài:
-- **Claude Code:** chép thư mục skill vào `~/.claude/skills/<tên-skill>/` (Windows: `C:\Users\<tên>\.claude\skills\<tên-skill>\`), mở lại Claude Code.
+Cách cài (đồng nghiệp dùng chung):
+- **Claude Code (khuyên dùng):** tải repo về rồi chép hoặc liên kết thư mục skill vào `~/.claude/skills/<tên-skill>/` (Windows: `C:\Users\<tên>\.claude\skills\<tên-skill>\`), mở lại Claude Code:
+  ```bash
+  git clone https://github.com/dongkien/phan-bo-gio.git
+  mkdir -p ~/.claude/skills && cp -r phan-bo-gio/skills/* ~/.claude/skills/
+  ```
+  Cập nhật sau này: `git pull` trong thư mục đã clone rồi chép lại. Skill tạo đề cương cần `pip install python-docx`.
 - **claude.ai:** nén thư mục skill thành zip (thư mục gốc trong zip là tên skill), vào Settings → Capabilities → Skills → Upload skill.
 - **Chỉ chạy Python:** `python3 skills/phan-bo-gio-tin-chi/scripts/phan_bo_gio.py --tc 3 --lt 24 --th 6`.
 
-Quy ước trong skill và trang đề cương rút từ thực tế của Bộ môn Kinh tế và Quản lý, Viện Kinh tế và Kinh doanh quốc tế. Đơn vị khác thay tên đơn vị, khối ký và tỷ lệ đánh giá theo quy định của mình.
+Quy ước trong skill và trang đề cương rút từ thực tế của Khoa Kinh tế liên ngành, Trường Kinh tế và Quản lý công (trước 8/2026 là Bộ môn Kinh tế và Quản lý, Viện Kinh tế và Kinh doanh quốc tế). Đơn vị khác thay tên đơn vị, khối ký và tỷ lệ đánh giá theo quy định của mình.
 
 Tác giả: Đỗ Ngọc Kiên.

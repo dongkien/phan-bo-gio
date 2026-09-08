@@ -42,13 +42,18 @@ python3 tests/run_tests.py
 - `skills/phan-bo-gio-tin-chi/`: tính phân bổ giờ.
 - `skills/tao-va-hoan-thien-de-cuong/`: tạo (điền mẫu 2025) và hoàn thiện (rà ma trận 3.2, phương pháp dạy và đánh giá theo CLO, học liệu) đề cương FTU; kèm mẫu docx, script điền mẫu ví dụ, script trích đề cương để rà và rubric.
 
-Cách cài (đồng nghiệp dùng chung):
-- **Claude Code (khuyên dùng):** tải repo về rồi chép hoặc liên kết thư mục skill vào `~/.claude/skills/<tên-skill>/` (Windows: `C:\Users\<tên>\.claude\skills\<tên-skill>\`), mở lại Claude Code:
-  ```bash
-  git clone https://github.com/dongkien/phan-bo-gio.git
-  mkdir -p ~/.claude/skills && cp -r phan-bo-gio/skills/* ~/.claude/skills/
+Cách cài (đồng nghiệp dùng chung), chọn một:
+- **Cách 1, nhờ Claude Code tự cài (dễ nhất):** mở Claude Code, dán câu sau: *"Tải https://github.com/dongkien/phan-bo-gio/archive/refs/heads/main.zip, giải nén, chép các thư mục trong `skills/` vào thư mục skills của tôi (`~/.claude/skills/`), rồi cài python-docx."* Xong thì mở lại Claude Code.
+- **Cách 2, tải ZIP không cần git:** vào https://github.com/dongkien/phan-bo-gio → nút **Code** → **Download ZIP**, giải nén, chép hai thư mục trong `skills\` vào `C:\Users\<tên>\.claude\skills\` (Mac/Linux: `~/.claude/skills/`). Hoặc dán một lệnh vào PowerShell (Windows):
+  ```powershell
+  $d="$env:USERPROFILE\.claude\skills"; New-Item -ItemType Directory -Force $d | Out-Null; Invoke-WebRequest https://github.com/dongkien/phan-bo-gio/archive/refs/heads/main.zip -OutFile "$env:TEMP\pbg.zip"; Expand-Archive "$env:TEMP\pbg.zip" "$env:TEMP\pbg" -Force; Copy-Item "$env:TEMP\pbg\phan-bo-gio-main\skills\*" $d -Recurse -Force; pip install python-docx
   ```
-  Cập nhật sau này: `git pull` trong thư mục đã clone rồi chép lại. Skill tạo đề cương cần `pip install python-docx`.
+  Mac/Linux:
+  ```bash
+  curl -L https://github.com/dongkien/phan-bo-gio/archive/refs/heads/main.zip -o /tmp/pbg.zip && unzip -oq /tmp/pbg.zip -d /tmp && mkdir -p ~/.claude/skills && cp -r /tmp/phan-bo-gio-main/skills/* ~/.claude/skills/ && pip install python-docx
+  ```
+- **Cách 3, có git:** `git clone https://github.com/dongkien/phan-bo-gio.git` rồi chép `skills/*` vào `~/.claude/skills/`; cập nhật bằng `git pull`.
+Cập nhật phiên bản mới: làm lại đúng cách đã chọn, file cũ bị ghi đè.
 - **claude.ai:** nén thư mục skill thành zip (thư mục gốc trong zip là tên skill), vào Settings → Capabilities → Skills → Upload skill.
 - **Chỉ chạy Python:** `python3 skills/phan-bo-gio-tin-chi/scripts/phan_bo_gio.py --tc 3 --lt 24 --th 6`.
 

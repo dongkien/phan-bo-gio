@@ -8,7 +8,7 @@ description: >
   có hợp lệ không. Không nói số tín chỉ thì mặc định 3. Dùng khi user nói: "phân bổ
   giờ", "tính giờ tự học", "giờ thực tế/bài tập lớn là bao nhiêu", "24/6 thì còn lại
   bao nhiêu", "dòng phân bổ giờ cho đề cương", "x/y/z tín chỉ", hoặc đang soạn đề cương
-  (skill tao-de-cuong) cần số giờ cho bảng 5.1/5.2.
+  (skill tao-va-hoan-thien-de-cuong) cần số giờ cho bảng 5.1/5.2.
 ---
 
 # Phân bổ giờ học phần theo tín chỉ (chuẩn FTU)
@@ -81,5 +81,5 @@ Exit code 0 = OK, 1 = phân bổ không hợp lệ (z ≤ 0). Không cần thư 
 | 2 | 30 | 15 | −25 | 80 | 45 | 15 | không (vượt) |
 
 ## Liên hệ skill khác
-- `tao-de-cuong`: bảng 5.1/5.2 của đề cương phải khớp chính xác dòng x/y/z/E tính ở đây
+- `tao-va-hoan-thien-de-cuong`: bảng 5.1/5.2 của đề cương phải khớp chính xác dòng x/y/z/E tính ở đây
   (hoặc dòng phân bổ đã ghi trong Bản mô tả CTĐT nếu CTĐT đã quy định).

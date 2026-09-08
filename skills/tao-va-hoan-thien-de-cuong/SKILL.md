@@ -1,20 +1,26 @@
 ---
-name: tao-de-cuong
+name: tao-va-hoan-thien-de-cuong
 description: >
-  Soạn mới hoặc cập nhật ĐỀ CƯƠNG CHI TIẾT HỌC PHẦN (syllabus) của Trường Đại học
-  Ngoại thương (ĐH, ThS, TS) theo ĐÚNG mẫu chuẩn 2025, bằng cách ĐIỀN nội dung vào
-  file template gốc (không vẽ lại/thiết kế lại). Dùng khi user nói: "soạn đề cương",
-  "làm đề cương học phần", "cập nhật đề cương", "syllabus", "đề cương chi tiết",
-  "điền mẫu đề cương 2025", hoặc đưa một học phần + giáo trình để dựng đề cương.
-  Bao gồm: lấy mô tả/PLO/ma trận từ Bản mô tả CTĐT, đối chiếu giáo trình tới cấp
-  tiểu mục, chuẩn hóa học liệu theo ngôn ngữ giảng dạy (tìm bản dịch nếu cần), tách
-  bản tiếng Việt/tiếng Anh, và xuất .docx đúng định dạng.
+  TẠO và HOÀN THIỆN ĐỀ CƯƠNG CHI TIẾT HỌC PHẦN (syllabus) của Trường Đại học Ngoại
+  thương (ĐH, ThS, TS). Chế độ TẠO: soạn mới/cập nhật theo ĐÚNG mẫu chuẩn 2025 bằng
+  cách ĐIỀN vào file template gốc (không vẽ lại), lấy mô tả/PLO/ma trận từ Bản mô tả
+  CTĐT, đối chiếu giáo trình tới cấp tiểu mục, học liệu đúng ngôn ngữ giảng dạy, tách
+  bản Việt/Anh, xuất .docx. Chế độ HOÀN THIỆN: rà CHẤT LƯỢNG một đề cương có sẵn theo
+  Hướng dẫn xây dựng CĐR của FTU: đóng góp CLO→PLO ở ma trận 3.2 có thực sự phù hợp
+  (nội dung, mức I/R/M, khớp CTĐT), phương pháp giảng dạy (5.1/5.2) và phương pháp
+  kiểm tra đánh giá (mục 7) có đủ để đạt CLO không, tài liệu tham khảo có tồn tại và
+  còn cập nhật không (web-verify). Dùng khi user nói: "soạn đề cương", "làm đề cương
+  học phần", "cập nhật đề cương", "syllabus", "đề cương chi tiết", "điền mẫu đề cương
+  2025", "rà đề cương", "hoàn thiện đề cương", "kiểm tra ma trận CLO PLO", "phương pháp
+  đánh giá có phù hợp không", "kiểm tài liệu tham khảo", hoặc đưa file đề cương/học
+  phần + giáo trình.
 ---
 
-# Tạo / cập nhật đề cương học phần FTU (mẫu 2025)
+# Tạo và hoàn thiện đề cương học phần FTU (mẫu 2025)
 
-Mục tiêu: ra đề cương **đúng format chuẩn 2025** + **đúng nội dung** (lấy từ CTĐT,
-đối chiếu giáo trình), không tự chế layout.
+Hai chế độ, chọn theo yêu cầu:
+- **TẠO** (soạn mới / cập nhật / điền mẫu): ra đề cương **đúng format chuẩn 2025** + **đúng nội dung** (lấy từ CTĐT, đối chiếu giáo trình), không tự chế layout. Các mục "Nguyên tắc cứng" và "Quy trình" bên dưới.
+- **HOÀN THIỆN** (rà chất lượng một đề cương có sẵn): đọc hiểu nội dung, kết luận ma trận 3.2 / phương pháp dạy / phương pháp đánh giá / học liệu có đạt không, ra báo cáo đề xuất sửa. Mục "Chế độ HOÀN THIỆN" bên dưới. Khi sếp đưa file đề cương và hỏi "được chưa", "rà", "hoàn thiện", "có phù hợp không" thì vào chế độ này; kết thúc bằng sửa file theo chế độ TẠO sau khi sếp chốt.
 
 ## Nguyên tắc cứng (đã rút từ thực chiến - đừng vi phạm)
 1. **ĐIỀN vào template gốc, KHÔNG vẽ lại.** Luôn bắt đầu từ file mẫu chính thức; không tự dựng bảng bằng markdown/pandoc rồi build.
@@ -51,11 +57,27 @@ Mục tiêu: ra đề cương **đúng format chuẩn 2025** + **đúng nội du
 - **B6. Dọn:** xóa chữ đỏ + footnote (giữ dòng QĐ); gọn bảng giảng viên; thêm khối ký nếu nửa bị tách mất.
 - **B7. Nghiệm thu** + liệt kê điểm cần tác giả quyết (trọng số đánh giá, SĐT/đồng GV, lựa chọn sư phạm như thứ tự định tính/định lượng).
 
+## Chế độ HOÀN THIỆN (rà chất lượng đề cương có sẵn)
+Rubric đầy đủ ở `references/ra_soat_chat_luong.md` (đọc trước khi rà). Quy trình:
+- **H0. Hình thức trước:** chạy bộ nghiệm thu web (https://dongkien.github.io/phan-bo-gio/de-cuong/ phần 3, hoặc mô tả cho sếp) để đề cương đạt 0 lỗi mẫu; lỗi hình thức ghi riêng, không trộn vào phần nội dung.
+- **H1. Trích:** `python3 scripts/trich_de_cuong.py <file.docx>` → bản Markdown gồm CLO (kèm mức Bloom đoán theo động từ), ma trận 3.2, 5.1, 5.2 theo hoạt động, bảng đánh giá, học liệu, **bảng đối chiếu CLO → PLO → hoạt động → đánh giá** và ghi chú cơ học. Lấy thêm Bản mô tả CTĐT: nội dung từng PLO + dòng phân nhiệm học phần (bắt buộc cho phần A).
+- **H2. Ma trận 3.2 (rubric A):** từng ô: khớp nội dung PLO, khớp mức I/R/M với động từ CLO, khớp dòng phân nhiệm CTĐT, một CLO một PLO, cột "3,A" phải được đo trực tiếp, đủ CLO kiến thức, đúng tầm bậc. Ra bảng ma trận đề xuất.
+- **H3. Phương pháp dạy (rubric B):** từng CLO: các buổi hướng tới có hoạt động đúng bậc không (Áp dụng trở lên cần bài tập/thực hành/tình huống có giờ và nội dung thật; kỹ năng nhóm cần buổi nhóm; thái độ cần hoạt động và tiêu chí quan sát); tỷ trọng buổi hợp lý; dòng tự học trích đúng chương học liệu.
+- **H4. Phương pháp đánh giá (rubric C):** từng CLO có ít nhất một hình thức đo được đúng bậc; chuyên cần không đo CLO kiến thức; trắc nghiệm không đo Sáng tạo; CLO nhóm cần hình thức nhóm; cột nội dung và công cụ phải cụ thể; trọng số hợp bậc; giữ quy định 10% / ≥50% / 100%.
+- **H5. Học liệu (rubric D):** WebSearch/WebFetch từng tài liệu: tồn tại đúng dữ kiện (tác giả, năm, NXB, ấn bản), có ấn bản mới hơn không, đúng ngôn ngữ, có bản dịch/bản mở, phủ được các buổi. Ghi URL nguồn kiểm; không tìm được thì ghi "chưa xác minh", không bịa.
+- **H6. Báo cáo:** ghi `RaSoat_<MÃ>.md` trong thư mục dự án (tóm tắt, bảng A-B-C-D, danh mục sửa cụ thể kèm `> QUYẾT:`), chat chỉ chỉ đường. Sau khi sếp chốt: sửa file theo chế độ TẠO, chạy lại nghiệm thu web và bản trích.
+Mức: **LỖI** (trái Hướng dẫn/CTĐT hoặc không đo được CLO) · **XEM LẠI** (lệch một bậc, mỏng, mơ hồ) · **GỢI Ý** (nâng chất). Không sửa đề cương khi chưa chốt; không suy PLO từ số hiệu mà phải đọc nội dung PLO trong CTĐT.
+
 ## Tài nguyên kèm skill
+- `scripts/trich_de_cuong.py` — trích đề cương .docx (VN/EN, cả kiểu ma trận Mã HP | CLO | PLO/PI) thành Markdown/JSON để rà; có bảng đối chiếu và mức Bloom đoán theo động từ (bảng động từ Phụ lục 1-3 + Bloom). Chỉ trích và đối chiếu cơ học, không kết luận.
+- `references/ra_soat_chat_luong.md` — rubric A (ma trận), B (phương pháp dạy), C (đánh giá), D (học liệu), E (mẫu báo cáo) cho chế độ HOÀN THIỆN.
 - `assets/Mau_de_cuong_2025.docx` — mẫu chuẩn 2025 (đóng gói để di động).
 - `assets/fill_de_cuong_example.py` — **script python-docx mẫu (worked example QLY801, 8 PLO, song ngữ)**: minh họa điền header/CLO/học liệu, dựng 5.1, dựng 5.2 đa-dòng gộp dọc, ma trận 3.2 + dòng học phần, tách song ngữ, strip chữ đỏ giữ dòng QĐ.
 - `references/don_vi_glossary.md` — tên đơn vị VN-EN, nguồn lấy PLO từ CTĐT, bản dịch giáo trình đã xác minh.
 - `references/huong_dan_cdr_clo_plo.md` — tóm tắt Hướng dẫn xây dựng CĐR CTĐT và học phần của FTU (PLO/PI/CLO, mức I-R-M + A, số lượng, quy tắc mỗi CLO một PLO); đọc khi viết/rà CLO và ma trận 3.2.
 
-## Định nghĩa "xong"
+## Định nghĩa "xong" (chế độ TẠO)
 Đúng template gốc · đủ 7 mục + ma trận 3.2 (có dòng học phần khớp CTĐT, ô 1/2/3, mỗi CLO một PLO) + **khối ký (TRƯỞNG KHOA + HIỆU TRƯỞNG, hoặc cơ cấu cũ nếu trước 31/07/2026)** · giữ dòng QĐ · **mô tả NGUYÊN VĂN CTĐT** · **CLO 3-6, mở đầu bằng động từ hành động đo được** · số tín chỉ ghi gọn · **5.1 có cột Hình thức** / **5.2 nội dung tách theo từng hoạt động (chỉ gộp Buổi+CLO)** + xuống dòng từng ý + **dòng lưu ý cuối 5.2** · **tổng giờ khớp chính xác CTĐT** · học liệu đúng ngôn ngữ + ấn bản thật · 0 placeholder/0 chữ đỏ chú thích · đã liệt kê điểm chờ quyết.
+
+## Định nghĩa "xong" (chế độ HOÀN THIỆN)
+Báo cáo `RaSoat_<MÃ>.md` có: kết quả nghiệm thu hình thức · bảng ma trận 3.2 đề xuất với lý do từng ô đối chiếu nội dung PLO trong CTĐT · bảng CLO → hoạt động dạy học (thiếu gì) · bảng CLO → hình thức đánh giá (thiếu gì) · bảng học liệu đã web-verify (dữ kiện đúng, ấn bản mới, URL nguồn) · danh mục sửa kèm `> QUYẾT:`. Sau khi chốt: file đề cương đã sửa, nghiệm thu web 0 lỗi, bản trích không còn ghi chú cơ học chưa giải thích.

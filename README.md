@@ -40,7 +40,7 @@ python3 tests/run_tests.py
 ## Skill cho Claude (thư mục `skills/`)
 
 - `skills/phan-bo-gio-tin-chi/`: tính phân bổ giờ.
-- `skills/tao-de-cuong/`: soạn hoặc cập nhật đề cương FTU theo mẫu 2025 (kèm mẫu docx và script python-docx ví dụ).
+- `skills/tao-va-hoan-thien-de-cuong/`: tạo (điền mẫu 2025) và hoàn thiện (rà ma trận 3.2, phương pháp dạy và đánh giá theo CLO, học liệu) đề cương FTU; kèm mẫu docx, script điền mẫu ví dụ, script trích đề cương để rà và rubric.
 
 Cách cài:
 - **Claude Code:** chép thư mục skill vào `~/.claude/skills/<tên-skill>/` (Windows: `C:\Users\<tên>\.claude\skills\<tên-skill>\`), mở lại Claude Code.

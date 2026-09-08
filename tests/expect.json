@@ -16,5 +16,7 @@
   "loi_ma_tran_danh_X.docx":          {"fail": 1, "must": ["Ô ma trận 3.2 ghi sai dạng"]},
   "dac_thu_luan_van.docx":            {"fail": 0, "must": ["Khối ký đề cương đặc thù"]},
   "loi_dac_thu_hai_chu_ky.docx":      {"fail": 0, "warn": 1, "must": ["chỉ một chữ ký"]},
+  "loi_clo_khong_dong_tu.docx":       {"fail": 0, "warn": 1, "must": ["không mở đầu bằng động từ"]},
+  "loi_clo_nhieu_plo.docx":           {"fail": 0, "warn": 1, "must": ["nhiều hơn một PLO"]},
   "Mau_de_cuong_2025.docx":           {"fail_min": 15}
 }

@@ -1,6 +1,6 @@
 # Tóm tắt "Hướng dẫn xây dựng CĐR chương trình đào tạo và học phần" (FTU, dự thảo; TB 424/TB-ĐHNT 31/12/2024)
 
-File gốc: `HuongDan_XayDung_CDR_CTDT_HocPhan.docx` (cùng thư mục, bản lưu ở kho riêng) và `TaoDeCuong/_local/`.
+File gốc: `HuongDan_XayDung_CDR_CTDT_HocPhan.docx` (cùng thư mục, bản lưu ở kho riêng).
 
 ## Thuật ngữ
 - **PLO** = chuẩn đầu ra CTĐT; **CLO** = chuẩn đầu ra học phần; **PI** (Performance Indicator) = nội hàm đo lường được của một PLO; **PO** = mục tiêu CTĐT.
@@ -33,3 +33,6 @@ File gốc: `HuongDan_XayDung_CDR_CTDT_HocPhan.docx` (cùng thư mục, bản l�
 ## Khung CTDH (tham khảo nhanh)
 - ĐH ≤ 130-140 TC tùy khối ngành; đại cương ≥ 25%; tự chọn 15-30%; học phần dự án ≥ 10% TC; TTGK 3 TC; học phần tốt nghiệp ≥ 9 TC (cử nhân) / 12 TC (kỹ sư). Khuyến khích mỗi học phần 3 TC.
 - ThS ≥ 60 TC, 4 khối; tự chọn 20-40%; dự án ≥ 25% TC. TS 90 TC; học phần TS ≤ 16 TC (≥ 3 TC PPNC nâng cao); luận án 30-45 TC.
+
+## Đã thành tiêu chí kiểm (bộ nghiệm thu web v3.3, 8/9/2026)
+Cả ba đều mức XEM LẠI vì Hướng dẫn dùng chữ "nên/thường": (1) số CLO ngoài 3-6; (2) CLO không mở đầu bằng động từ hành động (bảng động từ Phụ lục 1-3 + Bloom tiếng Anh; "Sinh viên…", "Kiến thức về…", "Có khả năng…" = không có động từ; "hiểu", "biết", "nắm được", "understand", "know" = động từ khó đo); (3) một CLO ghi mức ở nhiều PLO trong ma trận 3.2. Hàm `NghiemThu.cdrClo(texts, lang)` và `cdrCount(n)` trong `de-cuong/nghiem-thu.js` của repo dongkien/phan-bo-gio; form sinh file báo sống ngay dưới ô CLO.

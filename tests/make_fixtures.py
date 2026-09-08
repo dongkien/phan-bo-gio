@@ -37,4 +37,12 @@ def clo9(x):
     return x[:j]+'<w:t xml:space="preserve">9</w:t>'+x[j+len('<w:t xml:space="preserve">5</w:t>'):]
 mutate(V,os.path.join(FX,'loi_clo_khong_ton_tai.docx'),clo9)
 mutate(V,os.path.join(FX,'loi_ma_tran_danh_X.docx'),lambda x: first_t(x,'<w:t xml:space="preserve">3,A</w:t>','<w:t xml:space="preserve">X</w:t>'))
+# Hướng dẫn xây dựng CĐR: CLO không mở đầu bằng động từ (chủ ngữ "Sinh viên") -> XEM LẠI
+mutate(V,os.path.join(FX,'loi_clo_khong_dong_tu.docx'),lambda x: first_t(x,'CLO1: Giải thích được bản chất','CLO1: Sinh viên hiểu được bản chất'))
+def clo_nhieu_plo(x):
+    # ô PLO2 (ô trống thứ 2 sau nhãn) của dòng CLO1 trong ma trận 3.2 ghi thêm mức 2 -> CLO1 đáp ứng 2 PLO
+    i=x.index('<w:t xml:space="preserve">CLO1</w:t>'); tcs=[]; j=i
+    for _ in range(2): j=x.index('<w:tc>',j+1); tcs.append(j)
+    k=x.index('<w:t xml:space="preserve"/>',tcs[1]); return x[:k]+'<w:t xml:space="preserve">2</w:t>'+x[k+len('<w:t xml:space="preserve"/>'):]
+mutate(V,os.path.join(FX,'loi_clo_nhieu_plo.docx'),clo_nhieu_plo)
 print('xong')
